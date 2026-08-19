@@ -2,6 +2,432 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
+
+<!-- ============================================================
+     LOCALES — alle vertaalbare tekst staat hier en nergens anders.
+     Geldige JSON. Geen logica, geen commentaar, geen komma te veel.
+     Een taal toevoegen: kopieer het "nl"-blok, vertaal de waarden,
+     laat elke sleutel exact staan zoals hij is.
+     Controleer achteraf met:  python3 check_locales.py
+     ============================================================ -->
+<script type="application/json" id="locales">
+{
+  "_budgets": {
+    "card.label.name": 8,
+    "card.label.startNumber": 16,
+    "card.label.category": 16,
+    "card.header.boulder": 10,
+    "card.header.attempt": 12,
+    "card.header.score": 12,
+    "card.footer.total": 24,
+    "card.marker.zone": 2,
+    "card.marker.top": 2
+  },
+
+  "nl": {
+    "card.label.name": "NAAM",
+    "card.label.startNumber": "STARTNUMMER",
+    "card.label.category": "CATEGORIE",
+    "card.header.boulder": "BOULDER",
+    "card.header.attempt": "POGING {n}",
+    "card.header.score": "SCORE",
+    "card.footer.total": "TOTALE SCORE",
+    "card.marker.zone": "Z",
+    "card.marker.top": "T",
+
+    "control.meta": "Controleblad · {id} · gegenereerd {datetime}",
+    "control.participants.one": "{count} deelnemer",
+    "control.participants.other": "{count} deelnemers",
+    "control.boulders.one": "{count} boulder",
+    "control.boulders.other": "{count} boulders",
+    "control.total": "Totaal",
+    "control.bouldersInGym.one": "{count} boulder in de zaal",
+    "control.bouldersInGym.other": "{count} boulders in de zaal",
+
+    "ui.app.title": "Scorekaarten generator",
+    "ui.app.intro": "Werkt volledig offline. Deelnemersgegevens blijven op dit toestel en worden nergens opgeslagen.",
+    "ui.lang.ui": "Interfacetaal",
+    "ui.lang.card": "Kaarttaal",
+    "ui.lang.card.same": "Zelfde als interface",
+
+    "ui.settings.heading": "Wedstrijdgegevens",
+    "ui.settings.title": "Titel",
+    "ui.settings.subtitle": "Ondertitel",
+    "ui.settings.id": "Wedstrijd-ID",
+    "ui.settings.maxAttempts": "Max. pogingen",
+    "ui.settings.hint": "Het wedstrijd-ID staat in de QR-code, bv. `abyc2026-m4:69`. Instellingen en boulderindeling worden per wedstrijd-ID op dit toestel bewaard; deelnemers nooit.",
+
+    "ui.saved.here": "Bewaard: {id} · {datetime}",
+    "ui.saved.forget": "Vergeet deze wedstrijd",
+    "ui.saved.others": "Ook bewaard:",
+
+    "ui.participants.heading": "Deelnemers",
+    "ui.participants.hint": "CSV-export uit etto-climbing. Kolommen `Category`, `Starting number`, `Name`. Extra kolommen worden genegeerd.",
+    "ui.participants.loaded.one": "{count} deelnemer ingelezen.",
+    "ui.participants.loaded.other": "{count} deelnemers ingelezen.",
+    "ui.participants.categoryCount.one": "{count} categorie.",
+    "ui.participants.categoryCount.other": "{count} categorieën.",
+
+    "ui.boulders.heading": "Boulders per categorie",
+    "ui.boulders.tab.grid": "Raster",
+    "ui.boulders.tab.table": "Tabel plakken",
+    "ui.boulders.tab.json": "JSON plakken",
+    "ui.boulders.export": "Indeling exporteren",
+    "ui.boulders.import": "Indeling importeren",
+    "ui.boulders.gridMax": "Hoogste bouldernummer",
+    "ui.boulders.clearGrid": "Raster leegmaken",
+    "ui.boulders.gridHint": "Klik of sleep om aan te vinken. Klik op een nummer voor de hele rij, op een categorie voor de hele kolom.",
+    "ui.boulders.gridNeedsCsv": "Laad eerst de deelnemerslijst; de categorieën komen daaruit.",
+    "ui.boulders.gridBoulder": "Boulder",
+    "ui.boulders.gridCount": "aantal",
+    "ui.boulders.tableHint": "Selecteer het bouldersoverzicht op de etto-pagina, kopieer het (Ctrl+C) en plak het hier. Zowel boulders als rijen (met de categorieën per boulder) als categorieën als rijen worden herkend. De deelnemerslijst moet eerst geladen zijn.",
+    "ui.boulders.tablePlaceholder": "Plak hier de gekopieerde tabel...",
+    "ui.boulders.tableSubmit": "Tabel verwerken",
+    "ui.boulders.jsonHint": "Plak de JSON uit de netwerkrespons van het platform. Elke vorm die te herleiden is tot categorie + bouldernummers wordt aanvaard; herkent de app de vorm niet, dan kies je zelf de velden.",
+    "ui.boulders.jsonPlaceholder": "Plak hier de JSON, bv. {\"u11 (meisjes/jongens)\": [1,2,3]}",
+    "ui.boulders.jsonSubmit": "JSON verwerken",
+    "ui.boulders.jsonCatField": "Categorieveld",
+    "ui.boulders.jsonNumField": "Boulderveld",
+    "ui.boulders.jsonApply": "Toepassen",
+    "ui.boulders.summaryBoulders.one": "{count} boulder",
+    "ui.boulders.summaryBoulders.other": "{count} boulders",
+
+    "ui.paste.needCsv": "Laad eerst de deelnemerslijst; de categorienamen komen daaruit.",
+    "ui.paste.unknownJson": "De vorm van deze JSON is niet herkend ({rows} rijen). Kies zelf welk veld de categorie is en welk veld de boulders.",
+    "ui.paste.rowsMatched.one": "{count} rij herkend.",
+    "ui.paste.rowsMatched.other": "{count} rijen herkend.",
+    "ui.paste.categoriesRead.one": "{count} categorie gelezen.",
+    "ui.paste.categoriesRead.other": "{count} categorieën gelezen.",
+    "ui.paste.rowsRead.one": "{count} rij gelezen via “{catField}” en “{numField}”.",
+    "ui.paste.rowsRead.other": "{count} rijen gelezen via “{catField}” en “{numField}”.",
+    "ui.paste.filled.one": "{count} categorie ingevuld. Controleer hieronder en corrigeer eventueel in het raster.",
+    "ui.paste.filled.other": "{count} categorieën ingevuld. Controleer hieronder en corrigeer eventueel in het raster.",
+    "ui.import.ok": "Indeling geïmporteerd uit {file}.",
+    "ui.import.fail": "Kon {file} niet lezen: {message}",
+
+    "ui.validation.heading": "Controle",
+    "ui.validation.empty": "Laad de deelnemerslijst en vul het boulderraster in.",
+    "ui.validation.allClear": "Alles in orde. Geen fouten of waarschuwingen.",
+    "ui.validation.errorCount.one": "{count} fout. Er worden geen kaarten gemaakt zolang die niet opgelost is.",
+    "ui.validation.errorCount.other": "{count} fouten. Er worden geen kaarten gemaakt zolang die niet opgelost zijn.",
+    "ui.validation.ack.one": "Ik heb de waarschuwing gelezen en wil toch afdrukken.",
+    "ui.validation.ack.other": "Ik heb de {count} waarschuwingen gelezen en wil toch afdrukken.",
+
+    "ui.print.heading": "Afdrukken",
+    "ui.print.paper": "Papier",
+    "ui.print.paper.a4": "A4 — 2 kaarten per blad",
+    "ui.print.paper.a5": "A5 — 1 kaart per blad",
+    "ui.print.qr": "QR-code op de kaart",
+    "ui.print.controlSheet": "Controleblad vooraan",
+    "ui.print.colour": "Kleurband op de kaart",
+    "ui.print.button": "Afdrukken (Ctrl+P → Opslaan als PDF)",
+    "ui.print.hint": "Druk af op 100% zonder schaling. Kies in het printvenster hetzelfde papierformaat. Het voorbeeld hieronder is exact wat er uit de printer komt.",
+    "ui.print.stat.one": "{cards} kaart op {sheets} bladen {paper}, {ms} ms.",
+    "ui.print.stat.other": "{cards} kaarten op {sheets} bladen {paper}, {ms} ms.",
+    "ui.print.documentTitle": "Scorekaarten {title}",
+    "ui.print.empty": "Nog geen kaarten — los eerst de fouten hierboven op.",
+
+    "ui.diag.heading": "Diagnose vertalingen",
+    "ui.diag.banner": "Er zijn problemen met de vertalingen. Open “Diagnose vertalingen” onderaan.",
+    "ui.diag.ok": "Alle vertalingen compleet.",
+    "ui.diag.coverage": "{lang}: {done} van {total} sleutels ({percent}).",
+    "ui.diag.missingKeys": "{lang} mist {count} sleutels: {keys}",
+    "ui.diag.extraKeys": "{lang} heeft {count} onbekende sleutels: {keys}",
+    "ui.diag.placeholderMismatch": "{key} — {lang} gebruikt {found} in plaats van {expected}.",
+    "ui.diag.missingPlural": "{key} — {lang} mist de meervoudsvorm “{form}”.",
+    "ui.diag.budgetExceeded": "{key} — {lang} is {length} tekens, budget {budget}: “{value}”.",
+    "ui.diag.pseudo": "Langste vertaling van elke sleutel tonen (test op tekstuitloop)",
+
+    "error.csv.empty": "Het bestand is leeg.",
+    "error.csv.missingColumns": "Kolom niet gevonden: {columns}. Gevonden kopregel: {header}",
+    "error.paste.noCategories": "Geen enkele categorie herkend in de geplakte tekst. Verwacht een van deze namen: {names}.",
+    "error.json.noObjectArray": "Geen lijst met objecten gevonden in deze JSON.",
+    "error.json.noKnownCategory": "Met die velden komt er geen enkele bekende categorie uit.",
+
+    "validation.error.nameEmpty": "Rij {row}: naam is leeg.",
+    "validation.error.categoryEmpty": "Rij {row}: categorie is leeg.",
+    "validation.error.numberEmpty": "Rij {row}: startnummer is leeg.",
+    "validation.error.numberNotPositive": "Rij {row}: startnummer “{value}” is geen positief geheel getal.",
+    "validation.error.duplicateStartNumber": "Startnummer {number} komt twee keer voor: rij {rowA} ({nameA}) en rij {rowB} ({nameB}).",
+    "validation.error.categoryMissingInMapping": "Categorie “{category}” staat in de deelnemerslijst maar heeft geen boulders toegekend.",
+    "validation.error.categoryWithoutParticipants": "Categorie “{category}” heeft boulders toegekend maar geen deelnemers.",
+    "validation.error.categoryZeroBoulders": "Categorie “{category}” heeft nul boulders.",
+    "validation.error.duplicateBoulder": "Boulder {number} komt meer dan één keer voor in categorie “{category}”.",
+    "validation.warning.nameTooLong": "Rij {row}: de naam “{name}” is te lang voor het naamveld en wordt afgekapt.",
+    "validation.warning.differingBoulderCounts": "Niet alle categorieën hebben evenveel boulders ({summary}). Klopt voor een finale, meestal een vergissing in een kwalificatie.",
+    "validation.warning.tooManyBoulders": "Categorie “{category}” heeft {count} boulders; er passen er {max} op een kaart bij {rowHeight}mm rijhoogte. De vakjes worden krap."
+  },
+
+  "fr": {
+    "card.label.name": "NOM",
+    "card.label.startNumber": "DOSSARD",
+    "card.label.category": "CATÉGORIE",
+    "card.header.boulder": "BLOC",
+    "card.header.attempt": "ESSAI {n}",
+    "card.header.score": "SCORE",
+    "card.footer.total": "SCORE TOTAL",
+    "card.marker.zone": "Z",
+    "card.marker.top": "T",
+
+    "control.meta": "Feuille de contrôle · {id} · générée {datetime}",
+    "control.participants.one": "{count} participant",
+    "control.participants.other": "{count} participants",
+    "control.boulders.one": "{count} bloc",
+    "control.boulders.other": "{count} blocs",
+    "control.total": "Total",
+    "control.bouldersInGym.one": "{count} bloc dans la salle",
+    "control.bouldersInGym.other": "{count} blocs dans la salle",
+
+    "ui.app.title": "Générateur de feuilles de score",
+    "ui.app.intro": "Fonctionne entièrement hors ligne. Les données des participants restent sur cet appareil et ne sont enregistrées nulle part.",
+    "ui.lang.ui": "Langue de l’interface",
+    "ui.lang.card": "Langue des feuilles",
+    "ui.lang.card.same": "Comme l’interface",
+
+    "ui.settings.heading": "Données de la compétition",
+    "ui.settings.title": "Titre",
+    "ui.settings.subtitle": "Sous-titre",
+    "ui.settings.id": "ID de compétition",
+    "ui.settings.maxAttempts": "Essais max.",
+    "ui.settings.hint": "L’ID de compétition figure dans le code QR, p. ex. `abyc2026-m4:69`. Les réglages et la répartition des blocs sont conservés par ID sur cet appareil ; jamais les participants.",
+
+    "ui.saved.here": "Enregistré : {id} · {datetime}",
+    "ui.saved.forget": "Oublier cette compétition",
+    "ui.saved.others": "Aussi enregistré :",
+
+    "ui.participants.heading": "Participants",
+    "ui.participants.hint": "Export CSV depuis etto-climbing. Colonnes `Category`, `Starting number`, `Name`. Les colonnes supplémentaires sont ignorées.",
+    "ui.participants.loaded.one": "{count} participant chargé.",
+    "ui.participants.loaded.other": "{count} participants chargés.",
+    "ui.participants.categoryCount.one": "{count} catégorie.",
+    "ui.participants.categoryCount.other": "{count} catégories.",
+
+    "ui.boulders.heading": "Blocs par catégorie",
+    "ui.boulders.tab.grid": "Grille",
+    "ui.boulders.tab.table": "Coller un tableau",
+    "ui.boulders.tab.json": "Coller du JSON",
+    "ui.boulders.export": "Exporter la répartition",
+    "ui.boulders.import": "Importer une répartition",
+    "ui.boulders.gridMax": "Numéro de bloc le plus élevé",
+    "ui.boulders.clearGrid": "Vider la grille",
+    "ui.boulders.gridHint": "Cliquez ou faites glisser pour cocher. Cliquez sur un numéro pour toute la ligne, sur une catégorie pour toute la colonne.",
+    "ui.boulders.gridNeedsCsv": "Chargez d’abord la liste des participants ; les catégories en proviennent.",
+    "ui.boulders.gridBoulder": "Bloc",
+    "ui.boulders.gridCount": "nombre",
+    "ui.boulders.tableHint": "Sélectionnez l’aperçu des blocs sur la page etto, copiez-le (Ctrl+C) et collez-le ici. Les deux orientations sont reconnues : blocs en lignes (avec les catégories par bloc) ou catégories en lignes. La liste des participants doit être chargée au préalable.",
+    "ui.boulders.tablePlaceholder": "Collez ici le tableau copié...",
+    "ui.boulders.tableSubmit": "Traiter le tableau",
+    "ui.boulders.jsonHint": "Collez le JSON de la réponse réseau de la plateforme. Toute forme réductible à catégorie + numéros de blocs est acceptée ; si l’application ne reconnaît pas la forme, vous choisissez les champs vous-même.",
+    "ui.boulders.jsonPlaceholder": "Collez ici le JSON, p. ex. {\"u11 (meisjes/jongens)\": [1,2,3]}",
+    "ui.boulders.jsonSubmit": "Traiter le JSON",
+    "ui.boulders.jsonCatField": "Champ catégorie",
+    "ui.boulders.jsonNumField": "Champ blocs",
+    "ui.boulders.jsonApply": "Appliquer",
+    "ui.boulders.summaryBoulders.one": "{count} bloc",
+    "ui.boulders.summaryBoulders.other": "{count} blocs",
+
+    "ui.paste.needCsv": "Chargez d’abord la liste des participants ; les noms de catégories en proviennent.",
+    "ui.paste.unknownJson": "La forme de ce JSON n’est pas reconnue ({rows} lignes). Choisissez vous-même le champ catégorie et le champ blocs.",
+    "ui.paste.rowsMatched.one": "{count} ligne reconnue.",
+    "ui.paste.rowsMatched.other": "{count} lignes reconnues.",
+    "ui.paste.categoriesRead.one": "{count} catégorie lue.",
+    "ui.paste.categoriesRead.other": "{count} catégories lues.",
+    "ui.paste.rowsRead.one": "{count} ligne lue via « {catField} » et « {numField} ».",
+    "ui.paste.rowsRead.other": "{count} lignes lues via « {catField} » et « {numField} ».",
+    "ui.paste.filled.one": "{count} catégorie remplie. Vérifiez ci-dessous et corrigez au besoin dans la grille.",
+    "ui.paste.filled.other": "{count} catégories remplies. Vérifiez ci-dessous et corrigez au besoin dans la grille.",
+    "ui.import.ok": "Répartition importée depuis {file}.",
+    "ui.import.fail": "Impossible de lire {file} : {message}",
+
+    "ui.validation.heading": "Vérification",
+    "ui.validation.empty": "Chargez la liste des participants et remplissez la grille des blocs.",
+    "ui.validation.allClear": "Tout est en ordre. Aucune erreur ni avertissement.",
+    "ui.validation.errorCount.one": "{count} erreur. Aucune feuille ne sera produite tant qu’elle n’est pas corrigée.",
+    "ui.validation.errorCount.other": "{count} erreurs. Aucune feuille ne sera produite tant qu’elles ne sont pas corrigées.",
+    "ui.validation.ack.one": "J’ai lu l’avertissement et je veux imprimer quand même.",
+    "ui.validation.ack.other": "J’ai lu les {count} avertissements et je veux imprimer quand même.",
+
+    "ui.print.heading": "Impression",
+    "ui.print.paper": "Papier",
+    "ui.print.paper.a4": "A4 — 2 feuilles par page",
+    "ui.print.paper.a5": "A5 — 1 feuille par page",
+    "ui.print.qr": "Code QR sur la feuille",
+    "ui.print.controlSheet": "Feuille de contrôle en tête",
+    "ui.print.colour": "Bande de couleur sur la feuille",
+    "ui.print.button": "Imprimer (Ctrl+P → Enregistrer en PDF)",
+    "ui.print.hint": "Imprimez à 100 % sans mise à l’échelle. Choisissez le même format de papier dans la boîte d’impression. L’aperçu ci-dessous correspond exactement à la sortie.",
+    "ui.print.stat.one": "{cards} feuille sur {sheets} pages {paper}, {ms} ms.",
+    "ui.print.stat.other": "{cards} feuilles sur {sheets} pages {paper}, {ms} ms.",
+    "ui.print.documentTitle": "Feuilles de score {title}",
+    "ui.print.empty": "Pas encore de feuilles — corrigez d’abord les erreurs ci-dessus.",
+
+    "ui.diag.heading": "Diagnostic des traductions",
+    "ui.diag.banner": "Les traductions posent problème. Ouvrez « Diagnostic des traductions » en bas de page.",
+    "ui.diag.ok": "Toutes les traductions sont complètes.",
+    "ui.diag.coverage": "{lang} : {done} clés sur {total} ({percent}).",
+    "ui.diag.missingKeys": "{lang} manque {count} clés : {keys}",
+    "ui.diag.extraKeys": "{lang} a {count} clés inconnues : {keys}",
+    "ui.diag.placeholderMismatch": "{key} — {lang} utilise {found} au lieu de {expected}.",
+    "ui.diag.missingPlural": "{key} — {lang} n’a pas la forme plurielle « {form} ».",
+    "ui.diag.budgetExceeded": "{key} — {lang} fait {length} caractères, budget {budget} : « {value} ».",
+    "ui.diag.pseudo": "Afficher la traduction la plus longue de chaque clé (test de débordement)",
+
+    "error.csv.empty": "Le fichier est vide.",
+    "error.csv.missingColumns": "Colonne introuvable : {columns}. En-tête trouvé : {header}",
+    "error.paste.noCategories": "Aucune catégorie reconnue dans le texte collé. L’un de ces noms est attendu : {names}.",
+    "error.json.noObjectArray": "Aucune liste d’objets trouvée dans ce JSON.",
+    "error.json.noKnownCategory": "Avec ces champs, aucune catégorie connue n’en ressort.",
+
+    "validation.error.nameEmpty": "Ligne {row} : le nom est vide.",
+    "validation.error.categoryEmpty": "Ligne {row} : la catégorie est vide.",
+    "validation.error.numberEmpty": "Ligne {row} : le dossard est vide.",
+    "validation.error.numberNotPositive": "Ligne {row} : le dossard « {value} » n’est pas un entier positif.",
+    "validation.error.duplicateStartNumber": "Le dossard {number} apparaît deux fois : ligne {rowA} ({nameA}) et ligne {rowB} ({nameB}).",
+    "validation.error.categoryMissingInMapping": "La catégorie « {category} » figure dans la liste des participants mais n’a aucun bloc attribué.",
+    "validation.error.categoryWithoutParticipants": "La catégorie « {category} » a des blocs attribués mais aucun participant.",
+    "validation.error.categoryZeroBoulders": "La catégorie « {category} » n’a aucun bloc.",
+    "validation.error.duplicateBoulder": "Le bloc {number} apparaît plus d’une fois dans la catégorie « {category} ».",
+    "validation.warning.nameTooLong": "Ligne {row} : le nom « {name} » est trop long pour le champ et sera tronqué.",
+    "validation.warning.differingBoulderCounts": "Les catégories n’ont pas toutes le même nombre de blocs ({summary}). Normal pour une finale, généralement une erreur en qualification.",
+    "validation.warning.tooManyBoulders": "La catégorie « {category} » a {count} blocs ; {max} tiennent sur une feuille à {rowHeight} mm de hauteur de ligne. Les cases seront serrées."
+  },
+
+  "en": {
+    "card.label.name": "NAME",
+    "card.label.startNumber": "START NUMBER",
+    "card.label.category": "CATEGORY",
+    "card.header.boulder": "BOULDER",
+    "card.header.attempt": "ATTEMPT {n}",
+    "card.header.score": "SCORE",
+    "card.footer.total": "TOTAL SCORE",
+    "card.marker.zone": "Z",
+    "card.marker.top": "T",
+
+    "control.meta": "Control sheet · {id} · generated {datetime}",
+    "control.participants.one": "{count} participant",
+    "control.participants.other": "{count} participants",
+    "control.boulders.one": "{count} boulder",
+    "control.boulders.other": "{count} boulders",
+    "control.total": "Total",
+    "control.bouldersInGym.one": "{count} boulder in the gym",
+    "control.bouldersInGym.other": "{count} boulders in the gym",
+
+    "ui.app.title": "Score card generator",
+    "ui.app.intro": "Works entirely offline. Participant data stays on this device and is never stored anywhere.",
+    "ui.lang.ui": "Interface language",
+    "ui.lang.card": "Card language",
+    "ui.lang.card.same": "Same as interface",
+
+    "ui.settings.heading": "Competition details",
+    "ui.settings.title": "Title",
+    "ui.settings.subtitle": "Subtitle",
+    "ui.settings.id": "Competition ID",
+    "ui.settings.maxAttempts": "Max. attempts",
+    "ui.settings.hint": "The competition ID appears in the QR code, e.g. `abyc2026-m4:69`. Settings and the boulder mapping are kept per competition ID on this device; participants never are.",
+
+    "ui.saved.here": "Saved: {id} · {datetime}",
+    "ui.saved.forget": "Forget this competition",
+    "ui.saved.others": "Also saved:",
+
+    "ui.participants.heading": "Participants",
+    "ui.participants.hint": "CSV export from etto-climbing. Columns `Category`, `Starting number`, `Name`. Extra columns are ignored.",
+    "ui.participants.loaded.one": "{count} participant loaded.",
+    "ui.participants.loaded.other": "{count} participants loaded.",
+    "ui.participants.categoryCount.one": "{count} category.",
+    "ui.participants.categoryCount.other": "{count} categories.",
+
+    "ui.boulders.heading": "Boulders per category",
+    "ui.boulders.tab.grid": "Grid",
+    "ui.boulders.tab.table": "Paste table",
+    "ui.boulders.tab.json": "Paste JSON",
+    "ui.boulders.export": "Export mapping",
+    "ui.boulders.import": "Import mapping",
+    "ui.boulders.gridMax": "Highest boulder number",
+    "ui.boulders.clearGrid": "Clear grid",
+    "ui.boulders.gridHint": "Click or drag to tick. Click a number for the whole row, a category for the whole column.",
+    "ui.boulders.gridNeedsCsv": "Load the participant list first; the categories come from it.",
+    "ui.boulders.gridBoulder": "Boulder",
+    "ui.boulders.gridCount": "count",
+    "ui.boulders.tableHint": "Select the boulder overview on the etto page, copy it (Ctrl+C) and paste it here. Both orientations are recognised: boulders as rows (with the categories per boulder) or categories as rows. The participant list must be loaded first.",
+    "ui.boulders.tablePlaceholder": "Paste the copied table here...",
+    "ui.boulders.tableSubmit": "Process table",
+    "ui.boulders.jsonHint": "Paste the JSON from the platform’s network response. Any shape reducible to category + boulder numbers is accepted; if the app does not recognise the shape, you pick the fields yourself.",
+    "ui.boulders.jsonPlaceholder": "Paste the JSON here, e.g. {\"u11 (meisjes/jongens)\": [1,2,3]}",
+    "ui.boulders.jsonSubmit": "Process JSON",
+    "ui.boulders.jsonCatField": "Category field",
+    "ui.boulders.jsonNumField": "Boulder field",
+    "ui.boulders.jsonApply": "Apply",
+    "ui.boulders.summaryBoulders.one": "{count} boulder",
+    "ui.boulders.summaryBoulders.other": "{count} boulders",
+
+    "ui.paste.needCsv": "Load the participant list first; the category names come from it.",
+    "ui.paste.unknownJson": "The shape of this JSON was not recognised ({rows} rows). Pick which field is the category and which field holds the boulders.",
+    "ui.paste.rowsMatched.one": "{count} row recognised.",
+    "ui.paste.rowsMatched.other": "{count} rows recognised.",
+    "ui.paste.categoriesRead.one": "{count} category read.",
+    "ui.paste.categoriesRead.other": "{count} categories read.",
+    "ui.paste.rowsRead.one": "{count} row read via “{catField}” and “{numField}”.",
+    "ui.paste.rowsRead.other": "{count} rows read via “{catField}” and “{numField}”.",
+    "ui.paste.filled.one": "{count} category filled in. Check below and correct in the grid if needed.",
+    "ui.paste.filled.other": "{count} categories filled in. Check below and correct in the grid if needed.",
+    "ui.import.ok": "Mapping imported from {file}.",
+    "ui.import.fail": "Could not read {file}: {message}",
+
+    "ui.validation.heading": "Validation",
+    "ui.validation.empty": "Load the participant list and fill in the boulder grid.",
+    "ui.validation.allClear": "All in order. No errors or warnings.",
+    "ui.validation.errorCount.one": "{count} error. No cards are produced until it is resolved.",
+    "ui.validation.errorCount.other": "{count} errors. No cards are produced until they are resolved.",
+    "ui.validation.ack.one": "I have read the warning and want to print anyway.",
+    "ui.validation.ack.other": "I have read the {count} warnings and want to print anyway.",
+
+    "ui.print.heading": "Print",
+    "ui.print.paper": "Paper",
+    "ui.print.paper.a4": "A4 — 2 cards per sheet",
+    "ui.print.paper.a5": "A5 — 1 card per sheet",
+    "ui.print.qr": "QR code on the card",
+    "ui.print.controlSheet": "Control sheet in front",
+    "ui.print.colour": "Colour band on the card",
+    "ui.print.button": "Print (Ctrl+P → Save as PDF)",
+    "ui.print.hint": "Print at 100% with no scaling. Choose the same paper size in the print dialog. The preview below is exactly what comes out of the printer.",
+    "ui.print.stat.one": "{cards} card on {sheets} {paper} sheets, {ms} ms.",
+    "ui.print.stat.other": "{cards} cards on {sheets} {paper} sheets, {ms} ms.",
+    "ui.print.documentTitle": "Score cards {title}",
+    "ui.print.empty": "No cards yet — resolve the errors above first.",
+
+    "ui.diag.heading": "Translation diagnostics",
+    "ui.diag.banner": "There are problems with the translations. Open “Translation diagnostics” at the bottom.",
+    "ui.diag.ok": "All translations complete.",
+    "ui.diag.coverage": "{lang}: {done} of {total} keys ({percent}).",
+    "ui.diag.missingKeys": "{lang} is missing {count} keys: {keys}",
+    "ui.diag.extraKeys": "{lang} has {count} unknown keys: {keys}",
+    "ui.diag.placeholderMismatch": "{key} — {lang} uses {found} instead of {expected}.",
+    "ui.diag.missingPlural": "{key} — {lang} is missing the plural form “{form}”.",
+    "ui.diag.budgetExceeded": "{key} — {lang} is {length} characters, budget {budget}: “{value}”.",
+    "ui.diag.pseudo": "Show the longest translation of every key (text overflow test)",
+
+    "error.csv.empty": "The file is empty.",
+    "error.csv.missingColumns": "Column not found: {columns}. Header found: {header}",
+    "error.paste.noCategories": "No category recognised in the pasted text. One of these names is expected: {names}.",
+    "error.json.noObjectArray": "No list of objects found in this JSON.",
+    "error.json.noKnownCategory": "Those fields yield no known category at all.",
+
+    "validation.error.nameEmpty": "Row {row}: name is empty.",
+    "validation.error.categoryEmpty": "Row {row}: category is empty.",
+    "validation.error.numberEmpty": "Row {row}: start number is empty.",
+    "validation.error.numberNotPositive": "Row {row}: start number “{value}” is not a positive whole number.",
+    "validation.error.duplicateStartNumber": "Start number {number} appears twice: row {rowA} ({nameA}) and row {rowB} ({nameB}).",
+    "validation.error.categoryMissingInMapping": "Category “{category}” is in the participant list but has no boulders assigned.",
+    "validation.error.categoryWithoutParticipants": "Category “{category}” has boulders assigned but no participants.",
+    "validation.error.categoryZeroBoulders": "Category “{category}” has zero boulders.",
+    "validation.error.duplicateBoulder": "Boulder {number} appears more than once in category “{category}”.",
+    "validation.warning.nameTooLong": "Row {row}: the name “{name}” is too long for the name field and will be cut off.",
+    "validation.warning.differingBoulderCounts": "Not all categories have the same number of boulders ({summary}). Correct for a final, usually a mistake in a qualification.",
+    "validation.warning.tooManyBoulders": "Category “{category}” has {count} boulders; {max} fit on a card at {rowHeight}mm row height. The boxes will be cramped."
+  }
+}
+</script>
+<!-- ===================== EINDE LOCALES ======================== -->
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Scorekaarten generator</title>
 <style id="pagerule">@page{size:A4 portrait;margin:0}</style>
@@ -17,14 +443,13 @@
 body{margin:0;font:14px/1.5 system-ui,Segoe UI,Arial,sans-serif;color:var(--ink);background:var(--bg)}
 #ui{max-width:1100px;margin:0 auto;padding:24px 20px 0}
 h1{font-size:22px;margin:0 0 4px}
-h1 + p{margin:0 0 24px;color:var(--muted)}
 section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-bottom:16px}
 section > h2{font-size:15px;margin:0 0 14px;display:flex;align-items:center;gap:8px}
 section > h2 .n{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;
   align-items:center;justify-content:center;font-size:12px;flex:none}
 label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
 input[type=text],input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:5px;font:inherit}
-.grid4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:12px}
 .row{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
 button{font:inherit;padding:8px 14px;border:1px solid var(--ink);background:var(--ink);color:#fff;
   border-radius:5px;cursor:pointer}
@@ -87,7 +512,7 @@ table.grid tfoot td{background:var(--bg);text-align:center;font-size:11px;color:
     margin-top:0;height:100vh;max-height:100vh;border-top:0;border-left:1px solid var(--line)}
 }
 #print{zoom:.5}
-#print:empty::before{content:"Nog geen kaarten \2014 los eerst de fouten hierboven op.";
+#print:empty::before{content:var(--empty-msg);
   color:var(--muted);font-size:26px;display:block;padding:20px}
 
 /* ==========================================================================
@@ -160,6 +585,8 @@ table.score tfoot td.lab{text-align:right;padding-right:3mm}
 .sheet.a5 .ctl th,.sheet.a5 .ctl td{padding:.5mm 1mm}
 .ctl .counts{font-size:9pt}
 .ctl .counts td{text-align:left;padding:1.5mm 3mm;white-space:nowrap}
+.ctl .counts td:nth-child(2){font-weight:700}
+.ctl .counts tr:last-child td{font-weight:700}
 
 @media screen{
   .sheet{box-shadow:0 1px 6px rgba(0,0,0,.25)}
@@ -178,81 +605,99 @@ table.score tfoot td.lab{text-align:right;padding-right:3mm}
 #selftest .t.p{color:var(--ok)}
 #selftest .t.f{color:var(--err);font-weight:700}
 #selftest h1{font-family:system-ui,sans-serif}
+
+/* taalkeuze en diagnose */
+.apphdr{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.apphdr + p{margin:0 0 24px;color:var(--muted)}
+.langsel{display:flex;gap:4px;flex:none}
+.langsel button{padding:5px 10px;font-size:12px;font-weight:600;letter-spacing:.5px;
+  background:#fff;color:var(--muted);border:1px solid var(--line)}
+.langsel button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+#diag-banner:not(:empty){margin-bottom:16px}
+#diag{background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:12px 20px;margin-bottom:16px}
+#diag summary{font-size:13px;color:var(--muted);cursor:pointer}
+#diag[open] summary{margin-bottom:12px}
+#diag-body ul.report{margin-bottom:10px}
+#diag-body ul.report li{word-break:break-word}
 </style>
 </head>
 <body>
 
 <div id="app">
 <div id="ui">
-  <h1>Scorekaarten generator</h1>
-  <p>Werkt volledig offline. Deelnemersgegevens blijven op dit toestel en worden nergens opgeslagen.</p>
+  <div class="apphdr">
+    <h1 data-i18n="ui.app.title"></h1>
+    <div class="langsel" id="langsel" role="group" data-i18n-aria="ui.lang.ui"></div>
+  </div>
+  <p data-i18n="ui.app.intro"></p>
+  <div id="diag-banner"></div>
 
   <section>
-    <h2><span class="n">1</span> Wedstrijdgegevens</h2>
+    <h2><span class="n">1</span> <span data-i18n="ui.settings.heading"></span></h2>
     <div class="grid4">
-      <div><label for="f-title">Titel</label><input id="f-title" type="text" placeholder="ANTWERP BOULDER YOUTH CUP 2026"></div>
-      <div><label for="f-sub">Ondertitel</label><input id="f-sub" type="text" placeholder="Manche 4"></div>
-      <div><label for="f-id">Wedstrijd-ID</label><input id="f-id" type="text" placeholder="abyc2026-m4"></div>
-      <div><label for="f-att">Max. pogingen</label><input id="f-att" type="number" min="1" max="12" value="5"></div>
+      <div><label for="f-title" data-i18n="ui.settings.title"></label><input id="f-title" type="text" placeholder="ANTWERP BOULDER YOUTH CUP 2026"></div>
+      <div><label for="f-sub" data-i18n="ui.settings.subtitle"></label><input id="f-sub" type="text" placeholder="Manche 4"></div>
+      <div><label for="f-id" data-i18n="ui.settings.id"></label><input id="f-id" type="text" placeholder="abyc2026-m4"></div>
+      <div><label for="f-att" data-i18n="ui.settings.maxAttempts"></label><input id="f-att" type="number" min="1" max="12" value="5"></div>
+      <div><label for="f-cardlang" data-i18n="ui.lang.card"></label>
+        <select id="f-cardlang">
+          <option value="" data-i18n="ui.lang.card.same"></option>
+        </select>
+      </div>
     </div>
-    <p class="hint" style="margin:10px 0 0">Het wedstrijd-ID staat in de QR-code, bv. <code>abyc2026-m4:69</code>.
-      Instellingen en boulderindeling worden per wedstrijd-ID op dit toestel bewaard; deelnemers nooit.</p>
+    <p class="hint" style="margin:10px 0 0" data-i18n="ui.settings.hint"></p>
     <div id="saved"></div>
   </section>
 
   <section>
-    <h2><span class="n">2</span> Deelnemers</h2>
+    <h2><span class="n">2</span> <span data-i18n="ui.participants.heading"></span></h2>
     <div class="row">
       <div><input id="f-csv" type="file" accept=".csv,text/csv"></div>
     </div>
-    <p class="hint" style="margin:10px 0 0">CSV-export uit etto-climbing. Kolommen <code>Category</code>,
-      <code>Starting number</code>, <code>Name</code>. Extra kolommen worden genegeerd.</p>
+    <p class="hint" style="margin:10px 0 0" data-i18n="ui.participants.hint"></p>
     <div id="csv-status"></div>
     <div id="csv-cats" class="tags"></div>
   </section>
 
   <section>
-    <h2><span class="n">3</span> Boulders per categorie</h2>
+    <h2><span class="n">3</span> <span data-i18n="ui.boulders.heading"></span></h2>
 
     <div class="tabs">
-      <button class="tab on" data-tab="grid" type="button">Raster</button>
-      <button class="tab" data-tab="table" type="button">Tabel plakken</button>
-      <button class="tab" data-tab="json" type="button">JSON plakken</button>
+      <button class="tab on" data-tab="grid" type="button" data-i18n="ui.boulders.tab.grid"></button>
+      <button class="tab" data-tab="table" type="button" data-i18n="ui.boulders.tab.table"></button>
+      <button class="tab" data-tab="json" type="button" data-i18n="ui.boulders.tab.json"></button>
       <span class="spacer"></span>
-      <button class="sec" id="btn-export" type="button">Indeling exporteren</button>
-      <label class="sec filelabel" for="f-import">Indeling importeren</label>
+      <button class="sec" id="btn-export" type="button" data-i18n="ui.boulders.export"></button>
+      <label class="sec filelabel" for="f-import" data-i18n="ui.boulders.import"></label>
       <input id="f-import" type="file" accept=".json,application/json" hidden>
     </div>
 
     <div class="pane" id="pane-grid">
       <div class="row">
         <div style="max-width:200px">
-          <label for="f-gridmax">Hoogste boulternummer</label>
+          <label for="f-gridmax" data-i18n="ui.boulders.gridMax"></label>
           <input id="f-gridmax" type="number" min="1" max="200" value="30">
         </div>
-        <button class="sec" id="btn-clear" type="button">Raster leegmaken</button>
-        <span class="hint">Klik of sleep om aan te vinken. Klik op een nummer voor de hele rij, op een categorie voor de hele kolom.</span>
+        <button class="sec" id="btn-clear" type="button" data-i18n="ui.boulders.clearGrid"></button>
+        <span class="hint" data-i18n="ui.boulders.gridHint"></span>
       </div>
       <div id="gridwrap"></div>
     </div>
 
     <div class="pane" id="pane-table" hidden>
-      <p class="hint" style="margin:0 0 8px">Selecteer het bouldersoverzicht op de etto-pagina, kopieer het
-        (Ctrl+C) en plak het hier. Zowel boulders als rijen (met de categorieën per boulder) als categorieën
-        als rijen worden herkend. De deelnemerslijst moet eerst geladen zijn.</p>
-      <textarea id="f-table" rows="8" placeholder="Plak hier de gekopieerde tabel..."></textarea>
+      <p class="hint" style="margin:0 0 8px" data-i18n="ui.boulders.tableHint"></p>
+      <textarea id="f-table" rows="8" data-i18n-ph="ui.boulders.tablePlaceholder"></textarea>
       <div class="row" style="margin-top:8px">
-        <button class="sec" id="btn-table" type="button">Tabel verwerken</button>
+        <button class="sec" id="btn-table" type="button" data-i18n="ui.boulders.tableSubmit"></button>
       </div>
     </div>
 
     <div class="pane" id="pane-json" hidden>
-      <p class="hint" style="margin:0 0 8px">Plak de JSON uit de netwerkrespons van het platform. Elke vorm die te
-        herleiden is tot categorie + boulternummers wordt aanvaard; herkent de app de vorm niet, dan kies je zelf
-        de velden.</p>
-      <textarea id="f-json" rows="8" placeholder='Plak hier de JSON, bv. {"u11 (meisjes/jongens)": [1,2,3]}'></textarea>
+      <p class="hint" style="margin:0 0 8px" data-i18n="ui.boulders.jsonHint"></p>
+      <textarea id="f-json" rows="8" data-i18n-ph="ui.boulders.jsonPlaceholder"></textarea>
       <div class="row" style="margin-top:8px">
-        <button class="sec" id="btn-json" type="button">JSON verwerken</button>
+        <button class="sec" id="btn-json" type="button" data-i18n="ui.boulders.jsonSubmit"></button>
         <span id="json-fields"></span>
       </div>
     </div>
@@ -262,29 +707,33 @@ table.score tfoot td.lab{text-align:right;padding-right:3mm}
   </section>
 
   <section>
-    <h2><span class="n">4</span> Controle</h2>
+    <h2><span class="n">4</span> <span data-i18n="ui.validation.heading"></span></h2>
     <div id="report"></div>
   </section>
 
   <section>
-    <h2><span class="n">5</span> Afdrukken</h2>
+    <h2><span class="n">5</span> <span data-i18n="ui.print.heading"></span></h2>
     <div class="row">
       <div style="max-width:190px">
-        <label for="o-paper">Papier</label>
+        <label for="o-paper" data-i18n="ui.print.paper"></label>
         <select id="o-paper">
-          <option value="A4">A4 &mdash; 2 kaarten per blad</option>
-          <option value="A5">A5 &mdash; 1 kaart per blad</option>
+          <option value="A4" data-i18n="ui.print.paper.a4"></option>
+          <option value="A5" data-i18n="ui.print.paper.a5"></option>
         </select>
       </div>
-      <label style="margin:0"><input type="checkbox" id="o-qr" checked> QR-code op de kaart</label>
-      <label style="margin:0"><input type="checkbox" id="o-ctl" checked> Controleblad vooraan</label>
-      <label style="margin:0"><input type="checkbox" id="o-colour"> Kleurband op de kaart</label>
-      <button id="btn-print" type="button" disabled>Afdrukken (Ctrl+P &rarr; Opslaan als PDF)</button>
+      <label style="margin:0"><input type="checkbox" id="o-qr" checked> <span data-i18n="ui.print.qr"></span></label>
+      <label style="margin:0"><input type="checkbox" id="o-ctl" checked> <span data-i18n="ui.print.controlSheet"></span></label>
+      <label style="margin:0"><input type="checkbox" id="o-colour"> <span data-i18n="ui.print.colour"></span></label>
+      <button id="btn-print" type="button" disabled data-i18n="ui.print.button"></button>
       <span class="hint" id="print-stat"></span>
     </div>
-    <p class="hint" style="margin:10px 0 0">Druk af op 100% zonder schaling. Kies in het printvenster hetzelfde
-      papierformaat. Het voorbeeld hieronder is exact wat er uit de printer komt.</p>
+    <p class="hint" style="margin:10px 0 0" data-i18n="ui.print.hint"></p>
   </section>
+
+  <details id="diag">
+    <summary data-i18n="ui.diag.heading"></summary>
+    <div id="diag-body"></div>
+  </details>
 </div>
 
 <!-- Staat bewust buiten #ui: bij afdrukken wordt #ui verborgen en blijft dit
@@ -2587,6 +3036,81 @@ var qrcode = function() {
 <script>
 "use strict";
 /* ==========================================================================
+   Vertalingen (i18n-spec §0, §3, §5)
+   Alle teksten staan in het JSON-blok bovenaan het bestand. Hier staat alleen
+   het opzoeken. Niets in deze sectie kent een enkele Nederlandse zin.
+   ========================================================================== */
+const LOCALES  = JSON.parse(document.getElementById('locales').textContent);
+const BUDGETS  = LOCALES._budgets || {};
+const LANGS    = Object.keys(LOCALES).filter(k => k[0] !== '_');
+const FALLBACK = 'nl';
+const FMT      = { nl:'nl-BE', fr:'fr-BE', en:'en-GB' };   // §4: opmaak is regiogebonden
+const PSEUDO   = 'zz';                                     // §7: langste vertaling, alleen om de opmaak te testen
+const UILANG_KEY = 'scorecard-uilang';   // bewust niet onder STORE: dat zijn wedstrijden
+
+let uiLang = FALLBACK;          // §2: geen navigator.language-detectie
+let lastRealLang = FALLBACK;    // om uit de pseudotaal terug te keren
+let cardLangSetting = '';       // '' = volgt de interfacetaal
+
+const cardLang   = () => cardLangSetting || uiLang;
+const fmtLocale  = lang => FMT[lang || uiLang] || FMT[FALLBACK];
+
+/* De pseudotaal is de langste vertaling van elke sleutel. Eén keer opbouwen. */
+let pseudoTable = null;
+function dict(lang){
+  if (lang !== PSEUDO) return LOCALES[lang] || null;
+  if (!pseudoTable){
+    pseudoTable = {};
+    for (const k of Object.keys(LOCALES[FALLBACK]))
+      pseudoTable[k] = LANGS.map(l => LOCALES[l][k])
+        .filter(v => typeof v === 'string')
+        .sort((a, b) => b.length - a.length)[0];
+  }
+  return pseudoTable;
+}
+
+const fill = (s, params) => params
+  ? s.replace(/\{(\w+)\}/g, (m, k) => k in params ? String(params[k]) : m)
+  : s;
+
+/* §5: taal -> nl -> de sleutel zelf tussen haken. Nooit leeg, nooit undefined. */
+function t(key, params, lang){
+  const l = lang || uiLang;
+  const d = dict(l);
+  let s = d && d[key];
+  if (typeof s !== 'string' || !s) s = LOCALES[FALLBACK][key];
+  if (typeof s !== 'string' || !s) return '⟦' + key + '⟧';
+  return fill(s, params);
+}
+
+const nf  = (n, lang) => new Intl.NumberFormat(fmtLocale(lang)).format(n);
+const dtf = (d, lang) => new Intl.DateTimeFormat(fmtLocale(lang),
+  { dateStyle:'short', timeStyle:'short' }).format(d);
+
+/* §4: Intl.PluralRules, niet count === 1. Frans rekent nul bij het enkelvoud. */
+const plural = (count, lang) => new Intl.PluralRules(fmtLocale(lang)).select(count);
+function tn(key, count, params, lang){
+  const l = lang || uiLang;
+  return t(key + '.' + plural(count, l), Object.assign({ count: nf(count, l) }, params), l);
+}
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* Vertaald en meteen ontsmet: alles wat de DOM in gaat gaat hier langs, zodat
+   een categorienaam of deelnemersnaam in een {plaatshouder} geen markup wordt. */
+const et = (key, params, lang) => esc(t(key, params, lang));
+/* Backticks in een vertaling worden <code>. Escapen gebeurt eerst, dus een
+   vertaler kan geen HTML binnensmokkelen. */
+const mk = s => esc(s).replace(/`([^`]+)`/g, '<code>$1</code>');
+
+/* Foutmeldingen dragen een sleutel mee in plaats van een zin. */
+function terr(key, params){
+  const e = new Error(key);
+  e.i18n = { key, params };
+  return e;
+}
+const emsg = e => e && e.i18n ? t(e.i18n.key, e.i18n.params) : String((e && e.message) || e);
+
+/* ==========================================================================
    Layout-constanten (mm). Eén bron van waarheid: de CSS krijgt deze waarden
    ingespoten, en de controle "past het aantal boulders op de kaart" rekent
    met exact dezelfde getallen.
@@ -2666,11 +3190,12 @@ function parseCSV(text, delim){
 }
 
 /* Kolommen op naam zoeken, niet op positie: de export bevat ook Ranking en
-   mogelijk extra kolommen. */
+   mogelijk extra kolommen. Deze namen komen uit het platform en zijn dus geen
+   UI-tekst — niet vertalen (§1). */
 const COLS = {
-  category: ['category', 'categorie'],
-  number:   ['starting number', 'startnummer', 'startnr'],
-  name:     ['name', 'naam']
+  category: ['category', 'categorie', 'catégorie'],
+  number:   ['starting number', 'startnummer', 'startnr', 'dossard'],
+  name:     ['name', 'naam', 'nom']
 };
 function findColumns(header){
   const norm = header.map(h => String(h).trim().toLowerCase());
@@ -2682,13 +3207,14 @@ function findColumns(header){
 /* rows -> deelnemers. rowNo is het regelnummer zoals de gebruiker het in Excel
    ziet (1 = kopregel), zodat foutmeldingen aanwijsbaar zijn. */
 function toParticipants(rows){
-  if (!rows.length) throw new Error('Het bestand is leeg.');
+  if (!rows.length) throw terr('error.csv.empty');
   const idx = findColumns(rows[0]);
   const missing = Object.keys(COLS).filter(k => idx[k] < 0);
-  if (missing.length){
-    const want = missing.map(k => COLS[k][0]).join(', ');
-    throw new Error('Kolom niet gevonden: ' + want + '. Gevonden kopregel: ' + rows[0].join(' | '));
-  }
+  if (missing.length)
+    throw terr('error.csv.missingColumns', {
+      columns: missing.map(k => COLS[k][0]).join(', '),
+      header:  rows[0].join(' | ')
+    });
   return rows.slice(1).map((r, i) => ({
     rowNo:    i + 2,
     category: (r[idx.category] ?? '').trim(),
@@ -2699,7 +3225,7 @@ function toParticipants(rows){
 }
 
 /* ==========================================================================
-   QR — payload bevat bewust geen persoonsgegevens.
+   QR — payload bevat bewust geen persoonsgegevens en is taalonafhankelijk (§1).
    Komt er ooit een athleteId in de export, dan is dat hier één regel.
    ========================================================================== */
 function qrPayload(competitionId, startingNumber, athleteId){
@@ -2714,6 +3240,8 @@ function qrSvg(payload){
 
 /* ==========================================================================
    Validatie — alle controles draaien altijd, het rapport toont alles tegelijk.
+   Meldingen komen er als {key, params} uit, niet als zin: de taal wordt pas bij
+   het tekenen gekozen, zodat wisselen van taal het rapport meteen meeneemt.
    ========================================================================== */
 function textWidthMm(text, font){
   const c = textWidthMm._c || (textWidthMm._c = document.createElement('canvas').getContext('2d'));
@@ -2723,50 +3251,51 @@ function textWidthMm(text, font){
 
 function validate(participants, mapping, catOrder, opts){
   const errors = [], warnings = [];
+  const err  = (key, params) => errors.push({ key, params });
+  const warn = (key, params) => warnings.push({ key, params });
   const seen = new Map();
   const nameMax = nameFieldMm(!opts || opts.showQr !== false);
 
   participants.forEach(p => {
-    const at = 'Rij ' + p.rowNo;
-    if (!p.name)     errors.push(at + ': naam is leeg.');
-    if (!p.category) errors.push(at + ': categorie is leeg.');
-    if (!p.numberRaw) errors.push(at + ': startnummer is leeg.');
+    if (!p.name)      err('validation.error.nameEmpty',     { row: p.rowNo });
+    if (!p.category)  err('validation.error.categoryEmpty', { row: p.rowNo });
+    if (!p.numberRaw) err('validation.error.numberEmpty',   { row: p.rowNo });
     else if (!/^\d+$/.test(p.numberRaw) || p.number < 1)
-      errors.push(at + ': startnummer "' + p.numberRaw + '" is geen positief geheel getal.');
+      err('validation.error.numberNotPositive', { row: p.rowNo, value: p.numberRaw });
     else if (seen.has(p.number))
-      errors.push('Startnummer ' + p.number + ' komt twee keer voor: rij ' +
-                  seen.get(p.number).rowNo + ' (' + seen.get(p.number).name + ') en rij ' +
-                  p.rowNo + ' (' + p.name + ').');
+      err('validation.error.duplicateStartNumber', {
+        number: p.number,
+        rowA: seen.get(p.number).rowNo, nameA: seen.get(p.number).name,
+        rowB: p.rowNo,                  nameB: p.name });
     else seen.set(p.number, p);
 
     if (p.name && textWidthMm(p.name, 'bold 13pt Arial') > nameMax)
-      warnings.push('Rij ' + p.rowNo + ': de naam "' + p.name + '" is te lang voor het naamveld en wordt afgekapt.');
+      warn('validation.warning.nameTooLong', { row: p.rowNo, name: p.name });
   });
 
   const csvCats = new Set(participants.map(p => p.category).filter(Boolean));
   const mapCats = catOrder.filter(c => mapping[c]);
 
   csvCats.forEach(c => {
-    if (!mapping[c]) errors.push('Categorie "' + c + '" staat in de deelnemerslijst maar heeft geen boulders toegekend.');
+    if (!mapping[c]) err('validation.error.categoryMissingInMapping', { category: c });
   });
   mapCats.forEach(c => {
-    if (!csvCats.has(c)) errors.push('Categorie "' + c + '" heeft boulders toegekend maar geen deelnemers.');
+    if (!csvCats.has(c)) err('validation.error.categoryWithoutParticipants', { category: c });
     const nums = mapping[c];
-    if (!nums.length) errors.push('Categorie "' + c + '" heeft nul boulders.');
+    if (!nums.length) err('validation.error.categoryZeroBoulders', { category: c });
     const dup = nums.filter((n, i) => nums.indexOf(n) !== i);
     [...new Set(dup)].forEach(n =>
-      errors.push('Boulder ' + n + ' komt meer dan één keer voor in categorie "' + c + '".'));
+      err('validation.error.duplicateBoulder', { number: n, category: c }));
   });
 
-  const counts = mapCats.filter(c => csvCats.has(c)).map(c => mapping[c].length);
-  if (new Set(counts).size > 1)
-    warnings.push('Niet alle categorieën hebben evenveel boulders (' +
-      mapCats.filter(c => csvCats.has(c)).map(c => c + ': ' + mapping[c].length).join(', ') +
-      '). Klopt voor een finale, meestal een vergissing in een kwalificatie.');
+  const live = mapCats.filter(c => csvCats.has(c));
+  if (new Set(live.map(c => mapping[c].length)).size > 1)
+    warn('validation.warning.differingBoulderCounts', {
+      summary: live.map(c => c + ': ' + mapping[c].length).join(', ') });
   mapCats.forEach(c => {
     if (mapping[c].length > L.maxRows)
-      warnings.push('Categorie "' + c + '" heeft ' + mapping[c].length + ' boulders; er passen er ' +
-        L.maxRows + ' op een kaart bij ' + L.minRow + 'mm rijhoogte. De vakjes worden krap.');
+      warn('validation.warning.tooManyBoulders', {
+        category: c, count: mapping[c].length, max: L.maxRows, rowHeight: L.minRow });
   });
 
   return { errors, warnings };
@@ -2774,6 +3303,8 @@ function validate(participants, mapping, catOrder, opts){
 
 /* ==========================================================================
    Sortering — categorie (volgorde uit de boulderindeling), dan startnummer.
+   Sorteren gebeurt met de interfacetaal, want het is de volgorde waarin de
+   organisator de stapel krijgt.
    ========================================================================== */
 function sortCards(participants, catOrder){
   const rank = new Map(catOrder.map((c, i) => [c, i]));
@@ -2792,7 +3323,7 @@ function sortCards(participants, catOrder){
    Beide parsers leveren hetzelfde op als het handmatige raster:
    { mapping: {categorie: [nummers]}, order: [categorie...] }.
    De categorieën uit de deelnemerslijst zijn het anker — zonder CSV kan er niets
-   herkend worden.
+   herkend worden. Categorienamen worden nooit vertaald of genormaliseerd (§1).
    ========================================================================== */
 function emptyResult(knownCats){
   const mapping = {};
@@ -2848,9 +3379,8 @@ function parseBoulderTable(text, knownCats){
       matched++;
     }
   }
-  if (!matched) throw new Error('Geen enkele categorie herkend in de geplakte tekst. ' +
-    'Verwacht een van deze namen: ' + knownCats.join(', ') + '.');
-  res.info = matched + ' rijen herkend.';
+  if (!matched) throw terr('error.paste.noCategories', { names: knownCats.join(', ') });
+  res.info = { key: 'ui.paste.rowsMatched', count: matched };
   return res;
 }
 
@@ -2897,40 +3427,44 @@ function parseBoulderJSON(text, knownCats, fieldMap){
     if (keys.length && keys.every(k => Array.isArray(data[k]) && data[k].every(isNumish))){
       const res = emptyResult(knownCats);
       keys.forEach(k => data[k].forEach(n => addBoulder(res, k.trim(), Number(n))));
-      res.info = keys.length + ' categorieën gelezen.';
+      res.info = { key: 'ui.paste.categoriesRead', count: keys.length };
       return res;
     }
   }
   // Vorm 2: ergens in de JSON een lijst met objecten
   const arrays = findObjectArrays(data).sort((a, b) => b.length - a.length);
-  if (!arrays.length) throw new Error('Geen lijst met objecten gevonden in deze JSON.');
+  if (!arrays.length) throw terr('error.json.noObjectArray');
   const rows = arrays[0];
   const keys = [...new Set(rows.flatMap(r => Object.keys(r)))];
   const fm = fieldMap || detectFields(rows, keys, knownCats);
   if (!fm) return { needsMapping: true, keys, rows: rows.length, sample: rows[0] };
   const res = reduceRows(rows, fm, knownCats);
-  if (!res.order.length) throw new Error('Met die velden komt er geen enkele bekende categorie uit.');
-  res.info = rows.length + ' rijen gelezen via "' + fm.cat + '" en "' + fm.num + '".';
+  if (!res.order.length) throw terr('error.json.noKnownCategory');
+  res.info = { key: 'ui.paste.rowsRead', count: rows.length,
+               params: { catField: fm.cat, numField: fm.num } };
   res.fieldMap = fm;
   return res;
 }
 
 /* ==========================================================================
-   Kaart
+   Kaart — labels volgen de kaarttaal (§2), niet de interfacetaal.
    ========================================================================== */
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-
-function scoreTableHTML(nums, maxAttempts){
+function scoreTableHTML(nums, maxAttempts, lang){
   const n = maxAttempts;
-  let h1 = '<tr class="h1"><th rowspan="2">BOULDER</th>';
+  const z = et('card.marker.zone', null, lang), tp = et('card.marker.top', null, lang);
+  let h1 = '<tr class="h1"><th rowspan="2">' + et('card.header.boulder', null, lang) + '</th>';
   let h2 = '<tr class="h2">';
-  for (let i = 1; i <= n; i++){ h1 += '<th colspan="2">POGING ' + i + '</th>'; h2 += '<th>Z</th><th>T</th>'; }
-  h1 += '<th colspan="2">SCORE</th></tr>';
-  h2 += '<th>Z</th><th>T</th></tr>';
+  for (let i = 1; i <= n; i++){
+    h1 += '<th colspan="2">' + et('card.header.attempt', { n: i }, lang) + '</th>';
+    h2 += '<th>' + z + '</th><th>' + tp + '</th>';
+  }
+  h1 += '<th colspan="2">' + et('card.header.score', null, lang) + '</th></tr>';
+  h2 += '<th>' + z + '</th><th>' + tp + '</th></tr>';
 
   const blanks = '<td></td>'.repeat(2 * n + 2);
   const body = nums.map(b => '<tr><td class="bnum">' + b + '</td>' + blanks + '</tr>').join('');
-  const foot = '<tfoot><tr><td class="lab" colspan="' + (1 + 2 * n) + '">TOTALE SCORE</td><td></td><td></td></tr></tfoot>';
+  const foot = '<tfoot><tr><td class="lab" colspan="' + (1 + 2 * n) + '">' +
+               et('card.footer.total', null, lang) + '</td><td></td><td></td></tr></tfoot>';
 
   return '<table class="score"><colgroup><col style="width:20mm">' +
          '<col span="' + (2 * n + 2) + '"></colgroup><thead>' + h1 + h2 + '</thead><tbody>' +
@@ -2938,6 +3472,7 @@ function scoreTableHTML(nums, maxAttempts){
 }
 
 function cardHTML(p, ctx){
+  const lang = ctx.cardLang;
   const nums = (ctx.mapping[p.category] || []).slice().sort((a, b) => a - b);
   const i = ctx.catOrder.indexOf(p.category);
   const span = L.card - 2 * L.pad - 14;
@@ -2947,18 +3482,23 @@ function cardHTML(p, ctx){
   return '<div class="card' + (ctx.colour ? ' colour' : '') + '" style="--rows:' + nums.length + colour + '">' +
     '<div class="band" style="top:' + top.toFixed(1) + 'mm"></div>' +
     '<div class="chdr"><div class="chdr-l">' +
+      // titel en ondertitel zijn ingetypte eigennamen: nooit vertalen (§1)
       '<div class="ctitle">' + esc(ctx.title) + (ctx.subtitle ? '<span class="sub">' + esc(ctx.subtitle) + '</span>' : '') + '</div>' +
-      '<div class="cname"><span class="lbl">NAAM</span><span class="val">' + esc(p.name) + '</span></div>' +
+      '<div class="cname"><span class="lbl">' + et('card.label.name', null, lang) + '</span>' +
+        '<span class="val">' + esc(p.name) + '</span></div>' +
       '<div class="cbot">' +
-        '<div class="f nr"><span class="lbl">STARTNUMMER</span><span class="val">' + p.number + '</span></div>' +
-        '<div class="f cat"><span class="lbl">CATEGORIE</span><span class="val">' + esc(p.category) + '</span></div>' +
+        '<div class="f nr"><span class="lbl">' + et('card.label.startNumber', null, lang) + '</span>' +
+          '<span class="val">' + p.number + '</span></div>' +
+        // categorie komt letterlijk uit de CSV en blijft in elke taal identiek (§1)
+        '<div class="f cat"><span class="lbl">' + et('card.label.category', null, lang) + '</span>' +
+          '<span class="val">' + esc(p.category) + '</span></div>' +
       '</div>' +
     '</div>' +
     (ctx.showQr ? '<div class="qr">' + qrSvg(qrPayload(ctx.competitionId, p.number)) + '</div>' : '') +
     '</div>' +
     // ponytail: één aanroep, zodat een ander wedstrijdformaat (§12.2) hier een
     // andere tabelbouwer kan kiezen zonder de rest van de kaart aan te raken.
-    '<div class="tblwrap">' + scoreTableHTML(nums, ctx.maxAttempts) + '</div>' +
+    '<div class="tblwrap">' + scoreTableHTML(nums, ctx.maxAttempts, lang) + '</div>' +
   '</div>';
 }
 
@@ -2972,6 +3512,8 @@ function matrixHTML(rowKeys, colKeys, vertHeads, hit){
   return '<table><thead>' + head + '</thead><tbody>' + body + '</tbody></table>';
 }
 
+/* Het controleblad is een document voor de organisator en volgt dus de
+   interfacetaal, ook als de kaarten in een andere taal gedrukt worden (§2). */
 function controlSheetHTML(ctx, participants){
   const cats = ctx.catOrder;
   const all = [...new Set(cats.flatMap(c => ctx.mapping[c]))].sort((a, b) => a - b);
@@ -2979,20 +3521,20 @@ function controlSheetHTML(ctx, participants){
   const matrix = ctx.paper === 'A5'
     ? matrixHTML(cats, all, false, (c, b) => has(b, c))   // liggend: categorieën als rijen
     : matrixHTML(all, cats, true,  (b, c) => has(b, c));  // staand: boulders als rijen
-  const counts = cats.map(c => '<tr><td>' + esc(c) + '</td><td><b>' +
-    participants.filter(p => p.category === c).length + '</b> deelnemers</td><td>' +
-    ctx.mapping[c].length + ' boulders</td></tr>').join('');
+  const counts = cats.map(c => '<tr><td>' + esc(c) + '</td><td>' +
+    esc(tn('control.participants', participants.filter(p => p.category === c).length)) + '</td><td>' +
+    esc(tn('control.boulders', ctx.mapping[c].length)) + '</td></tr>').join('');
 
   // ponytail: A4 zet matrix en aantallen naast elkaar (past tot ~50 boulders),
   // A5 zet ze onder elkaar (past tot ~30). Daarboven loopt de matrix van het blad.
   return '<div class="sheet' + (ctx.paper === 'A5' ? ' a5' : '') + '"><div class="ctl">' +
     '<h2>' + esc(ctx.title) + (ctx.subtitle ? ' &ndash; ' + esc(ctx.subtitle) : '') + '</h2>' +
-    '<div class="meta">Controleblad &middot; ' + esc(ctx.competitionId) + ' &middot; gegenereerd ' +
-      new Date().toLocaleString('nl-BE') + '</div>' +
+    '<div class="meta">' + et('control.meta', { id: ctx.competitionId, datetime: dtf(new Date()) }) + '</div>' +
     '<div class="ctl-cols' + (ctx.paper === 'A5' ? ' stacked' : '') + '">' + matrix +
       '<table class="counts"><tbody>' + counts +
-        '<tr><td><b>Totaal</b></td><td><b>' + participants.length + '</b> deelnemers</td><td>' +
-        all.length + ' boulders in de zaal</td></tr></tbody></table>' +
+        '<tr><td>' + et('control.total') + '</td><td>' +
+        esc(tn('control.participants', participants.length)) + '</td><td>' +
+        esc(tn('control.bouldersInGym', all.length)) + '</td></tr></tbody></table>' +
     '</div></div></div>';
 }
 
@@ -3020,19 +3562,25 @@ function applyPaper(paper){
 const $ = id => document.getElementById(id);
 const S = {
   participants: [],      // alleen in geheugen, nooit naar localStorage
-  loadError: '',
+  loadError: null,       // Error met i18n-sleutel
   mapping: {},           // categorie -> [boulders]
   catOrder: null,        // volgorde uit een geplakte indeling; null = alfabetisch
   gridMax: 30,
   ack: false,
   tab: 'grid',
-  pasteMsg: null,        // {ok|err, text} onder het actieve tabblad
+  pasteMsg: null,        // {type, parts:[{key,count,params}]} onder het actieve tabblad
   jsonKeys: null         // veldkeuze tonen als de JSON-vorm onbekend is
 };
 
-/* Categorieën uit de CSV, alfabetisch. */
+/* Eén zin uit een {key, count, params}-blokje. Zonder count geen meervoud. */
+const say = p => p.raw !== undefined ? p.raw
+  : (p.count === undefined ? t(p.key, p.params) : tn(p.key, p.count, p.params));
+
+/* Categorieën uit de CSV, gesorteerd met de interfacetaal. De namen zelf blijven
+   letterlijk wat het platform leverde (§1) — alleen de volgorde is taalgevoelig. */
 function categories(){
-  return [...new Set(S.participants.map(p => p.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'nl'));
+  return [...new Set(S.participants.map(p => p.category).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, fmtLocale()));
 }
 /* Kaartvolgorde (§6.3): volgorde uit de geplakte indeling als die er is, anders
    alfabetisch. Alleen categorieën die ook echt deelnemers hebben. */
@@ -3040,16 +3588,21 @@ function orderedCategories(){
   // Ook categorieën die alleen in de indeling zitten: die horen een harde fout
   // op te leveren (§5) en mogen dus niet stilletjes wegvallen.
   const all = [...new Set(categories().concat(Object.keys(S.mapping)))];
-  if (!S.catOrder) return all.sort((a, b) => a.localeCompare(b, 'nl'));
+  const alpha = (a, b) => a.localeCompare(b, fmtLocale());
+  if (!S.catOrder) return all.sort(alpha);
   const known = S.catOrder.filter(c => all.includes(c));
-  return known.concat(all.filter(c => !known.includes(c)).sort((a, b) => a.localeCompare(b, 'nl')));
+  return known.concat(all.filter(c => !known.includes(c)).sort(alpha));
 }
 function settings(){
+  const id = $('f-id').value.trim();
   return {
-    title: $('f-title').value.trim() || 'WEDSTRIJD',
+    // Geen vertaalde standaardwaarde: een lege titel valt terug op het ID, want
+    // de titel is ingetypte tekst en hoort in geen enkele taal thuis (§1).
+    title: $('f-title').value.trim() || id || '—',
     subtitle: $('f-sub').value.trim(),
-    competitionId: $('f-id').value.trim() || 'wedstrijd',
-    maxAttempts: Math.max(1, Math.min(12, Number($('f-att').value) || 5))
+    competitionId: id || 'comp',
+    maxAttempts: Math.max(1, Math.min(12, Number($('f-att').value) || 5)),
+    cardLanguage: cardLangSetting
   };
 }
 function options(){
@@ -3063,6 +3616,8 @@ function options(){
 
 /* ==========================================================================
    Opslag (§4.4) — instellingen en indeling per competitionId. Deelnemers nooit.
+   De interfacetaal staat los opgeslagen: die hoort bij de gebruiker, niet bij
+   de wedstrijd. De kaarttaal hoort wél bij de wedstrijd (i18n-spec §2).
    ========================================================================== */
 const STORE = 'scorecard:';
 
@@ -3079,6 +3634,10 @@ function applyState(st){
   if (s.title !== undefined)    $('f-title').value = s.title;
   if (s.subtitle !== undefined) $('f-sub').value = s.subtitle;
   if (s.maxAttempts)            $('f-att').value = s.maxAttempts;
+  if (s.cardLanguage !== undefined){
+    cardLangSetting = LANGS.includes(s.cardLanguage) ? s.cardLanguage : '';
+    $('f-cardlang').value = cardLangSetting;
+  }
   if (o.paper)                  $('o-paper').value = o.paper;
   if (o.showQr !== undefined)   $('o-qr').checked = !!o.showQr;
   if (o.controlSheet !== undefined) $('o-ctl').checked = !!o.controlSheet;
@@ -3131,7 +3690,7 @@ function exportMapping(){
   const blob = new Blob([JSON.stringify(st, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (st.settings.competitionId || 'wedstrijd') + '-boulders.json';
+  a.download = st.settings.competitionId + '-boulders.json';
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
@@ -3144,14 +3703,45 @@ function importMapping(text){
   return applyState({ mapping: data });
 }
 
+/* ==========================================================================
+   Taalkeuze (i18n-spec §10) — wisselen tekent alles opnieuw en raakt de
+   geladen deelnemers en de boulderindeling niet aan.
+   ========================================================================== */
+function applyStatic(){
+  document.documentElement.lang = uiLang === PSEUDO ? FALLBACK : uiLang;
+  document.querySelectorAll('[data-i18n]').forEach(el => el.innerHTML = mk(t(el.dataset.i18n)));
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t(el.dataset.i18nPh));
+  document.querySelectorAll('[data-i18n-aria]').forEach(el =>
+    el.setAttribute('aria-label', t(el.dataset.i18nAria)));
+  // De lege-voorbeeldtekst zit in CSS content en kan daar niet vertaald worden.
+  $('print').style.setProperty('--empty-msg', JSON.stringify(t('ui.print.empty')));
+}
+
+function setUiLang(lang){
+  uiLang = lang;
+  if (lang !== PSEUDO){
+    lastRealLang = lang;
+    try { localStorage.setItem(UILANG_KEY, lang); } catch (e){ /* privé venster */ }
+  }
+  applyStatic();
+  renderLangSel();
+  refresh();
+}
+
+function renderLangSel(){
+  $('langsel').innerHTML = LANGS.concat(uiLang === PSEUDO ? [PSEUDO] : []).map(l =>
+    '<button type="button" class="' + (l === uiLang ? 'on' : '') + '" data-lang="' + l + '">' +
+    esc(l.toUpperCase()) + '</button>').join('');
+}
+
 /* --- deelnemers --- */
 function loadCSVText(text){
-  S.loadError = '';
+  S.loadError = null;
   try {
     S.participants = toParticipants(parseCSV(text));
   } catch (e){
     S.participants = [];
-    S.loadError = e.message;
+    S.loadError = e;
   }
   // Ontbrekende categorieën aanvullen, maar niets weggooien: een categorie die
   // wel in de indeling zit en niet in de CSV moet een harde fout geven (§5).
@@ -3161,27 +3751,31 @@ function loadCSVText(text){
 
 function renderParticipants(){
   const st = $('csv-status'), tags = $('csv-cats');
-  if (S.loadError){ st.innerHTML = '<div class="msg err">' + esc(S.loadError) + '</div>'; tags.innerHTML = ''; return; }
+  if (S.loadError){ st.innerHTML = '<div class="msg err">' + esc(emsg(S.loadError)) + '</div>'; tags.innerHTML = ''; return; }
   if (!S.participants.length){ st.innerHTML = ''; tags.innerHTML = ''; return; }
-  st.innerHTML = '<div class="msg ok">' + S.participants.length + ' deelnemers ingelezen, ' +
-    categories().length + ' categorieën.</div>';
-  tags.innerHTML = categories().map(c => '<span class="tag">' + esc(c) + ' &middot; <b>' +
-    S.participants.filter(p => p.category === c).length + '</b></span>').join('');
+  const cats = categories();
+  st.innerHTML = '<div class="msg ok">' + esc(tn('ui.participants.loaded', S.participants.length)) +
+    ' ' + esc(tn('ui.participants.categoryCount', cats.length)) + '</div>';
+  tags.innerHTML = cats.map(c => '<span class="tag">' + esc(c) + ' &middot; <b>' +
+    nf(S.participants.filter(p => p.category === c).length) + '</b></span>').join('');
 }
 
 /* --- boulderraster --- */
 function renderGrid(){
   const cats = categories(), wrap = $('gridwrap');
-  if (!cats.length){ wrap.innerHTML = '<p class="hint" style="padding:14px">Laad eerst de deelnemerslijst; de categorieën komen daaruit.</p>'; return; }
-  let h = '<table class="grid"><thead><tr><th>Boulder</th>' +
+  if (!cats.length){
+    wrap.innerHTML = '<p class="hint" style="padding:14px">' + et('ui.boulders.gridNeedsCsv') + '</p>';
+    return;
+  }
+  let h = '<table class="grid"><thead><tr><th>' + et('ui.boulders.gridBoulder') + '</th>' +
     cats.map((c, i) => '<th data-col="' + i + '">' + esc(c) + '</th>').join('') + '</tr></thead><tbody>';
   for (let b = 1; b <= S.gridMax; b++){
     h += '<tr><td class="b" data-row="' + b + '">' + b + '</td>' +
       cats.map(c => '<td class="c' + (S.mapping[c].includes(b) ? ' on' : '') +
         '" data-cat="' + esc(c) + '" data-b="' + b + '"></td>').join('') + '</tr>';
   }
-  h += '</tbody><tfoot><tr><td>aantal</td>' + cats.map(c => '<td>' + S.mapping[c].length + '</td>').join('') +
-       '</tr></tfoot></table>';
+  h += '</tbody><tfoot><tr><td>' + et('ui.boulders.gridCount') + '</td>' +
+       cats.map(c => '<td>' + S.mapping[c].length + '</td>').join('') + '</tr></tfoot></table>';
   wrap.innerHTML = h;
 }
 
@@ -3195,19 +3789,20 @@ function setCell(cat, b, on){
 function renderReport(v){
   const box = $('report');
   if (!S.participants.length || !Object.keys(S.mapping).length){
-    box.innerHTML = '<p class="hint">Laad de deelnemerslijst en vul het boulderraster in.</p>';
+    box.innerHTML = '<p class="hint">' + et('ui.validation.empty') + '</p>';
     return;
   }
   let h = '';
-  if (!v.errors.length && !v.warnings.length) h = '<div class="msg ok">Alles in orde. Geen fouten of waarschuwingen.</div>';
+  if (!v.errors.length && !v.warnings.length) h = '<div class="msg ok">' + et('ui.validation.allClear') + '</div>';
   if (v.errors.length){
-    h += '<div class="msg err"><b>' + v.errors.length + ' fout(en).</b> Er worden geen kaarten gemaakt zolang deze niet opgelost zijn.</div>';
-    h += '<ul class="report">' + v.errors.map(e => '<li class="e">' + esc(e) + '</li>').join('') + '</ul>';
+    h += '<div class="msg err">' + esc(tn('ui.validation.errorCount', v.errors.length)) + '</div>';
+    h += '<ul class="report">' + v.errors.map(e => '<li class="e">' + et(e.key, e.params) + '</li>').join('') + '</ul>';
   }
   if (v.warnings.length){
-    h += '<ul class="report" style="margin-top:10px">' + v.warnings.map(w => '<li class="w">' + esc(w) + '</li>').join('') + '</ul>';
+    h += '<ul class="report" style="margin-top:10px">' +
+      v.warnings.map(w => '<li class="w">' + et(w.key, w.params) + '</li>').join('') + '</ul>';
     h += '<label class="ackbox"><input type="checkbox" id="ack"' + (S.ack ? ' checked' : '') + '>' +
-         '<span>Ik heb de ' + v.warnings.length + ' waarschuwing(en) gelezen en wil toch afdrukken.</span></label>';
+         '<span>' + esc(tn('ui.validation.ack', v.warnings.length)) + '</span></label>';
   }
   box.innerHTML = h;
   const a = $('ack');
@@ -3217,27 +3812,27 @@ function renderReport(v){
 /* --- tabbladen, plakresultaat en overzicht --- */
 function renderTabs(){
   document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
-  ['grid','table','json'].forEach(t => $('pane-' + t).hidden = t !== S.tab);
+  ['grid','table','json'].forEach(t2 => $('pane-' + t2).hidden = t2 !== S.tab);
 
   const m = $('paste-msg');
   m.innerHTML = S.pasteMsg
-    ? '<div class="msg ' + S.pasteMsg.type + '">' + esc(S.pasteMsg.text) + '</div>' : '';
+    ? '<div class="msg ' + S.pasteMsg.type + '">' + esc(S.pasteMsg.parts.map(say).join(' ')) + '</div>' : '';
 
   // veldkeuze als de JSON-vorm onbekend is
   const f = $('json-fields');
   if (S.jsonKeys){
-    const sel = (id, label) => '<label style="margin:0">' + label + ' ' +
+    const sel = (id, key) => '<label style="margin:0">' + et(key) + ' ' +
       '<select id="' + id + '">' + S.jsonKeys.map(k => '<option>' + esc(k) + '</option>').join('') +
       '</select></label>';
-    f.innerHTML = sel('js-cat', 'Categorieveld') + sel('js-num', 'Boulderveld') +
-      '<button class="sec" id="btn-json2" type="button">Toepassen</button>';
+    f.innerHTML = sel('js-cat', 'ui.boulders.jsonCatField') + sel('js-num', 'ui.boulders.jsonNumField') +
+      '<button class="sec" id="btn-json2" type="button">' + et('ui.boulders.jsonApply') + '</button>';
     $('btn-json2').onclick = () => applyPaste(() =>
       parseBoulderJSON($('f-json').value, categories(), { cat: $('js-cat').value, num: $('js-num').value }));
   } else f.innerHTML = '';
 
   const cats = orderedCategories();
   $('map-summary').innerHTML = cats.length ? cats.map(c => '<span class="tag">' + esc(c) +
-    ' &middot; <b>' + (S.mapping[c] || []).length + '</b> boulders</span>').join('') : '';
+    ' &middot; ' + esc(tn('ui.boulders.summaryBoulders', (S.mapping[c] || []).length)) + '</span>').join('') : '';
 }
 
 function renderSaved(){
@@ -3245,9 +3840,9 @@ function renderSaved(){
   const here = list.find(x => x.id === id);
   const others = list.filter(x => x.id !== id).slice(0, 4);
   $('saved').innerHTML =
-    (here ? 'Bewaard: <b>' + esc(here.id) + '</b> &middot; ' + new Date(here.saved).toLocaleString('nl-BE') +
-       ' <button class="sec" id="btn-forget" type="button">Vergeet deze wedstrijd</button>' : '') +
-    (others.length ? '<span>Ook bewaard: ' + others.map(x =>
+    (here ? '<span>' + et('ui.saved.here', { id: here.id, datetime: dtf(new Date(here.saved)) }) + '</span>' +
+       ' <button class="sec" id="btn-forget" type="button">' + et('ui.saved.forget') + '</button>' : '') +
+    (others.length ? '<span>' + et('ui.saved.others') + ' ' + others.map(x =>
        '<a href="#" data-load="' + esc(x.id) + '">' + esc(x.id) + '</a>').join(', ') + '</span>' : '');
   const b = $('btn-forget');
   if (b) b.onclick = () => { localStorage.removeItem(STORE + id); renderSaved(); };
@@ -3257,29 +3852,97 @@ function renderSaved(){
   });
 }
 
-/* Eén plad voor beide plakmethodes: parse, toon de uitkomst, vul de indeling. */
+/* Eén pad voor beide plakmethodes: parse, toon de uitkomst, vul de indeling. */
 function applyPaste(parse){
   S.pasteMsg = null; S.jsonKeys = null;
   if (!categories().length){
-    S.pasteMsg = { type: 'err', text: 'Laad eerst de deelnemerslijst; de categorienamen komen daaruit.' };
+    S.pasteMsg = { type: 'err', parts: [{ key: 'ui.paste.needCsv' }] };
     return refresh();
   }
   try {
     const res = parse();
     if (res.needsMapping){
       S.jsonKeys = res.keys;
-      S.pasteMsg = { type: 'err', text: 'De vorm van deze JSON is niet herkend (' + res.rows +
-        ' rijen). Kies zelf welk veld de categorie is en welk veld de boulders.' };
+      S.pasteMsg = { type: 'err', parts: [{ key: 'ui.paste.unknownJson', params: { rows: res.rows } }] };
     } else {
       S.mapping = res.mapping;
       S.catOrder = res.order.length ? res.order : null;
-      S.pasteMsg = { type: 'ok', text: res.info + ' ' + res.order.length + ' categorieën ingevuld. ' +
-        'Controleer hieronder en corrigeer eventueel in het raster.' };
+      S.pasteMsg = { type: 'ok', parts: [res.info, { key: 'ui.paste.filled', count: res.order.length }] };
     }
   } catch (e){
-    S.pasteMsg = { type: 'err', text: e.message };
+    // Een parserfout draagt een sleutel; een kapotte JSON.parse levert alleen de
+    // boodschap van de browser en die gaat er ongewijzigd door.
+    S.pasteMsg = { type: 'err', parts: [ e.i18n ? { key: e.i18n.key, params: e.i18n.params }
+                                                : { raw: emsg(e) } ] };
   }
   refresh();
+}
+
+/* ==========================================================================
+   Diagnose vertalingen (i18n-spec §6.2) — dezelfde controles als
+   check_locales.py, maar zichtbaar in de app zelf.
+   ========================================================================== */
+/* Een {plaatshouder} telt als twee tekens: het langste getal dat er in de
+   praktijk in komt te staan ("POGING 12"). */
+const budgetLength = s => String(s).replace(/\{\w+\}/g, '::').length;
+const placeholders = s => [...new Set(String(s).match(/\{\w+\}/g) || [])].sort().join(' ');
+
+function localeProblems(){
+  const out = [];
+  const base = Object.keys(LOCALES[FALLBACK]);
+  const baseSet = new Set(base);
+  const pluralBases = base.filter(k => k.endsWith('.one')).map(k => k.slice(0, -4));
+
+  for (const lang of LANGS){
+    const d = LOCALES[lang];
+    const missing = base.filter(k => typeof d[k] !== 'string' || !d[k]);
+    const extra   = Object.keys(d).filter(k => !baseSet.has(k));
+    if (missing.length) out.push({ key:'ui.diag.missingKeys',
+      params:{ lang, count: missing.length, keys: missing.join(', ') } });
+    if (extra.length)   out.push({ key:'ui.diag.extraKeys',
+      params:{ lang, count: extra.length, keys: extra.join(', ') } });
+
+    for (const k of base){
+      if (typeof d[k] !== 'string') continue;
+      const want = placeholders(LOCALES[FALLBACK][k]), got = placeholders(d[k]);
+      if (want !== got) out.push({ key:'ui.diag.placeholderMismatch',
+        params:{ key:k, lang, found: got || '—', expected: want || '—' } });
+    }
+    for (const pb of pluralBases) for (const form of ['one','other'])
+      if (typeof d[pb + '.' + form] !== 'string')
+        out.push({ key:'ui.diag.missingPlural', params:{ key: pb, lang, form } });
+
+    for (const k in BUDGETS){
+      if (typeof d[k] !== 'string') continue;
+      const len = budgetLength(d[k]);
+      if (len > BUDGETS[k]) out.push({ key:'ui.diag.budgetExceeded',
+        params:{ key:k, lang, length: len, budget: BUDGETS[k], value: d[k] } });
+    }
+  }
+  return out;
+}
+
+function renderDiag(){
+  const probs = localeProblems();
+  // §6.2: een banner, geen console.warn — die ziet de organisator nooit.
+  $('diag-banner').innerHTML = probs.length ? '<div class="msg err">' + et('ui.diag.banner') + '</div>' : '';
+
+  const base = Object.keys(LOCALES[FALLBACK]);
+  const pct = new Intl.NumberFormat(fmtLocale(), { style:'percent', maximumFractionDigits:1 });
+  const cov = LANGS.map(lang => {
+    const d = LOCALES[lang];
+    const done = base.filter(k => typeof d[k] === 'string' && d[k]).length;
+    return '<li>' + et('ui.diag.coverage', { lang, done: nf(done), total: nf(base.length),
+      percent: pct.format(done / base.length) }) + '</li>';
+  }).join('');
+
+  $('diag-body').innerHTML = '<ul class="report">' + cov + '</ul>' +
+    (probs.length
+      ? '<ul class="report">' + probs.map(p => '<li class="e">' + et(p.key, p.params) + '</li>').join('') + '</ul>'
+      : '<div class="msg ok">' + et('ui.diag.ok') + '</div>') +
+    '<label class="ackbox"><input type="checkbox" id="diag-pseudo"' + (uiLang === PSEUDO ? ' checked' : '') +
+      '><span>' + et('ui.diag.pseudo') + '</span></label>';
+  $('diag-pseudo').onchange = e => setUiLang(e.target.checked ? PSEUDO : lastRealLang);
 }
 
 /* --- alles opnieuw opbouwen --- */
@@ -3288,6 +3951,7 @@ function refresh(){
   renderGrid();
   renderTabs();
   renderSaved();
+  renderDiag();
 
   const cats = orderedCategories();
   const opts = options();
@@ -3298,6 +3962,9 @@ function refresh(){
   applyPaper(opts.paper);
   saveState();
 
+  const set = settings();
+  document.title = t('ui.print.documentTitle', { title: set.title });
+
   const blocked = !!v.errors.length || !S.participants.length || !cats.length ||
                   (v.warnings.length > 0 && !S.ack);
   $('btn-print').disabled = blocked;
@@ -3306,15 +3973,28 @@ function refresh(){
   if (blocked){ out.innerHTML = ''; $('print-stat').textContent = ''; return; }
 
   const t0 = performance.now();
-  const ctx = Object.assign(settings(), opts, { mapping: S.mapping, catOrder: cats });
+  const ctx = Object.assign(set, opts, { mapping: S.mapping, catOrder: cats, cardLang: cardLang() });
   out.innerHTML = buildSheets(S.participants, ctx);
   const sheets = out.querySelectorAll('.sheet.cards').length;
-  $('print-stat').textContent = S.participants.length + ' kaarten op ' + sheets + ' bladen ' +
-    opts.paper + ', ' + Math.round(performance.now() - t0) + ' ms.';
+  $('print-stat').textContent = tn('ui.print.stat', S.participants.length, {
+    cards: nf(S.participants.length), sheets: nf(sheets), paper: opts.paper,
+    ms: nf(Math.round(performance.now() - t0)) });
 }
 
 /* --- gebeurtenissen --- */
 function wire(){
+  // taalknoppen; de kaarttaal krijgt dezelfde codes plus "zelfde als interface"
+  $('f-cardlang').insertAdjacentHTML('beforeend',
+    LANGS.map(l => '<option value="' + l + '">' + esc(l.toUpperCase()) + '</option>').join(''));
+  $('langsel').addEventListener('click', e => {
+    const b = e.target.closest('button[data-lang]');
+    if (b) setUiLang(b.dataset.lang);
+  });
+  $('f-cardlang').addEventListener('change', e => {
+    cardLangSetting = LANGS.includes(e.target.value) ? e.target.value : '';
+    refresh();
+  });
+
   ['f-title','f-sub','f-att'].forEach(id => $(id).addEventListener('input', refresh));
   ['o-ctl','o-colour','o-qr','o-paper'].forEach(id => $(id).addEventListener('change', refresh));
 
@@ -3341,9 +4021,14 @@ function wire(){
   $('f-import').addEventListener('change', e => {
     const f = e.target.files[0];
     if (!f) return;
-    f.text().then(t => {
-      try { importMapping(t); S.pasteMsg = { type: 'ok', text: 'Indeling geïmporteerd uit ' + f.name + '.' }; }
-      catch (err){ S.pasteMsg = { type: 'err', text: 'Kon ' + f.name + ' niet lezen: ' + err.message }; }
+    f.text().then(txt => {
+      try {
+        importMapping(txt);
+        S.pasteMsg = { type: 'ok', parts: [{ key: 'ui.import.ok', params: { file: f.name } }] };
+      } catch (err){
+        S.pasteMsg = { type: 'err', parts: [{ key: 'ui.import.fail',
+          params: { file: f.name, message: emsg(err) } }] };
+      }
       refresh();
     });
     e.target.value = '';
@@ -3394,6 +4079,8 @@ function wire(){
 
 /* ==========================================================================
    Zelftest — open dit bestand met ?selftest
+   Meldingen worden op sleutel gecontroleerd, niet op Nederlandse tekst: anders
+   breekt elke vertaalronde de test.
    ========================================================================== */
 function selfTest(){
   const out = [];
@@ -3423,38 +4110,40 @@ function selfTest(){
   const cats = ['A', 'B'];
   eq('Validatie: schone invoer geeft niets', validate(base, map, cats), { errors: [], warnings: [] });
 
-  const has = (v, needle) => v.errors.some(e => e.includes(needle));
+  const has  = (v, key, check) => v.errors.some(e => e.key === key && (!check || check(e.params)));
+  const wHas = (v, key, check) => v.warnings.some(w => w.key === key && (!check || check(w.params)));
   ok('Fout: categorie zonder boulderindeling noemt de categorie',
-     has(validate(base, { A: [1,2] }, ['A']), '"B"'));
+     has(validate(base, { A: [1,2] }, ['A']), 'validation.error.categoryMissingInMapping', p => p.category === 'B'));
   ok('Fout: categorie zonder deelnemers noemt de categorie',
-     has(validate([P(1,'A')], { A:[1], B:[1] }, ['A','B']), '"B"'));
+     has(validate([P(1,'A')], { A:[1], B:[1] }, ['A','B']), 'validation.error.categoryWithoutParticipants', p => p.category === 'B'));
   ok('Fout: dubbele boulder noemt categorie en nummer',
-     has(validate(base, { A:[1,1,2], B:[1] }, cats), 'Boulder 1') &&
-     has(validate(base, { A:[1,1,2], B:[1] }, cats), '"A"'));
-  ok('Fout: nul boulders', has(validate(base, { A:[], B:[1] }, cats), 'nul boulders'));
+     has(validate(base, { A:[1,1,2], B:[1] }, cats), 'validation.error.duplicateBoulder',
+         p => p.number === 1 && p.category === 'A'));
+  ok('Fout: nul boulders', has(validate(base, { A:[], B:[1] }, cats), 'validation.error.categoryZeroBoulders'));
   ok('Fout: dubbel startnummer noemt beide rijen',
-     has(validate([P(1,'A'), {rowNo:3, category:'A', numberRaw:'1', number:1, name:'Bis'}], {A:[1]}, ['A']), 'rij 2'));
+     has(validate([P(1,'A'), {rowNo:3, category:'A', numberRaw:'1', number:1, name:'Bis'}], {A:[1]}, ['A']),
+         'validation.error.duplicateStartNumber', p => p.rowA === 2 && p.rowB === 3));
   ok('Fout: lege naam noemt de rij',
-     has(validate([P(1,'A','')], { A:[1] }, ['A']), 'Rij 2'));
+     has(validate([P(1,'A','')], { A:[1] }, ['A']), 'validation.error.nameEmpty', p => p.row === 2));
   ok('Fout: startnummer 0 is niet positief',
-     has(validate([{rowNo:2,category:'A',numberRaw:'0',number:0,name:'X'}], {A:[1]}, ['A']), 'positief'));
+     has(validate([{rowNo:2,category:'A',numberRaw:'0',number:0,name:'X'}], {A:[1]}, ['A']), 'validation.error.numberNotPositive'));
   ok('Fout: startnummer met letters',
-     has(validate([{rowNo:2,category:'A',numberRaw:'12a',number:NaN,name:'X'}], {A:[1]}, ['A']), '"12a"'));
+     has(validate([{rowNo:2,category:'A',numberRaw:'12a',number:NaN,name:'X'}], {A:[1]}, ['A']),
+         'validation.error.numberNotPositive', p => p.value === '12a'));
   ok('C6: fouten blokkeren, ze stoppen niet bij de eerste',
      validate([P(1,'A',''), {rowNo:3,category:'',numberRaw:'',number:NaN,name:''}], {}, []).errors.length >= 4);
 
   // --- waarschuwingen ---
-  const wHas = (v, needle) => v.warnings.some(w => w.includes(needle));
   ok('Waarschuwing: ongelijke boulderaantallen',
-     wHas(validate(base, { A:[1,2,3], B:[1,2] }, cats), 'evenveel'));
+     wHas(validate(base, { A:[1,2,3], B:[1,2] }, cats), 'validation.warning.differingBoulderCounts'));
   ok('Waarschuwing: meer boulders dan er passen',
-     wHas(validate(base, { A: Array.from({length: L.maxRows + 1}, (_, i) => i + 1), B:[1] }, cats), 'krap'));
+     wHas(validate(base, { A: Array.from({length: L.maxRows + 1}, (_, i) => i + 1), B:[1] }, cats), 'validation.warning.tooManyBoulders'));
   ok('Geen waarschuwing bij precies het maximum',
      !wHas(validate(base, { A: Array.from({length: L.maxRows}, (_, i) => i + 1),
-                            B: Array.from({length: L.maxRows}, (_, i) => i + 1) }, cats), 'krap'));
+                            B: Array.from({length: L.maxRows}, (_, i) => i + 1) }, cats), 'validation.warning.tooManyBoulders'));
   ok('Waarschuwing: te lange naam',
      wHas(validate([P(1,'A','Vandenbroucke-Van Nieuwenhuyse Alexander Maximiliaan Jean-Baptiste de la Court')],
-                   { A:[1] }, ['A']), 'te lang'));
+                   { A:[1] }, ['A']), 'validation.warning.nameTooLong'));
 
   // --- layout ---
   eq('Layout: kaarthoogte klopt met de rijruimte', L.body, 82.5);
@@ -3473,7 +4162,7 @@ function selfTest(){
 
   // --- opbouw kaarten ---
   const ctx = { title:'T', subtitle:'', competitionId:'x', maxAttempts:5, paper:'A4', showQr:true,
-                mapping: map, catOrder: cats, controlSheet:false, colour:false };
+                mapping: map, catOrder: cats, controlSheet:false, colour:false, cardLang:'nl' };
   const html = buildSheets(base, ctx);
   const d = document.createElement('div'); d.innerHTML = html;
   eq('Opbouw: 3 kaarten op 2 bladen', d.querySelectorAll('.card').length + '/' + d.querySelectorAll('.sheet').length, '3/2');
@@ -3519,9 +4208,9 @@ function selfTest(){
      parseBoulderTable('u13 (jongens)\t7\t8\t9\nu13 (meisjes)\t7\t8\n', cats3).mapping['u13 (jongens)'], [7,8,9]);
   ok('Plaktabel: nette TSV met categorieën per boulder werkt ook',
      parseBoulderTable('3\tred\tja\t1\tu13 (jongens)\tu13 (meisjes)\n', cats3).mapping['u13 (meisjes)'][0] === 3);
-  ok('Plaktabel: onherkenbare tekst geeft een duidelijke fout', (() => {
+  ok('Plaktabel: onherkenbare tekst geeft een fout met sleutel', (() => {
      try { parseBoulderTable('appel\tpeer\n', cats3); return false; }
-     catch (e){ return e.message.includes('Geen enkele categorie herkend'); } })());
+     catch (e){ return e.i18n && e.i18n.key === 'error.paste.noCategories'; } })());
 
   // --- JSON plakken (§4.2) ---
   eq('JSON: platte vorm {categorie:[nummers]}',
@@ -3560,20 +4249,158 @@ function selfTest(){
        importMapping('{"mapping":{"A":[5]},"settings":{"title":"X"}}'); return S.mapping.A; })(), [5]);
     ok('Opslag: deelnemers staan nooit in de bewaarde staat',
        !JSON.stringify(collectState()).includes('numberRaw'));
+    ok('Opslag: de interfacetaal valt niet onder de wedstrijdsleutels',
+       !UILANG_KEY.startsWith(STORE));
   } finally { localStorage.removeItem(key); }
 
-  const fails = out.filter(t => !t.pass).length;
+  /* ======================================================================
+     i18n (i18n-spec §11)
+     ====================================================================== */
+  const savedUi = uiLang, savedCard = cardLangSetting;
+
+  eq('i18n: drie talen geladen', LANGS.slice().sort(), ['en','fr','nl']);
+  eq('i18n: nl is de standaard en de terugval', FALLBACK, 'nl');
+
+  // AC 8 — ontbrekende sleutel is zichtbaar fout, nooit leeg
+  eq('AC8: onbekende sleutel komt tussen haken terug', t('ui.bestaat.niet'), '⟦ui.bestaat.niet⟧');
+  ok('AC8: geen enkele vertaling is leeg',
+     LANGS.every(l => Object.keys(LOCALES[l]).every(k => typeof LOCALES[l][k] === 'string' && LOCALES[l][k].length)));
+
+  // §5 — terugval op nl voor een sleutel die alleen daar staat
+  LOCALES.nl['ui.zelftest.alleennl'] = 'alleen in het nl-blok';
+  eq('§5: onbekend in fr valt terug op nl', t('ui.zelftest.alleennl', null, 'fr'), 'alleen in het nl-blok');
+  delete LOCALES.nl['ui.zelftest.alleennl'];
+
+  // §3 — benoemde plaatshouders, in willekeurige volgorde
+  eq('§3: plaatshouders worden benoemd ingevuld',
+     fill('{b} voor {a}', { a: 1, b: 2 }), '2 voor 1');
+  eq('§3: een onbekende plaatshouder blijft staan in plaats van "undefined"',
+     fill('{a} {weg}', { a: 'x' }), 'x {weg}');
+  ok('§3: elke sleutel gebruikt in elke taal dezelfde plaatshouders',
+     Object.keys(LOCALES.nl).every(k =>
+       LANGS.every(l => placeholders(LOCALES[l][k]) === placeholders(LOCALES.nl[k]))));
+
+  // AC 4 — een verkeerde plaatshouder wordt gezien
+  const bewaard = LOCALES.fr['validation.error.categoryZeroBoulders'];
+  LOCALES.fr['validation.error.categoryZeroBoulders'] = 'La catégorie « {cat} » n’a aucun bloc.';
+  ok('AC4: {category} -> {cat} in fr wordt gemeld',
+     localeProblems().some(p => p.key === 'ui.diag.placeholderMismatch' &&
+       p.params.lang === 'fr' && p.params.key === 'validation.error.categoryZeroBoulders'));
+  LOCALES.fr['validation.error.categoryZeroBoulders'] = bewaard;
+
+  // AC 3 — een ontbrekende sleutel wordt gemeld
+  const bewaard2 = LOCALES.fr['ui.print.paper'];
+  delete LOCALES.fr['ui.print.paper'];
+  ok('AC3: een verwijderde franse sleutel wordt gemeld',
+     localeProblems().some(p => p.key === 'ui.diag.missingKeys' && p.params.lang === 'fr' &&
+       p.params.keys.includes('ui.print.paper')));
+  LOCALES.fr['ui.print.paper'] = bewaard2;
+
+  eq('Diagnose: zonder gerommel geen enkel probleem', localeProblems(), []);
+
+  // §4 — meervoud via Intl.PluralRules, en frans rekent nul bij het enkelvoud
+  eq('§4: nl 1 is enkelvoud', plural(1, 'nl'), 'one');
+  eq('§4: nl 0 is meervoud',  plural(0, 'nl'), 'other');
+  eq('§4: fr 0 is enkelvoud', plural(0, 'fr'), 'one');
+  eq('§4: en 0 is meervoud',  plural(0, 'en'), 'other');
+  ok('§4: elke meervoudssleutel heeft beide vormen in elke taal',
+     Object.keys(LOCALES.nl).filter(k => k.endsWith('.one')).every(k =>
+       LANGS.every(l => LOCALES[l][k] && LOCALES[l][k.slice(0, -4) + '.other'])));
+  eq('§4: getallen krijgen de opmaak van de taal', nf(1234, 'nl'), (1234).toLocaleString('nl-BE'));
+  ok('§4: nl-BE en en-GB verschillen in decimaalteken',
+     new Intl.NumberFormat('nl-BE').format(1.5) !== new Intl.NumberFormat('en-GB').format(1.5));
+
+  // AC 5 — nederlandse interface, franse kaarten
+  uiLang = 'nl'; cardLangSetting = 'fr';
+  eq('AC5: kaarttaal staat los van de interfacetaal', [cardLang(), uiLang], ['fr', 'nl']);
+  const dfr = document.createElement('div');
+  dfr.innerHTML = buildSheets(base, Object.assign({}, ctx, { cardLang: cardLang() }));
+  const kaartTekst = dfr.querySelector('.card').textContent;
+  ok('AC5: de kaart draagt de franse labels',
+     ['NOM', 'DOSSARD', 'CATÉGORIE', 'BLOC', 'ESSAI 1'].every(w => kaartTekst.includes(w)));
+  ok('AC5: en geen nederlandse meer', !/NAAM|STARTNUMMER|POGING/.test(kaartTekst));
+
+  // AC 7 — categorienamen blijven letterlijk, in elke taal
+  const catNaam = 'u15 (meisjes)';
+  ok('AC7: de categorienaam komt byte-identiek op elke kaart', LANGS.every(l => {
+    const dd = document.createElement('div');
+    dd.innerHTML = buildSheets([P(1, catNaam)], Object.assign({}, ctx,
+      { mapping: { [catNaam]: [1,2] }, catOrder: [catNaam], cardLang: l }));
+    return dd.querySelector('.cbot .cat .val').textContent === catNaam;
+  }));
+
+  // Het controleblad volgt de interfacetaal, ook met franse kaarten (§2)
+  uiLang = 'en'; cardLangSetting = 'fr';
+  const dctl = document.createElement('div');
+  dctl.innerHTML = buildSheets(base, Object.assign({}, ctx,
+    { controlSheet: true, cardLang: cardLang() }));
+  ok('§2: het controleblad volgt de interface, niet de kaart',
+     dctl.querySelector('.ctl .meta').textContent.includes('Control sheet'));
+
+  // AC 6 — tekenbudgetten en de pseudotaal
+  uiLang = savedUi; cardLangSetting = savedCard;
+  eq('§7: elke kaartsleutel heeft een budget',
+     Object.keys(LOCALES.nl).filter(k => k.startsWith('card.')).filter(k => !(k in BUDGETS)), []);
+  ok('§7: geen enkele vertaling gaat over haar budget',
+     LANGS.every(l => Object.keys(BUDGETS).every(k => budgetLength(LOCALES[l][k]) <= BUDGETS[k])));
+  eq('§7: een plaatshouder telt als twee tekens', budgetLength('POGING {n}'), 9);
+  ok('§7: de pseudotaal neemt van elke sleutel de langste vertaling',
+     Object.keys(LOCALES.nl).every(k =>
+       dict(PSEUDO)[k].length === Math.max(...LANGS.map(l => LOCALES[l][k].length))));
+  ok('§7: de pseudotaal blijft binnen de budgetten', (() => {
+     const p = dict(PSEUDO);
+     return Object.keys(BUDGETS).every(k => budgetLength(p[k]) <= BUDGETS[k]); })());
+
+  // AC 6 — 16 boulders op een kaart in de pseudotaal, minimaal 8mm rijhoogte
+  const zestien = Array.from({ length: 16 }, (_, i) => i + 1);
+  const dz = document.createElement('div');
+  dz.innerHTML = scoreTableHTML(zestien, 5, PSEUDO);
+  eq('AC6: 16 boulders geven 16 rijen', dz.querySelectorAll('tbody tr').length, 16);
+  ok('AC6: 16 rijen à 8mm passen niet en dat wordt gemeld, niet stil ingekort',
+     validate([P(1,'A')], { A: zestien }, ['A']).warnings
+       .some(w => w.key === 'validation.warning.tooManyBoulders' && w.params.count === 16));
+  ok('AC6: geen enkel kaartlabel loopt om (elk past binnen zijn budget)',
+     Object.keys(BUDGETS).every(k => budgetLength(dict(PSEUDO)[k]) <= BUDGETS[k]));
+
+  // AC 9 — van taal wisselen raakt de geladen gegevens niet aan
+  ok('AC9: wisselen van taal laat deelnemers en indeling staan', (() => {
+     S.participants = base.slice(); S.mapping = { A: [1,2] };
+     const voor = JSON.stringify([S.participants.length, S.mapping]);
+     const bewaardeTaal = uiLang;
+     uiLang = 'fr'; applyStatic(); uiLang = bewaardeTaal; applyStatic();
+     const na = JSON.stringify([S.participants.length, S.mapping]);
+     S.participants = []; S.mapping = {};
+     return voor === na; })());
+
+  // §1 — wat níét vertaald wordt
+  eq('§1: de QR-payload is taalonafhankelijk',
+     LANGS.map(() => qrPayload('abyc2026-m4', 69)), LANGS.map(() => 'abyc2026-m4:69'));
+  ok('§1: Z en T blijven Z en T in elke taal',
+     LANGS.every(l => LOCALES[l]['card.marker.zone'] === 'Z' && LOCALES[l]['card.marker.top'] === 'T'));
+
+  // §9 — accenten overleven het JSON-blok onder file://
+  ok('§9: accenten uit het localesblok komen heel aan',
+     LOCALES.fr['card.label.category'] === 'CATÉGORIE' &&
+     t('ui.participants.categoryCount.other', { count: 2 }, 'nl').includes('categorieën'));
+
+  const fails = out.filter(t2 => !t2.pass).length;
   document.body.innerHTML = '<div id="selftest"><h1>Zelftest &mdash; ' +
     (fails ? fails + ' van ' + out.length + ' GEZAKT' : out.length + ' geslaagd') + '</h1>' +
-    out.map(t => '<div class="t ' + (t.pass ? 'p' : 'f') + '">' + (t.pass ? '✓' : '✗') + ' ' +
-      esc(t.name) + (t.extra ? ' — ' + esc(t.extra) : '') + '</div>').join('') + '</div>';
+    out.map(t2 => '<div class="t ' + (t2.pass ? 'p' : 'f') + '">' + (t2.pass ? '✓' : '✗') + ' ' +
+      esc(t2.name) + (t2.extra ? ' — ' + esc(t2.extra) : '') + '</div>').join('') + '</div>';
 }
 
 /* --- start --- */
 applyLayoutVars(document.documentElement);
 if (location.search.includes('selftest')) selfTest();
 else {
+  // §2: geen navigator.language — een Vlaamse organisator op een Engelse Windows
+  // hoort nog altijd Nederlands te krijgen.
+  const stored = (() => { try { return localStorage.getItem(UILANG_KEY); } catch (e){ return null; } })();
+  if (LANGS.includes(stored)) uiLang = lastRealLang = stored;
+  applyStatic();
   wire();
+  renderLangSel();
   const last = listSaved()[0];        // na een herlaad of crash verdergaan (§4.4)
   if (last) loadSaved(last.id);
   refresh();
