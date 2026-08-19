@@ -1,0 +1,3583 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scorekaarten generator</title>
+<style id="pagerule">@page{size:A4 portrait;margin:0}</style>
+<style>
+/* ==========================================================================
+   1. Scherm-UI
+   ========================================================================== */
+:root{
+  --ink:#111; --muted:#666; --line:#d4d4d8; --bg:#f4f4f5; --panel:#fff;
+  --err:#b91c1c; --warn:#a16207; --ok:#15803d;
+}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.5 system-ui,Segoe UI,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+#ui{max-width:1100px;margin:0 auto;padding:24px 20px 0}
+h1{font-size:22px;margin:0 0 4px}
+h1 + p{margin:0 0 24px;color:var(--muted)}
+section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-bottom:16px}
+section > h2{font-size:15px;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+section > h2 .n{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;
+  align-items:center;justify-content:center;font-size:12px;flex:none}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+input[type=text],input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:5px;font:inherit}
+.grid4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}
+.row{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
+button{font:inherit;padding:8px 14px;border:1px solid var(--ink);background:var(--ink);color:#fff;
+  border-radius:5px;cursor:pointer}
+button.sec{background:#fff;color:var(--ink)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.hint{color:var(--muted);font-size:12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:12px}
+.msg{padding:8px 11px;border-radius:5px;font-size:13px;margin-top:10px}
+.msg.err{background:#fef2f2;color:var(--err);border:1px solid #fecaca}
+.msg.ok{background:#f0fdf4;color:var(--ok);border:1px solid #bbf7d0}
+ul.report{list-style:none;margin:0;padding:0}
+ul.report li{padding:6px 10px;border-left:3px solid;margin-bottom:5px;font-size:13px;background:var(--bg)}
+li.e{border-color:var(--err);color:var(--err)}
+li.w{border-color:var(--warn);color:var(--warn)}
+.ackbox{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:13px;color:var(--ink)}
+.ackbox input{margin-top:2px}
+
+select{padding:7px 9px;border:1px solid var(--line);border-radius:5px;font:inherit;width:100%;background:#fff}
+textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:5px;
+  font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;resize:vertical}
+
+/* tabbladen voor de drie invoermethodes */
+.tabs{display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--line);
+  margin-bottom:14px;padding-bottom:10px;flex-wrap:wrap}
+.tabs .spacer{flex:1}
+button.tab{background:#fff;color:var(--muted);border:1px solid var(--line)}
+button.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.filelabel{font:inherit;padding:8px 14px;border:1px solid var(--ink);border-radius:5px;
+  background:#fff;color:var(--ink);cursor:pointer;margin:0;font-size:14px}
+#json-fields{display:flex;gap:8px;align-items:center;font-size:13px;flex-wrap:wrap}
+#json-fields select{width:auto}
+#saved{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#saved button{padding:3px 9px;font-size:12px}
+
+/* boulder-raster */
+#gridwrap{overflow:auto;max-height:60vh;margin-top:14px;border:1px solid var(--line);border-radius:6px}
+table.grid{border-collapse:collapse;font-size:12px;user-select:none}
+table.grid th,table.grid td{border:1px solid var(--line);padding:0}
+table.grid thead th{position:sticky;top:0;background:var(--panel);padding:8px;cursor:pointer;
+  writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;font-weight:600}
+table.grid thead th:first-child{writing-mode:horizontal-tb;transform:none;cursor:default}
+table.grid td.b{width:52px;text-align:center;font-weight:700;background:var(--bg);padding:4px 0}
+table.grid td.c{width:34px;height:26px;text-align:center;cursor:pointer}
+table.grid td.c.on{background:var(--ink);color:#fff}
+table.grid td.c.on::after{content:"\2713"}
+table.grid tfoot td{background:var(--bg);text-align:center;font-size:11px;color:var(--muted);padding:4px 0}
+
+/* afdrukvoorbeeld */
+#preview{margin-top:16px;background:#e4e4e7;border-top:1px solid var(--line);
+  padding:20px;max-height:80vh;overflow:auto}
+
+/* Breed genoeg? Dan het voorbeeld naast de instellingen, met een eigen
+   schuifbalk die blijft staan terwijl je links doorscrolt. Anders eronder.
+   Drempel: instellingen ~640px + een blad op 50% (~400px) + marge. */
+@media screen and (min-width:1180px){
+  #app{display:flex;align-items:flex-start;gap:0;max-width:1700px;margin:0 auto}
+  #ui{flex:1 1 auto;min-width:0;max-width:1100px;margin:0;padding-bottom:40px}
+  #preview{flex:0 0 clamp(440px,42vw,700px);align-self:stretch;position:sticky;top:0;
+    margin-top:0;height:100vh;max-height:100vh;border-top:0;border-left:1px solid var(--line)}
+}
+#print{zoom:.5}
+#print:empty::before{content:"Nog geen kaarten \2014 los eerst de fouten hierboven op.";
+  color:var(--muted);font-size:26px;display:block;padding:20px}
+
+/* ==========================================================================
+   2. Kaart + afdruk
+   Vaste hoogtes; --body-h wordt vanuit JS gezet (één bron van waarheid met de
+   controle op maximaal aantal boulders).
+   ========================================================================== */
+/* @page staat in een apart <style id="pagerule"> dat vanuit JS wordt gezet (§6.1). */
+
+.sheet{width:210mm;height:297mm;position:relative;overflow:hidden;background:#fff;
+  font-family:Arial,Helvetica,sans-serif;color:#000}
+.sheet.a5{height:148.5mm}   /* A5 liggend: het blad is de kaart */
+#print .sheet + .sheet{margin-top:14px}
+/* snijlijn alleen op A4-kaartbladen: niet op het controleblad, niet op A5 */
+.sheet.cards:not(.a5)::after{content:"";position:absolute;left:0;right:0;top:148.5mm;
+  border-top:.3mm dashed #000}
+
+.card{height:148.5mm;padding:var(--pad);display:flex;flex-direction:column;position:relative;overflow:hidden}
+
+/* positiegecodeerde categoriebalk: leesbaar op een gestapelde stapel */
+.band{position:absolute;left:0;width:5mm;height:14mm;background:#000;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+.chdr{height:var(--hdr-h);display:flex;gap:3mm;flex:none}
+.chdr-l{flex:1;min-width:0;display:flex;flex-direction:column}
+.ctitle{height:6mm;font-size:11pt;font-weight:700;line-height:6mm;white-space:nowrap;overflow:hidden}
+.ctitle .sub{font-size:8pt;font-weight:400;margin-left:3mm}
+.cname{height:9mm;display:flex;align-items:baseline;gap:3mm;border-bottom:.3mm solid #000;overflow:hidden}
+.cbot{height:13mm;display:flex;gap:6mm;align-items:stretch;padding-top:1mm}
+.lbl{font-size:6.5pt;letter-spacing:.5pt;color:#000;font-weight:700;flex:none}
+.cname .val{font-size:13pt;font-weight:700;white-space:nowrap;overflow:hidden}
+.cbot .f{display:flex;flex-direction:column;justify-content:space-between;line-height:1.05}
+.cbot .f.nr .val{font-size:26pt;font-weight:700}
+.cbot .f.cat .val{font-size:15pt;font-weight:700;white-space:nowrap}
+.qr{flex:none;width:24mm;height:24mm;padding:2mm;background:#fff;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.qr svg{display:block;width:20mm;height:20mm}
+
+/* optionele kleurband (standaard uit) */
+.card.colour .chdr{border-top:2mm solid var(--cat-colour);padding-top:1mm;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+.tblwrap{flex:1;display:flex;align-items:center;margin-top:var(--gap);min-height:0}
+table.score{width:100%;border-collapse:collapse;table-layout:fixed}
+table.score th,table.score td{border:.3mm solid #000;text-align:center;padding:0}
+table.score thead tr.h1{height:6mm}
+table.score thead tr.h2{height:5mm}
+table.score thead th{font-size:7.5pt;font-weight:700}
+table.score thead tr.h2 th{font-size:7pt}
+table.score tbody tr{height:min(var(--max-row),calc(var(--body-h) / var(--rows)))}
+table.score tbody td.bnum{font-size:13pt;font-weight:700}
+table.score tfoot tr{height:var(--tfoot-h)}
+table.score tfoot td{font-size:8.5pt;font-weight:700}
+table.score tfoot td.lab{text-align:right;padding-right:3mm}
+
+/* controleblad */
+.ctl{padding:14mm 12mm;font-family:Arial,Helvetica,sans-serif;color:#000}
+.ctl h2{font-size:16pt;margin:0 0 1mm}
+.ctl .meta{font-size:9pt;color:#000;margin-bottom:6mm}
+.ctl table{border-collapse:collapse;font-size:8pt}
+.ctl th,.ctl td{border:.3mm solid #000;padding:1mm 1.5mm;text-align:center}
+.ctl th.vert{writing-mode:vertical-rl;transform:rotate(180deg);height:32mm;white-space:nowrap}
+.ctl td.on{font-weight:700}
+.ctl-cols{display:flex;gap:10mm;align-items:flex-start}
+.ctl-cols.stacked{flex-direction:column;gap:5mm}
+.sheet.a5 .ctl{padding:7mm 8mm}
+.sheet.a5 .ctl h2{font-size:12pt}
+.sheet.a5 .ctl .meta{margin-bottom:3mm;font-size:8pt}
+.sheet.a5 .ctl table{font-size:7pt}
+.sheet.a5 .ctl th,.sheet.a5 .ctl td{padding:.5mm 1mm}
+.ctl .counts{font-size:9pt}
+.ctl .counts td{text-align:left;padding:1.5mm 3mm;white-space:nowrap}
+
+@media screen{
+  .sheet{box-shadow:0 1px 6px rgba(0,0,0,.25)}
+}
+@media print{
+  #ui{display:none}
+  #print{zoom:1}
+  #preview{padding:0;border:0;max-height:none;overflow:visible;background:none;margin:0}
+  #print .sheet + .sheet{margin-top:0;page-break-before:always}
+  .sheet{box-shadow:none}
+}
+
+/* zelftest */
+#selftest{max-width:900px;margin:0 auto;padding:30px 20px;font-family:ui-monospace,Menlo,Consolas,monospace}
+#selftest .t{padding:3px 0;font-size:13px}
+#selftest .t.p{color:var(--ok)}
+#selftest .t.f{color:var(--err);font-weight:700}
+#selftest h1{font-family:system-ui,sans-serif}
+</style>
+</head>
+<body>
+
+<div id="app">
+<div id="ui">
+  <h1>Scorekaarten generator</h1>
+  <p>Werkt volledig offline. Deelnemersgegevens blijven op dit toestel en worden nergens opgeslagen.</p>
+
+  <section>
+    <h2><span class="n">1</span> Wedstrijdgegevens</h2>
+    <div class="grid4">
+      <div><label for="f-title">Titel</label><input id="f-title" type="text" placeholder="ANTWERP BOULDER YOUTH CUP 2026"></div>
+      <div><label for="f-sub">Ondertitel</label><input id="f-sub" type="text" placeholder="Manche 4"></div>
+      <div><label for="f-id">Wedstrijd-ID</label><input id="f-id" type="text" placeholder="abyc2026-m4"></div>
+      <div><label for="f-att">Max. pogingen</label><input id="f-att" type="number" min="1" max="12" value="5"></div>
+    </div>
+    <p class="hint" style="margin:10px 0 0">Het wedstrijd-ID staat in de QR-code, bv. <code>abyc2026-m4:69</code>.
+      Instellingen en boulderindeling worden per wedstrijd-ID op dit toestel bewaard; deelnemers nooit.</p>
+    <div id="saved"></div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span> Deelnemers</h2>
+    <div class="row">
+      <div><input id="f-csv" type="file" accept=".csv,text/csv"></div>
+    </div>
+    <p class="hint" style="margin:10px 0 0">CSV-export uit etto-climbing. Kolommen <code>Category</code>,
+      <code>Starting number</code>, <code>Name</code>. Extra kolommen worden genegeerd.</p>
+    <div id="csv-status"></div>
+    <div id="csv-cats" class="tags"></div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span> Boulders per categorie</h2>
+
+    <div class="tabs">
+      <button class="tab on" data-tab="grid" type="button">Raster</button>
+      <button class="tab" data-tab="table" type="button">Tabel plakken</button>
+      <button class="tab" data-tab="json" type="button">JSON plakken</button>
+      <span class="spacer"></span>
+      <button class="sec" id="btn-export" type="button">Indeling exporteren</button>
+      <label class="sec filelabel" for="f-import">Indeling importeren</label>
+      <input id="f-import" type="file" accept=".json,application/json" hidden>
+    </div>
+
+    <div class="pane" id="pane-grid">
+      <div class="row">
+        <div style="max-width:200px">
+          <label for="f-gridmax">Hoogste boulternummer</label>
+          <input id="f-gridmax" type="number" min="1" max="200" value="30">
+        </div>
+        <button class="sec" id="btn-clear" type="button">Raster leegmaken</button>
+        <span class="hint">Klik of sleep om aan te vinken. Klik op een nummer voor de hele rij, op een categorie voor de hele kolom.</span>
+      </div>
+      <div id="gridwrap"></div>
+    </div>
+
+    <div class="pane" id="pane-table" hidden>
+      <p class="hint" style="margin:0 0 8px">Selecteer het bouldersoverzicht op de etto-pagina, kopieer het
+        (Ctrl+C) en plak het hier. Zowel boulders als rijen (met de categorieën per boulder) als categorieën
+        als rijen worden herkend. De deelnemerslijst moet eerst geladen zijn.</p>
+      <textarea id="f-table" rows="8" placeholder="Plak hier de gekopieerde tabel..."></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="sec" id="btn-table" type="button">Tabel verwerken</button>
+      </div>
+    </div>
+
+    <div class="pane" id="pane-json" hidden>
+      <p class="hint" style="margin:0 0 8px">Plak de JSON uit de netwerkrespons van het platform. Elke vorm die te
+        herleiden is tot categorie + boulternummers wordt aanvaard; herkent de app de vorm niet, dan kies je zelf
+        de velden.</p>
+      <textarea id="f-json" rows="8" placeholder='Plak hier de JSON, bv. {"u11 (meisjes/jongens)": [1,2,3]}'></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="sec" id="btn-json" type="button">JSON verwerken</button>
+        <span id="json-fields"></span>
+      </div>
+    </div>
+
+    <div id="paste-msg"></div>
+    <div id="map-summary" class="tags"></div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span> Controle</h2>
+    <div id="report"></div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span> Afdrukken</h2>
+    <div class="row">
+      <div style="max-width:190px">
+        <label for="o-paper">Papier</label>
+        <select id="o-paper">
+          <option value="A4">A4 &mdash; 2 kaarten per blad</option>
+          <option value="A5">A5 &mdash; 1 kaart per blad</option>
+        </select>
+      </div>
+      <label style="margin:0"><input type="checkbox" id="o-qr" checked> QR-code op de kaart</label>
+      <label style="margin:0"><input type="checkbox" id="o-ctl" checked> Controleblad vooraan</label>
+      <label style="margin:0"><input type="checkbox" id="o-colour"> Kleurband op de kaart</label>
+      <button id="btn-print" type="button" disabled>Afdrukken (Ctrl+P &rarr; Opslaan als PDF)</button>
+      <span class="hint" id="print-stat"></span>
+    </div>
+    <p class="hint" style="margin:10px 0 0">Druk af op 100% zonder schaling. Kies in het printvenster hetzelfde
+      papierformaat. Het voorbeeld hieronder is exact wat er uit de printer komt.</p>
+  </section>
+</div>
+
+<!-- Staat bewust buiten #ui: bij afdrukken wordt #ui verborgen en blijft dit
+     over. Het voorbeeld op het scherm is dus dezelfde DOM als de afdruk (§8). -->
+<div id="preview"><div id="print"></div></div>
+</div>
+
+<script>
+/* qrcode-generator 2.0.4 — Kazuhiko Arase — MIT — http://www.d-project.com/
+   Ingesloten (C1: één zelfstandig HTML-bestand, geen CDN). */
+//---------------------------------------------------------------------
+//
+// QR Code Generator for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//  http://www.opensource.org/licenses/mit-license.php
+//
+// The word 'QR Code' is registered trademark of
+// DENSO WAVE INCORPORATED
+//  http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+
+var qrcode = function() {
+
+  //---------------------------------------------------------------------
+  // qrcode
+  //---------------------------------------------------------------------
+
+  /**
+   * qrcode
+   * @param typeNumber 1 to 40
+   * @param errorCorrectionLevel 'L','M','Q','H'
+   */
+  var qrcode = function(typeNumber, errorCorrectionLevel) {
+
+    var PAD0 = 0xEC;
+    var PAD1 = 0x11;
+
+    var _typeNumber = typeNumber;
+    var _errorCorrectionLevel = QRErrorCorrectionLevel[errorCorrectionLevel];
+    var _modules = null;
+    var _moduleCount = 0;
+    var _dataCache = null;
+    var _dataList = [];
+
+    var _this = {};
+
+    var makeImpl = function(test, maskPattern) {
+
+      _moduleCount = _typeNumber * 4 + 17;
+      _modules = function(moduleCount) {
+        var modules = new Array(moduleCount);
+        for (var row = 0; row < moduleCount; row += 1) {
+          modules[row] = new Array(moduleCount);
+          for (var col = 0; col < moduleCount; col += 1) {
+            modules[row][col] = null;
+          }
+        }
+        return modules;
+      }(_moduleCount);
+
+      setupPositionProbePattern(0, 0);
+      setupPositionProbePattern(_moduleCount - 7, 0);
+      setupPositionProbePattern(0, _moduleCount - 7);
+      setupPositionAdjustPattern();
+      setupTimingPattern();
+      setupTypeInfo(test, maskPattern);
+
+      if (_typeNumber >= 7) {
+        setupTypeNumber(test);
+      }
+
+      if (_dataCache == null) {
+        _dataCache = createData(_typeNumber, _errorCorrectionLevel, _dataList);
+      }
+
+      mapData(_dataCache, maskPattern);
+    };
+
+    var setupPositionProbePattern = function(row, col) {
+
+      for (var r = -1; r <= 7; r += 1) {
+
+        if (row + r <= -1 || _moduleCount <= row + r) continue;
+
+        for (var c = -1; c <= 7; c += 1) {
+
+          if (col + c <= -1 || _moduleCount <= col + c) continue;
+
+          if ( (0 <= r && r <= 6 && (c == 0 || c == 6) )
+              || (0 <= c && c <= 6 && (r == 0 || r == 6) )
+              || (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+            _modules[row + r][col + c] = true;
+          } else {
+            _modules[row + r][col + c] = false;
+          }
+        }
+      }
+    };
+
+    var getBestMaskPattern = function() {
+
+      var minLostPoint = 0;
+      var pattern = 0;
+
+      for (var i = 0; i < 8; i += 1) {
+
+        makeImpl(true, i);
+
+        var lostPoint = QRUtil.getLostPoint(_this);
+
+        if (i == 0 || minLostPoint > lostPoint) {
+          minLostPoint = lostPoint;
+          pattern = i;
+        }
+      }
+
+      return pattern;
+    };
+
+    var setupTimingPattern = function() {
+
+      for (var r = 8; r < _moduleCount - 8; r += 1) {
+        if (_modules[r][6] != null) {
+          continue;
+        }
+        _modules[r][6] = (r % 2 == 0);
+      }
+
+      for (var c = 8; c < _moduleCount - 8; c += 1) {
+        if (_modules[6][c] != null) {
+          continue;
+        }
+        _modules[6][c] = (c % 2 == 0);
+      }
+    };
+
+    var setupPositionAdjustPattern = function() {
+
+      var pos = QRUtil.getPatternPosition(_typeNumber);
+
+      for (var i = 0; i < pos.length; i += 1) {
+
+        for (var j = 0; j < pos.length; j += 1) {
+
+          var row = pos[i];
+          var col = pos[j];
+
+          if (_modules[row][col] != null) {
+            continue;
+          }
+
+          for (var r = -2; r <= 2; r += 1) {
+
+            for (var c = -2; c <= 2; c += 1) {
+
+              if (r == -2 || r == 2 || c == -2 || c == 2
+                  || (r == 0 && c == 0) ) {
+                _modules[row + r][col + c] = true;
+              } else {
+                _modules[row + r][col + c] = false;
+              }
+            }
+          }
+        }
+      }
+    };
+
+    var setupTypeNumber = function(test) {
+
+      var bits = QRUtil.getBCHTypeNumber(_typeNumber);
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[Math.floor(i / 3)][i % 3 + _moduleCount - 8 - 3] = mod;
+      }
+
+      for (var i = 0; i < 18; i += 1) {
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+        _modules[i % 3 + _moduleCount - 8 - 3][Math.floor(i / 3)] = mod;
+      }
+    };
+
+    var setupTypeInfo = function(test, maskPattern) {
+
+      var data = (_errorCorrectionLevel << 3) | maskPattern;
+      var bits = QRUtil.getBCHTypeInfo(data);
+
+      // vertical
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 6) {
+          _modules[i][8] = mod;
+        } else if (i < 8) {
+          _modules[i + 1][8] = mod;
+        } else {
+          _modules[_moduleCount - 15 + i][8] = mod;
+        }
+      }
+
+      // horizontal
+      for (var i = 0; i < 15; i += 1) {
+
+        var mod = (!test && ( (bits >> i) & 1) == 1);
+
+        if (i < 8) {
+          _modules[8][_moduleCount - i - 1] = mod;
+        } else if (i < 9) {
+          _modules[8][15 - i - 1 + 1] = mod;
+        } else {
+          _modules[8][15 - i - 1] = mod;
+        }
+      }
+
+      // fixed module
+      _modules[_moduleCount - 8][8] = (!test);
+    };
+
+    var mapData = function(data, maskPattern) {
+
+      var inc = -1;
+      var row = _moduleCount - 1;
+      var bitIndex = 7;
+      var byteIndex = 0;
+      var maskFunc = QRUtil.getMaskFunction(maskPattern);
+
+      for (var col = _moduleCount - 1; col > 0; col -= 2) {
+
+        if (col == 6) col -= 1;
+
+        while (true) {
+
+          for (var c = 0; c < 2; c += 1) {
+
+            if (_modules[row][col - c] == null) {
+
+              var dark = false;
+
+              if (byteIndex < data.length) {
+                dark = ( ( (data[byteIndex] >>> bitIndex) & 1) == 1);
+              }
+
+              var mask = maskFunc(row, col - c);
+
+              if (mask) {
+                dark = !dark;
+              }
+
+              _modules[row][col - c] = dark;
+              bitIndex -= 1;
+
+              if (bitIndex == -1) {
+                byteIndex += 1;
+                bitIndex = 7;
+              }
+            }
+          }
+
+          row += inc;
+
+          if (row < 0 || _moduleCount <= row) {
+            row -= inc;
+            inc = -inc;
+            break;
+          }
+        }
+      }
+    };
+
+    var createBytes = function(buffer, rsBlocks) {
+
+      var offset = 0;
+
+      var maxDcCount = 0;
+      var maxEcCount = 0;
+
+      var dcdata = new Array(rsBlocks.length);
+      var ecdata = new Array(rsBlocks.length);
+
+      for (var r = 0; r < rsBlocks.length; r += 1) {
+
+        var dcCount = rsBlocks[r].dataCount;
+        var ecCount = rsBlocks[r].totalCount - dcCount;
+
+        maxDcCount = Math.max(maxDcCount, dcCount);
+        maxEcCount = Math.max(maxEcCount, ecCount);
+
+        dcdata[r] = new Array(dcCount);
+
+        for (var i = 0; i < dcdata[r].length; i += 1) {
+          dcdata[r][i] = 0xff & buffer.getBuffer()[i + offset];
+        }
+        offset += dcCount;
+
+        var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+        var rawPoly = qrPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+        var modPoly = rawPoly.mod(rsPoly);
+        ecdata[r] = new Array(rsPoly.getLength() - 1);
+        for (var i = 0; i < ecdata[r].length; i += 1) {
+          var modIndex = i + modPoly.getLength() - ecdata[r].length;
+          ecdata[r][i] = (modIndex >= 0)? modPoly.getAt(modIndex) : 0;
+        }
+      }
+
+      var totalCodeCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalCodeCount += rsBlocks[i].totalCount;
+      }
+
+      var data = new Array(totalCodeCount);
+      var index = 0;
+
+      for (var i = 0; i < maxDcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < dcdata[r].length) {
+            data[index] = dcdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      for (var i = 0; i < maxEcCount; i += 1) {
+        for (var r = 0; r < rsBlocks.length; r += 1) {
+          if (i < ecdata[r].length) {
+            data[index] = ecdata[r][i];
+            index += 1;
+          }
+        }
+      }
+
+      return data;
+    };
+
+    var createData = function(typeNumber, errorCorrectionLevel, dataList) {
+
+      var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectionLevel);
+
+      var buffer = qrBitBuffer();
+
+      for (var i = 0; i < dataList.length; i += 1) {
+        var data = dataList[i];
+        buffer.put(data.getMode(), 4);
+        buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+        data.write(buffer);
+      }
+
+      // calc num max data.
+      var totalDataCount = 0;
+      for (var i = 0; i < rsBlocks.length; i += 1) {
+        totalDataCount += rsBlocks[i].dataCount;
+      }
+
+      if (buffer.getLengthInBits() > totalDataCount * 8) {
+        throw 'code length overflow. ('
+          + buffer.getLengthInBits()
+          + '>'
+          + totalDataCount * 8
+          + ')';
+      }
+
+      // end code
+      if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+        buffer.put(0, 4);
+      }
+
+      // padding
+      while (buffer.getLengthInBits() % 8 != 0) {
+        buffer.putBit(false);
+      }
+
+      // padding
+      while (true) {
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD0, 8);
+
+        if (buffer.getLengthInBits() >= totalDataCount * 8) {
+          break;
+        }
+        buffer.put(PAD1, 8);
+      }
+
+      return createBytes(buffer, rsBlocks);
+    };
+
+    _this.addData = function(data, mode) {
+
+      mode = mode || 'Byte';
+
+      var newData = null;
+
+      switch(mode) {
+      case 'Numeric' :
+        newData = qrNumber(data);
+        break;
+      case 'Alphanumeric' :
+        newData = qrAlphaNum(data);
+        break;
+      case 'Byte' :
+        newData = qr8BitByte(data);
+        break;
+      case 'Kanji' :
+        newData = qrKanji(data);
+        break;
+      default :
+        throw 'mode:' + mode;
+      }
+
+      _dataList.push(newData);
+      _dataCache = null;
+    };
+
+    _this.isDark = function(row, col) {
+      if (row < 0 || _moduleCount <= row || col < 0 || _moduleCount <= col) {
+        throw row + ',' + col;
+      }
+      return _modules[row][col];
+    };
+
+    _this.getModuleCount = function() {
+      return _moduleCount;
+    };
+
+    _this.make = function() {
+      if (_typeNumber < 1) {
+        var typeNumber = 1;
+
+        for (; typeNumber < 40; typeNumber++) {
+          var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, _errorCorrectionLevel);
+          var buffer = qrBitBuffer();
+
+          for (var i = 0; i < _dataList.length; i++) {
+            var data = _dataList[i];
+            buffer.put(data.getMode(), 4);
+            buffer.put(data.getLength(), QRUtil.getLengthInBits(data.getMode(), typeNumber) );
+            data.write(buffer);
+          }
+
+          var totalDataCount = 0;
+          for (var i = 0; i < rsBlocks.length; i++) {
+            totalDataCount += rsBlocks[i].dataCount;
+          }
+
+          if (buffer.getLengthInBits() <= totalDataCount * 8) {
+            break;
+          }
+        }
+
+        _typeNumber = typeNumber;
+      }
+
+      makeImpl(false, getBestMaskPattern() );
+    };
+
+    _this.createTableTag = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var qrHtml = '';
+
+      qrHtml += '<table style="';
+      qrHtml += ' border-width: 0px; border-style: none;';
+      qrHtml += ' border-collapse: collapse;';
+      qrHtml += ' padding: 0px; margin: ' + margin + 'px;';
+      qrHtml += '">';
+      qrHtml += '<tbody>';
+
+      for (var r = 0; r < _this.getModuleCount(); r += 1) {
+
+        qrHtml += '<tr>';
+
+        for (var c = 0; c < _this.getModuleCount(); c += 1) {
+          qrHtml += '<td style="';
+          qrHtml += ' border-width: 0px; border-style: none;';
+          qrHtml += ' border-collapse: collapse;';
+          qrHtml += ' padding: 0px; margin: 0px;';
+          qrHtml += ' width: ' + cellSize + 'px;';
+          qrHtml += ' height: ' + cellSize + 'px;';
+          qrHtml += ' background-color: ';
+          qrHtml += _this.isDark(r, c)? '#000000' : '#ffffff';
+          qrHtml += ';';
+          qrHtml += '"/>';
+        }
+
+        qrHtml += '</tr>';
+      }
+
+      qrHtml += '</tbody>';
+      qrHtml += '</table>';
+
+      return qrHtml;
+    };
+
+    _this.createSvgTag = function(cellSize, margin, alt, title) {
+
+      var opts = {};
+      if (typeof arguments[0] == 'object') {
+        // Called by options.
+        opts = arguments[0];
+        // overwrite cellSize and margin.
+        cellSize = opts.cellSize;
+        margin = opts.margin;
+        alt = opts.alt;
+        title = opts.title;
+      }
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      // Compose alt property surrogate
+      alt = (typeof alt === 'string') ? {text: alt} : alt || {};
+      alt.text = alt.text || null;
+      alt.id = (alt.text) ? alt.id || 'qrcode-description' : null;
+
+      // Compose title property surrogate
+      title = (typeof title === 'string') ? {text: title} : title || {};
+      title.text = title.text || null;
+      title.id = (title.text) ? title.id || 'qrcode-title' : null;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var c, mc, r, mr, qrSvg='', rect;
+
+      rect = 'l' + cellSize + ',0 0,' + cellSize +
+        ' -' + cellSize + ',0 0,-' + cellSize + 'z ';
+
+      qrSvg += '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"';
+      qrSvg += !opts.scalable ? ' width="' + size + 'px" height="' + size + 'px"' : '';
+      qrSvg += ' viewBox="0 0 ' + size + ' ' + size + '" ';
+      qrSvg += ' preserveAspectRatio="xMinYMin meet"';
+      qrSvg += (title.text || alt.text) ? ' role="img" aria-labelledby="' +
+          escapeXml([title.id, alt.id].join(' ').trim() ) + '"' : '';
+      qrSvg += '>';
+      qrSvg += (title.text) ? '<title id="' + escapeXml(title.id) + '">' +
+          escapeXml(title.text) + '</title>' : '';
+      qrSvg += (alt.text) ? '<description id="' + escapeXml(alt.id) + '">' +
+          escapeXml(alt.text) + '</description>' : '';
+      qrSvg += '<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>';
+      qrSvg += '<path d="';
+
+      for (r = 0; r < _this.getModuleCount(); r += 1) {
+        mr = r * cellSize + margin;
+        for (c = 0; c < _this.getModuleCount(); c += 1) {
+          if (_this.isDark(r, c) ) {
+            mc = c*cellSize+margin;
+            qrSvg += 'M' + mc + ',' + mr + rect;
+          }
+        }
+      }
+
+      qrSvg += '" stroke="transparent" fill="black"/>';
+      qrSvg += '</svg>';
+
+      return qrSvg;
+    };
+
+    _this.createDataURL = function(cellSize, margin) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      return createDataURL(size, size, function(x, y) {
+        if (min <= x && x < max && min <= y && y < max) {
+          var c = Math.floor( (x - min) / cellSize);
+          var r = Math.floor( (y - min) / cellSize);
+          return _this.isDark(r, c)? 0 : 1;
+        } else {
+          return 1;
+        }
+      } );
+    };
+
+    _this.createImgTag = function(cellSize, margin, alt) {
+
+      cellSize = cellSize || 2;
+      margin = (typeof margin == 'undefined')? cellSize * 4 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+
+      var img = '';
+      img += '<img';
+      img += '\u0020src="';
+      img += _this.createDataURL(cellSize, margin);
+      img += '"';
+      img += '\u0020width="';
+      img += size;
+      img += '"';
+      img += '\u0020height="';
+      img += size;
+      img += '"';
+      if (alt) {
+        img += '\u0020alt="';
+        img += escapeXml(alt);
+        img += '"';
+      }
+      img += '/>';
+
+      return img;
+    };
+
+    var escapeXml = function(s) {
+      var escaped = '';
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charAt(i);
+        switch(c) {
+        case '<': escaped += '&lt;'; break;
+        case '>': escaped += '&gt;'; break;
+        case '&': escaped += '&amp;'; break;
+        case '"': escaped += '&quot;'; break;
+        default : escaped += c; break;
+        }
+      }
+      return escaped;
+    };
+
+    var _createHalfASCII = function(margin) {
+      var cellSize = 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r1, r2, p;
+
+      var blocks = {
+        '██': '█',
+        '█ ': '▀',
+        ' █': '▄',
+        '  ': ' '
+      };
+
+      var blocksLastLineNoMargin = {
+        '██': '▀',
+        '█ ': '▀',
+        ' █': ' ',
+        '  ': ' '
+      };
+
+      var ascii = '';
+      for (y = 0; y < size; y += 2) {
+        r1 = Math.floor((y - min) / cellSize);
+        r2 = Math.floor((y + 1 - min) / cellSize);
+        for (x = 0; x < size; x += 1) {
+          p = '█';
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r1, Math.floor((x - min) / cellSize))) {
+            p = ' ';
+          }
+
+          if (min <= x && x < max && min <= y+1 && y+1 < max && _this.isDark(r2, Math.floor((x - min) / cellSize))) {
+            p += ' ';
+          }
+          else {
+            p += '█';
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          ascii += (margin < 1 && y+1 >= max) ? blocksLastLineNoMargin[p] : blocks[p];
+        }
+
+        ascii += '\n';
+      }
+
+      if (size % 2 && margin > 0) {
+        return ascii.substring(0, ascii.length - size - 1) + Array(size+1).join('▀');
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.createASCII = function(cellSize, margin) {
+      cellSize = cellSize || 1;
+
+      if (cellSize < 2) {
+        return _createHalfASCII(margin);
+      }
+
+      cellSize -= 1;
+      margin = (typeof margin == 'undefined')? cellSize * 2 : margin;
+
+      var size = _this.getModuleCount() * cellSize + margin * 2;
+      var min = margin;
+      var max = size - margin;
+
+      var y, x, r, p;
+
+      var white = Array(cellSize+1).join('██');
+      var black = Array(cellSize+1).join('  ');
+
+      var ascii = '';
+      var line = '';
+      for (y = 0; y < size; y += 1) {
+        r = Math.floor( (y - min) / cellSize);
+        line = '';
+        for (x = 0; x < size; x += 1) {
+          p = 1;
+
+          if (min <= x && x < max && min <= y && y < max && _this.isDark(r, Math.floor((x - min) / cellSize))) {
+            p = 0;
+          }
+
+          // Output 2 characters per pixel, to create full square. 1 character per pixels gives only half width of square.
+          line += p ? white : black;
+        }
+
+        for (r = 0; r < cellSize; r += 1) {
+          ascii += line + '\n';
+        }
+      }
+
+      return ascii.substring(0, ascii.length-1);
+    };
+
+    _this.renderTo2dContext = function(context, cellSize) {
+      cellSize = cellSize || 2;
+      var length = _this.getModuleCount();
+      for (var row = 0; row < length; row++) {
+        for (var col = 0; col < length; col++) {
+          context.fillStyle = _this.isDark(row, col) ? 'black' : 'white';
+          context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrcode.stringToBytes
+  //---------------------------------------------------------------------
+
+  qrcode.stringToBytesFuncs = {
+    'default' : function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        bytes.push(c & 0xff);
+      }
+      return bytes;
+    }
+  };
+
+  qrcode.stringToBytes = qrcode.stringToBytesFuncs['default'];
+
+  //---------------------------------------------------------------------
+  // qrcode.createStringToBytes
+  //---------------------------------------------------------------------
+
+  /**
+   * @param unicodeData base64 string of byte array.
+   * [16bit Unicode],[16bit Bytes], ...
+   * @param numChars
+   */
+  qrcode.createStringToBytes = function(unicodeData, numChars) {
+
+    // create conversion map.
+
+    var unicodeMap = function() {
+
+      var bin = base64DecodeInputStream(unicodeData);
+      var read = function() {
+        var b = bin.read();
+        if (b == -1) throw 'eof';
+        return b;
+      };
+
+      var count = 0;
+      var unicodeMap = {};
+      while (true) {
+        var b0 = bin.read();
+        if (b0 == -1) break;
+        var b1 = read();
+        var b2 = read();
+        var b3 = read();
+        var k = String.fromCharCode( (b0 << 8) | b1);
+        var v = (b2 << 8) | b3;
+        unicodeMap[k] = v;
+        count += 1;
+      }
+      if (count != numChars) {
+        throw count + ' != ' + numChars;
+      }
+
+      return unicodeMap;
+    }();
+
+    var unknownChar = '?'.charCodeAt(0);
+
+    return function(s) {
+      var bytes = [];
+      for (var i = 0; i < s.length; i += 1) {
+        var c = s.charCodeAt(i);
+        if (c < 128) {
+          bytes.push(c);
+        } else {
+          var b = unicodeMap[s.charAt(i)];
+          if (typeof b == 'number') {
+            if ( (b & 0xff) == b) {
+              // 1byte
+              bytes.push(b);
+            } else {
+              // 2bytes
+              bytes.push(b >>> 8);
+              bytes.push(b & 0xff);
+            }
+          } else {
+            bytes.push(unknownChar);
+          }
+        }
+      }
+      return bytes;
+    };
+  };
+
+  //---------------------------------------------------------------------
+  // QRMode
+  //---------------------------------------------------------------------
+
+  var QRMode = {
+    MODE_NUMBER :    1 << 0,
+    MODE_ALPHA_NUM : 1 << 1,
+    MODE_8BIT_BYTE : 1 << 2,
+    MODE_KANJI :     1 << 3
+  };
+
+  //---------------------------------------------------------------------
+  // QRErrorCorrectionLevel
+  //---------------------------------------------------------------------
+
+  var QRErrorCorrectionLevel = {
+    L : 1,
+    M : 0,
+    Q : 3,
+    H : 2
+  };
+
+  //---------------------------------------------------------------------
+  // QRMaskPattern
+  //---------------------------------------------------------------------
+
+  var QRMaskPattern = {
+    PATTERN000 : 0,
+    PATTERN001 : 1,
+    PATTERN010 : 2,
+    PATTERN011 : 3,
+    PATTERN100 : 4,
+    PATTERN101 : 5,
+    PATTERN110 : 6,
+    PATTERN111 : 7
+  };
+
+  //---------------------------------------------------------------------
+  // QRUtil
+  //---------------------------------------------------------------------
+
+  var QRUtil = function() {
+
+    var PATTERN_POSITION_TABLE = [
+      [],
+      [6, 18],
+      [6, 22],
+      [6, 26],
+      [6, 30],
+      [6, 34],
+      [6, 22, 38],
+      [6, 24, 42],
+      [6, 26, 46],
+      [6, 28, 50],
+      [6, 30, 54],
+      [6, 32, 58],
+      [6, 34, 62],
+      [6, 26, 46, 66],
+      [6, 26, 48, 70],
+      [6, 26, 50, 74],
+      [6, 30, 54, 78],
+      [6, 30, 56, 82],
+      [6, 30, 58, 86],
+      [6, 34, 62, 90],
+      [6, 28, 50, 72, 94],
+      [6, 26, 50, 74, 98],
+      [6, 30, 54, 78, 102],
+      [6, 28, 54, 80, 106],
+      [6, 32, 58, 84, 110],
+      [6, 30, 58, 86, 114],
+      [6, 34, 62, 90, 118],
+      [6, 26, 50, 74, 98, 122],
+      [6, 30, 54, 78, 102, 126],
+      [6, 26, 52, 78, 104, 130],
+      [6, 30, 56, 82, 108, 134],
+      [6, 34, 60, 86, 112, 138],
+      [6, 30, 58, 86, 114, 142],
+      [6, 34, 62, 90, 118, 146],
+      [6, 30, 54, 78, 102, 126, 150],
+      [6, 24, 50, 76, 102, 128, 154],
+      [6, 28, 54, 80, 106, 132, 158],
+      [6, 32, 58, 84, 110, 136, 162],
+      [6, 26, 54, 82, 110, 138, 166],
+      [6, 30, 58, 86, 114, 142, 170]
+    ];
+    var G15 = (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0);
+    var G18 = (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0);
+    var G15_MASK = (1 << 14) | (1 << 12) | (1 << 10) | (1 << 4) | (1 << 1);
+
+    var _this = {};
+
+    var getBCHDigit = function(data) {
+      var digit = 0;
+      while (data != 0) {
+        digit += 1;
+        data >>>= 1;
+      }
+      return digit;
+    };
+
+    _this.getBCHTypeInfo = function(data) {
+      var d = data << 10;
+      while (getBCHDigit(d) - getBCHDigit(G15) >= 0) {
+        d ^= (G15 << (getBCHDigit(d) - getBCHDigit(G15) ) );
+      }
+      return ( (data << 10) | d) ^ G15_MASK;
+    };
+
+    _this.getBCHTypeNumber = function(data) {
+      var d = data << 12;
+      while (getBCHDigit(d) - getBCHDigit(G18) >= 0) {
+        d ^= (G18 << (getBCHDigit(d) - getBCHDigit(G18) ) );
+      }
+      return (data << 12) | d;
+    };
+
+    _this.getPatternPosition = function(typeNumber) {
+      return PATTERN_POSITION_TABLE[typeNumber - 1];
+    };
+
+    _this.getMaskFunction = function(maskPattern) {
+
+      switch (maskPattern) {
+
+      case QRMaskPattern.PATTERN000 :
+        return function(i, j) { return (i + j) % 2 == 0; };
+      case QRMaskPattern.PATTERN001 :
+        return function(i, j) { return i % 2 == 0; };
+      case QRMaskPattern.PATTERN010 :
+        return function(i, j) { return j % 3 == 0; };
+      case QRMaskPattern.PATTERN011 :
+        return function(i, j) { return (i + j) % 3 == 0; };
+      case QRMaskPattern.PATTERN100 :
+        return function(i, j) { return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 == 0; };
+      case QRMaskPattern.PATTERN101 :
+        return function(i, j) { return (i * j) % 2 + (i * j) % 3 == 0; };
+      case QRMaskPattern.PATTERN110 :
+        return function(i, j) { return ( (i * j) % 2 + (i * j) % 3) % 2 == 0; };
+      case QRMaskPattern.PATTERN111 :
+        return function(i, j) { return ( (i * j) % 3 + (i + j) % 2) % 2 == 0; };
+
+      default :
+        throw 'bad maskPattern:' + maskPattern;
+      }
+    };
+
+    _this.getErrorCorrectPolynomial = function(errorCorrectLength) {
+      var a = qrPolynomial([1], 0);
+      for (var i = 0; i < errorCorrectLength; i += 1) {
+        a = a.multiply(qrPolynomial([1, QRMath.gexp(i)], 0) );
+      }
+      return a;
+    };
+
+    _this.getLengthInBits = function(mode, type) {
+
+      if (1 <= type && type < 10) {
+
+        // 1 - 9
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 10;
+        case QRMode.MODE_ALPHA_NUM : return 9;
+        case QRMode.MODE_8BIT_BYTE : return 8;
+        case QRMode.MODE_KANJI     : return 8;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 27) {
+
+        // 10 - 26
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 12;
+        case QRMode.MODE_ALPHA_NUM : return 11;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 10;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else if (type < 41) {
+
+        // 27 - 40
+
+        switch(mode) {
+        case QRMode.MODE_NUMBER    : return 14;
+        case QRMode.MODE_ALPHA_NUM : return 13;
+        case QRMode.MODE_8BIT_BYTE : return 16;
+        case QRMode.MODE_KANJI     : return 12;
+        default :
+          throw 'mode:' + mode;
+        }
+
+      } else {
+        throw 'type:' + type;
+      }
+    };
+
+    _this.getLostPoint = function(qrcode) {
+
+      var moduleCount = qrcode.getModuleCount();
+
+      var lostPoint = 0;
+
+      // LEVEL1
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount; col += 1) {
+
+          var sameCount = 0;
+          var dark = qrcode.isDark(row, col);
+
+          for (var r = -1; r <= 1; r += 1) {
+
+            if (row + r < 0 || moduleCount <= row + r) {
+              continue;
+            }
+
+            for (var c = -1; c <= 1; c += 1) {
+
+              if (col + c < 0 || moduleCount <= col + c) {
+                continue;
+              }
+
+              if (r == 0 && c == 0) {
+                continue;
+              }
+
+              if (dark == qrcode.isDark(row + r, col + c) ) {
+                sameCount += 1;
+              }
+            }
+          }
+
+          if (sameCount > 5) {
+            lostPoint += (3 + sameCount - 5);
+          }
+        }
+      };
+
+      // LEVEL2
+
+      for (var row = 0; row < moduleCount - 1; row += 1) {
+        for (var col = 0; col < moduleCount - 1; col += 1) {
+          var count = 0;
+          if (qrcode.isDark(row, col) ) count += 1;
+          if (qrcode.isDark(row + 1, col) ) count += 1;
+          if (qrcode.isDark(row, col + 1) ) count += 1;
+          if (qrcode.isDark(row + 1, col + 1) ) count += 1;
+          if (count == 0 || count == 4) {
+            lostPoint += 3;
+          }
+        }
+      }
+
+      // LEVEL3
+
+      for (var row = 0; row < moduleCount; row += 1) {
+        for (var col = 0; col < moduleCount - 6; col += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row, col + 1)
+              &&  qrcode.isDark(row, col + 2)
+              &&  qrcode.isDark(row, col + 3)
+              &&  qrcode.isDark(row, col + 4)
+              && !qrcode.isDark(row, col + 5)
+              &&  qrcode.isDark(row, col + 6) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount - 6; row += 1) {
+          if (qrcode.isDark(row, col)
+              && !qrcode.isDark(row + 1, col)
+              &&  qrcode.isDark(row + 2, col)
+              &&  qrcode.isDark(row + 3, col)
+              &&  qrcode.isDark(row + 4, col)
+              && !qrcode.isDark(row + 5, col)
+              &&  qrcode.isDark(row + 6, col) ) {
+            lostPoint += 40;
+          }
+        }
+      }
+
+      // LEVEL4
+
+      var darkCount = 0;
+
+      for (var col = 0; col < moduleCount; col += 1) {
+        for (var row = 0; row < moduleCount; row += 1) {
+          if (qrcode.isDark(row, col) ) {
+            darkCount += 1;
+          }
+        }
+      }
+
+      var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+      lostPoint += ratio * 10;
+
+      return lostPoint;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // QRMath
+  //---------------------------------------------------------------------
+
+  var QRMath = function() {
+
+    var EXP_TABLE = new Array(256);
+    var LOG_TABLE = new Array(256);
+
+    // initialize tables
+    for (var i = 0; i < 8; i += 1) {
+      EXP_TABLE[i] = 1 << i;
+    }
+    for (var i = 8; i < 256; i += 1) {
+      EXP_TABLE[i] = EXP_TABLE[i - 4]
+        ^ EXP_TABLE[i - 5]
+        ^ EXP_TABLE[i - 6]
+        ^ EXP_TABLE[i - 8];
+    }
+    for (var i = 0; i < 255; i += 1) {
+      LOG_TABLE[EXP_TABLE[i] ] = i;
+    }
+
+    var _this = {};
+
+    _this.glog = function(n) {
+
+      if (n < 1) {
+        throw 'glog(' + n + ')';
+      }
+
+      return LOG_TABLE[n];
+    };
+
+    _this.gexp = function(n) {
+
+      while (n < 0) {
+        n += 255;
+      }
+
+      while (n >= 256) {
+        n -= 255;
+      }
+
+      return EXP_TABLE[n];
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrPolynomial
+  //---------------------------------------------------------------------
+
+  function qrPolynomial(num, shift) {
+
+    if (typeof num.length == 'undefined') {
+      throw num.length + '/' + shift;
+    }
+
+    var _num = function() {
+      var offset = 0;
+      while (offset < num.length && num[offset] == 0) {
+        offset += 1;
+      }
+      var _num = new Array(num.length - offset + shift);
+      for (var i = 0; i < num.length - offset; i += 1) {
+        _num[i] = num[i + offset];
+      }
+      return _num;
+    }();
+
+    var _this = {};
+
+    _this.getAt = function(index) {
+      return _num[index];
+    };
+
+    _this.getLength = function() {
+      return _num.length;
+    };
+
+    _this.multiply = function(e) {
+
+      var num = new Array(_this.getLength() + e.getLength() - 1);
+
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        for (var j = 0; j < e.getLength(); j += 1) {
+          num[i + j] ^= QRMath.gexp(QRMath.glog(_this.getAt(i) ) + QRMath.glog(e.getAt(j) ) );
+        }
+      }
+
+      return qrPolynomial(num, 0);
+    };
+
+    _this.mod = function(e) {
+
+      if (_this.getLength() - e.getLength() < 0) {
+        return _this;
+      }
+
+      var ratio = QRMath.glog(_this.getAt(0) ) - QRMath.glog(e.getAt(0) );
+
+      var num = new Array(_this.getLength() );
+      for (var i = 0; i < _this.getLength(); i += 1) {
+        num[i] = _this.getAt(i);
+      }
+
+      for (var i = 0; i < e.getLength(); i += 1) {
+        num[i] ^= QRMath.gexp(QRMath.glog(e.getAt(i) ) + ratio);
+      }
+
+      // recursive call
+      return qrPolynomial(num, 0).mod(e);
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // QRRSBlock
+  //---------------------------------------------------------------------
+
+  var QRRSBlock = function() {
+
+    var RS_BLOCK_TABLE = [
+
+      // L
+      // M
+      // Q
+      // H
+
+      // 1
+      [1, 26, 19],
+      [1, 26, 16],
+      [1, 26, 13],
+      [1, 26, 9],
+
+      // 2
+      [1, 44, 34],
+      [1, 44, 28],
+      [1, 44, 22],
+      [1, 44, 16],
+
+      // 3
+      [1, 70, 55],
+      [1, 70, 44],
+      [2, 35, 17],
+      [2, 35, 13],
+
+      // 4
+      [1, 100, 80],
+      [2, 50, 32],
+      [2, 50, 24],
+      [4, 25, 9],
+
+      // 5
+      [1, 134, 108],
+      [2, 67, 43],
+      [2, 33, 15, 2, 34, 16],
+      [2, 33, 11, 2, 34, 12],
+
+      // 6
+      [2, 86, 68],
+      [4, 43, 27],
+      [4, 43, 19],
+      [4, 43, 15],
+
+      // 7
+      [2, 98, 78],
+      [4, 49, 31],
+      [2, 32, 14, 4, 33, 15],
+      [4, 39, 13, 1, 40, 14],
+
+      // 8
+      [2, 121, 97],
+      [2, 60, 38, 2, 61, 39],
+      [4, 40, 18, 2, 41, 19],
+      [4, 40, 14, 2, 41, 15],
+
+      // 9
+      [2, 146, 116],
+      [3, 58, 36, 2, 59, 37],
+      [4, 36, 16, 4, 37, 17],
+      [4, 36, 12, 4, 37, 13],
+
+      // 10
+      [2, 86, 68, 2, 87, 69],
+      [4, 69, 43, 1, 70, 44],
+      [6, 43, 19, 2, 44, 20],
+      [6, 43, 15, 2, 44, 16],
+
+      // 11
+      [4, 101, 81],
+      [1, 80, 50, 4, 81, 51],
+      [4, 50, 22, 4, 51, 23],
+      [3, 36, 12, 8, 37, 13],
+
+      // 12
+      [2, 116, 92, 2, 117, 93],
+      [6, 58, 36, 2, 59, 37],
+      [4, 46, 20, 6, 47, 21],
+      [7, 42, 14, 4, 43, 15],
+
+      // 13
+      [4, 133, 107],
+      [8, 59, 37, 1, 60, 38],
+      [8, 44, 20, 4, 45, 21],
+      [12, 33, 11, 4, 34, 12],
+
+      // 14
+      [3, 145, 115, 1, 146, 116],
+      [4, 64, 40, 5, 65, 41],
+      [11, 36, 16, 5, 37, 17],
+      [11, 36, 12, 5, 37, 13],
+
+      // 15
+      [5, 109, 87, 1, 110, 88],
+      [5, 65, 41, 5, 66, 42],
+      [5, 54, 24, 7, 55, 25],
+      [11, 36, 12, 7, 37, 13],
+
+      // 16
+      [5, 122, 98, 1, 123, 99],
+      [7, 73, 45, 3, 74, 46],
+      [15, 43, 19, 2, 44, 20],
+      [3, 45, 15, 13, 46, 16],
+
+      // 17
+      [1, 135, 107, 5, 136, 108],
+      [10, 74, 46, 1, 75, 47],
+      [1, 50, 22, 15, 51, 23],
+      [2, 42, 14, 17, 43, 15],
+
+      // 18
+      [5, 150, 120, 1, 151, 121],
+      [9, 69, 43, 4, 70, 44],
+      [17, 50, 22, 1, 51, 23],
+      [2, 42, 14, 19, 43, 15],
+
+      // 19
+      [3, 141, 113, 4, 142, 114],
+      [3, 70, 44, 11, 71, 45],
+      [17, 47, 21, 4, 48, 22],
+      [9, 39, 13, 16, 40, 14],
+
+      // 20
+      [3, 135, 107, 5, 136, 108],
+      [3, 67, 41, 13, 68, 42],
+      [15, 54, 24, 5, 55, 25],
+      [15, 43, 15, 10, 44, 16],
+
+      // 21
+      [4, 144, 116, 4, 145, 117],
+      [17, 68, 42],
+      [17, 50, 22, 6, 51, 23],
+      [19, 46, 16, 6, 47, 17],
+
+      // 22
+      [2, 139, 111, 7, 140, 112],
+      [17, 74, 46],
+      [7, 54, 24, 16, 55, 25],
+      [34, 37, 13],
+
+      // 23
+      [4, 151, 121, 5, 152, 122],
+      [4, 75, 47, 14, 76, 48],
+      [11, 54, 24, 14, 55, 25],
+      [16, 45, 15, 14, 46, 16],
+
+      // 24
+      [6, 147, 117, 4, 148, 118],
+      [6, 73, 45, 14, 74, 46],
+      [11, 54, 24, 16, 55, 25],
+      [30, 46, 16, 2, 47, 17],
+
+      // 25
+      [8, 132, 106, 4, 133, 107],
+      [8, 75, 47, 13, 76, 48],
+      [7, 54, 24, 22, 55, 25],
+      [22, 45, 15, 13, 46, 16],
+
+      // 26
+      [10, 142, 114, 2, 143, 115],
+      [19, 74, 46, 4, 75, 47],
+      [28, 50, 22, 6, 51, 23],
+      [33, 46, 16, 4, 47, 17],
+
+      // 27
+      [8, 152, 122, 4, 153, 123],
+      [22, 73, 45, 3, 74, 46],
+      [8, 53, 23, 26, 54, 24],
+      [12, 45, 15, 28, 46, 16],
+
+      // 28
+      [3, 147, 117, 10, 148, 118],
+      [3, 73, 45, 23, 74, 46],
+      [4, 54, 24, 31, 55, 25],
+      [11, 45, 15, 31, 46, 16],
+
+      // 29
+      [7, 146, 116, 7, 147, 117],
+      [21, 73, 45, 7, 74, 46],
+      [1, 53, 23, 37, 54, 24],
+      [19, 45, 15, 26, 46, 16],
+
+      // 30
+      [5, 145, 115, 10, 146, 116],
+      [19, 75, 47, 10, 76, 48],
+      [15, 54, 24, 25, 55, 25],
+      [23, 45, 15, 25, 46, 16],
+
+      // 31
+      [13, 145, 115, 3, 146, 116],
+      [2, 74, 46, 29, 75, 47],
+      [42, 54, 24, 1, 55, 25],
+      [23, 45, 15, 28, 46, 16],
+
+      // 32
+      [17, 145, 115],
+      [10, 74, 46, 23, 75, 47],
+      [10, 54, 24, 35, 55, 25],
+      [19, 45, 15, 35, 46, 16],
+
+      // 33
+      [17, 145, 115, 1, 146, 116],
+      [14, 74, 46, 21, 75, 47],
+      [29, 54, 24, 19, 55, 25],
+      [11, 45, 15, 46, 46, 16],
+
+      // 34
+      [13, 145, 115, 6, 146, 116],
+      [14, 74, 46, 23, 75, 47],
+      [44, 54, 24, 7, 55, 25],
+      [59, 46, 16, 1, 47, 17],
+
+      // 35
+      [12, 151, 121, 7, 152, 122],
+      [12, 75, 47, 26, 76, 48],
+      [39, 54, 24, 14, 55, 25],
+      [22, 45, 15, 41, 46, 16],
+
+      // 36
+      [6, 151, 121, 14, 152, 122],
+      [6, 75, 47, 34, 76, 48],
+      [46, 54, 24, 10, 55, 25],
+      [2, 45, 15, 64, 46, 16],
+
+      // 37
+      [17, 152, 122, 4, 153, 123],
+      [29, 74, 46, 14, 75, 47],
+      [49, 54, 24, 10, 55, 25],
+      [24, 45, 15, 46, 46, 16],
+
+      // 38
+      [4, 152, 122, 18, 153, 123],
+      [13, 74, 46, 32, 75, 47],
+      [48, 54, 24, 14, 55, 25],
+      [42, 45, 15, 32, 46, 16],
+
+      // 39
+      [20, 147, 117, 4, 148, 118],
+      [40, 75, 47, 7, 76, 48],
+      [43, 54, 24, 22, 55, 25],
+      [10, 45, 15, 67, 46, 16],
+
+      // 40
+      [19, 148, 118, 6, 149, 119],
+      [18, 75, 47, 31, 76, 48],
+      [34, 54, 24, 34, 55, 25],
+      [20, 45, 15, 61, 46, 16]
+    ];
+
+    var qrRSBlock = function(totalCount, dataCount) {
+      var _this = {};
+      _this.totalCount = totalCount;
+      _this.dataCount = dataCount;
+      return _this;
+    };
+
+    var _this = {};
+
+    var getRsBlockTable = function(typeNumber, errorCorrectionLevel) {
+
+      switch(errorCorrectionLevel) {
+      case QRErrorCorrectionLevel.L :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+      case QRErrorCorrectionLevel.M :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+      case QRErrorCorrectionLevel.Q :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+      case QRErrorCorrectionLevel.H :
+        return RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+      default :
+        return undefined;
+      }
+    };
+
+    _this.getRSBlocks = function(typeNumber, errorCorrectionLevel) {
+
+      var rsBlock = getRsBlockTable(typeNumber, errorCorrectionLevel);
+
+      if (typeof rsBlock == 'undefined') {
+        throw 'bad rs block @ typeNumber:' + typeNumber +
+            '/errorCorrectionLevel:' + errorCorrectionLevel;
+      }
+
+      var length = rsBlock.length / 3;
+
+      var list = [];
+
+      for (var i = 0; i < length; i += 1) {
+
+        var count = rsBlock[i * 3 + 0];
+        var totalCount = rsBlock[i * 3 + 1];
+        var dataCount = rsBlock[i * 3 + 2];
+
+        for (var j = 0; j < count; j += 1) {
+          list.push(qrRSBlock(totalCount, dataCount) );
+        }
+      }
+
+      return list;
+    };
+
+    return _this;
+  }();
+
+  //---------------------------------------------------------------------
+  // qrBitBuffer
+  //---------------------------------------------------------------------
+
+  var qrBitBuffer = function() {
+
+    var _buffer = [];
+    var _length = 0;
+
+    var _this = {};
+
+    _this.getBuffer = function() {
+      return _buffer;
+    };
+
+    _this.getAt = function(index) {
+      var bufIndex = Math.floor(index / 8);
+      return ( (_buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+    };
+
+    _this.put = function(num, length) {
+      for (var i = 0; i < length; i += 1) {
+        _this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+      }
+    };
+
+    _this.getLengthInBits = function() {
+      return _length;
+    };
+
+    _this.putBit = function(bit) {
+
+      var bufIndex = Math.floor(_length / 8);
+      if (_buffer.length <= bufIndex) {
+        _buffer.push(0);
+      }
+
+      if (bit) {
+        _buffer[bufIndex] |= (0x80 >>> (_length % 8) );
+      }
+
+      _length += 1;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrNumber
+  //---------------------------------------------------------------------
+
+  var qrNumber = function(data) {
+
+    var _mode = QRMode.MODE_NUMBER;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _data;
+
+      var i = 0;
+
+      while (i + 2 < data.length) {
+        buffer.put(strToNum(data.substring(i, i + 3) ), 10);
+        i += 3;
+      }
+
+      if (i < data.length) {
+        if (data.length - i == 1) {
+          buffer.put(strToNum(data.substring(i, i + 1) ), 4);
+        } else if (data.length - i == 2) {
+          buffer.put(strToNum(data.substring(i, i + 2) ), 7);
+        }
+      }
+    };
+
+    var strToNum = function(s) {
+      var num = 0;
+      for (var i = 0; i < s.length; i += 1) {
+        num = num * 10 + chatToNum(s.charAt(i) );
+      }
+      return num;
+    };
+
+    var chatToNum = function(c) {
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      }
+      throw 'illegal char :' + c;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrAlphaNum
+  //---------------------------------------------------------------------
+
+  var qrAlphaNum = function(data) {
+
+    var _mode = QRMode.MODE_ALPHA_NUM;
+    var _data = data;
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _data.length;
+    };
+
+    _this.write = function(buffer) {
+
+      var s = _data;
+
+      var i = 0;
+
+      while (i + 1 < s.length) {
+        buffer.put(
+          getCode(s.charAt(i) ) * 45 +
+          getCode(s.charAt(i + 1) ), 11);
+        i += 2;
+      }
+
+      if (i < s.length) {
+        buffer.put(getCode(s.charAt(i) ), 6);
+      }
+    };
+
+    var getCode = function(c) {
+
+      if ('0' <= c && c <= '9') {
+        return c.charCodeAt(0) - '0'.charCodeAt(0);
+      } else if ('A' <= c && c <= 'Z') {
+        return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+      } else {
+        switch (c) {
+        case ' ' : return 36;
+        case '$' : return 37;
+        case '%' : return 38;
+        case '*' : return 39;
+        case '+' : return 40;
+        case '-' : return 41;
+        case '.' : return 42;
+        case '/' : return 43;
+        case ':' : return 44;
+        default :
+          throw 'illegal char :' + c;
+        }
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qr8BitByte
+  //---------------------------------------------------------------------
+
+  var qr8BitByte = function(data) {
+
+    var _mode = QRMode.MODE_8BIT_BYTE;
+    var _data = data;
+    var _bytes = qrcode.stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return _bytes.length;
+    };
+
+    _this.write = function(buffer) {
+      for (var i = 0; i < _bytes.length; i += 1) {
+        buffer.put(_bytes[i], 8);
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // qrKanji
+  //---------------------------------------------------------------------
+
+  var qrKanji = function(data) {
+
+    var _mode = QRMode.MODE_KANJI;
+    var _data = data;
+
+    var stringToBytes = qrcode.stringToBytesFuncs['SJIS'];
+    if (!stringToBytes) {
+      throw 'sjis not supported.';
+    }
+    !function(c, code) {
+      // self test for sjis support.
+      var test = stringToBytes(c);
+      if (test.length != 2 || ( (test[0] << 8) | test[1]) != code) {
+        throw 'sjis not supported.';
+      }
+    }('\u53cb', 0x9746);
+
+    var _bytes = stringToBytes(data);
+
+    var _this = {};
+
+    _this.getMode = function() {
+      return _mode;
+    };
+
+    _this.getLength = function(buffer) {
+      return ~~(_bytes.length / 2);
+    };
+
+    _this.write = function(buffer) {
+
+      var data = _bytes;
+
+      var i = 0;
+
+      while (i + 1 < data.length) {
+
+        var c = ( (0xff & data[i]) << 8) | (0xff & data[i + 1]);
+
+        if (0x8140 <= c && c <= 0x9FFC) {
+          c -= 0x8140;
+        } else if (0xE040 <= c && c <= 0xEBBF) {
+          c -= 0xC140;
+        } else {
+          throw 'illegal char at ' + (i + 1) + '/' + c;
+        }
+
+        c = ( (c >>> 8) & 0xff) * 0xC0 + (c & 0xff);
+
+        buffer.put(c, 13);
+
+        i += 2;
+      }
+
+      if (i < data.length) {
+        throw 'illegal char at ' + (i + 1);
+      }
+    };
+
+    return _this;
+  };
+
+  //=====================================================================
+  // GIF Support etc.
+  //
+
+  //---------------------------------------------------------------------
+  // byteArrayOutputStream
+  //---------------------------------------------------------------------
+
+  var byteArrayOutputStream = function() {
+
+    var _bytes = [];
+
+    var _this = {};
+
+    _this.writeByte = function(b) {
+      _bytes.push(b & 0xff);
+    };
+
+    _this.writeShort = function(i) {
+      _this.writeByte(i);
+      _this.writeByte(i >>> 8);
+    };
+
+    _this.writeBytes = function(b, off, len) {
+      off = off || 0;
+      len = len || b.length;
+      for (var i = 0; i < len; i += 1) {
+        _this.writeByte(b[i + off]);
+      }
+    };
+
+    _this.writeString = function(s) {
+      for (var i = 0; i < s.length; i += 1) {
+        _this.writeByte(s.charCodeAt(i) );
+      }
+    };
+
+    _this.toByteArray = function() {
+      return _bytes;
+    };
+
+    _this.toString = function() {
+      var s = '';
+      s += '[';
+      for (var i = 0; i < _bytes.length; i += 1) {
+        if (i > 0) {
+          s += ',';
+        }
+        s += _bytes[i];
+      }
+      s += ']';
+      return s;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64EncodeOutputStream
+  //---------------------------------------------------------------------
+
+  var base64EncodeOutputStream = function() {
+
+    var _buffer = 0;
+    var _buflen = 0;
+    var _length = 0;
+    var _base64 = '';
+
+    var _this = {};
+
+    var writeEncoded = function(b) {
+      _base64 += String.fromCharCode(encode(b & 0x3f) );
+    };
+
+    var encode = function(n) {
+      if (n < 0) {
+        // error.
+      } else if (n < 26) {
+        return 0x41 + n;
+      } else if (n < 52) {
+        return 0x61 + (n - 26);
+      } else if (n < 62) {
+        return 0x30 + (n - 52);
+      } else if (n == 62) {
+        return 0x2b;
+      } else if (n == 63) {
+        return 0x2f;
+      }
+      throw 'n:' + n;
+    };
+
+    _this.writeByte = function(n) {
+
+      _buffer = (_buffer << 8) | (n & 0xff);
+      _buflen += 8;
+      _length += 1;
+
+      while (_buflen >= 6) {
+        writeEncoded(_buffer >>> (_buflen - 6) );
+        _buflen -= 6;
+      }
+    };
+
+    _this.flush = function() {
+
+      if (_buflen > 0) {
+        writeEncoded(_buffer << (6 - _buflen) );
+        _buffer = 0;
+        _buflen = 0;
+      }
+
+      if (_length % 3 != 0) {
+        // padding
+        var padlen = 3 - _length % 3;
+        for (var i = 0; i < padlen; i += 1) {
+          _base64 += '=';
+        }
+      }
+    };
+
+    _this.toString = function() {
+      return _base64;
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // base64DecodeInputStream
+  //---------------------------------------------------------------------
+
+  var base64DecodeInputStream = function(str) {
+
+    var _str = str;
+    var _pos = 0;
+    var _buffer = 0;
+    var _buflen = 0;
+
+    var _this = {};
+
+    _this.read = function() {
+
+      while (_buflen < 8) {
+
+        if (_pos >= _str.length) {
+          if (_buflen == 0) {
+            return -1;
+          }
+          throw 'unexpected end of file./' + _buflen;
+        }
+
+        var c = _str.charAt(_pos);
+        _pos += 1;
+
+        if (c == '=') {
+          _buflen = 0;
+          return -1;
+        } else if (c.match(/^\s$/) ) {
+          // ignore if whitespace.
+          continue;
+        }
+
+        _buffer = (_buffer << 6) | decode(c.charCodeAt(0) );
+        _buflen += 6;
+      }
+
+      var n = (_buffer >>> (_buflen - 8) ) & 0xff;
+      _buflen -= 8;
+      return n;
+    };
+
+    var decode = function(c) {
+      if (0x41 <= c && c <= 0x5a) {
+        return c - 0x41;
+      } else if (0x61 <= c && c <= 0x7a) {
+        return c - 0x61 + 26;
+      } else if (0x30 <= c && c <= 0x39) {
+        return c - 0x30 + 52;
+      } else if (c == 0x2b) {
+        return 62;
+      } else if (c == 0x2f) {
+        return 63;
+      } else {
+        throw 'c:' + c;
+      }
+    };
+
+    return _this;
+  };
+
+  //---------------------------------------------------------------------
+  // gifImage (B/W)
+  //---------------------------------------------------------------------
+
+  var gifImage = function(width, height) {
+
+    var _width = width;
+    var _height = height;
+    var _data = new Array(width * height);
+
+    var _this = {};
+
+    _this.setPixel = function(x, y, pixel) {
+      _data[y * _width + x] = pixel;
+    };
+
+    _this.write = function(out) {
+
+      //---------------------------------
+      // GIF Signature
+
+      out.writeString('GIF87a');
+
+      //---------------------------------
+      // Screen Descriptor
+
+      out.writeShort(_width);
+      out.writeShort(_height);
+
+      out.writeByte(0x80); // 2bit
+      out.writeByte(0);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Global Color Map
+
+      // black
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+      out.writeByte(0x00);
+
+      // white
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+      out.writeByte(0xff);
+
+      //---------------------------------
+      // Image Descriptor
+
+      out.writeString(',');
+      out.writeShort(0);
+      out.writeShort(0);
+      out.writeShort(_width);
+      out.writeShort(_height);
+      out.writeByte(0);
+
+      //---------------------------------
+      // Local Color Map
+
+      //---------------------------------
+      // Raster Data
+
+      var lzwMinCodeSize = 2;
+      var raster = getLZWRaster(lzwMinCodeSize);
+
+      out.writeByte(lzwMinCodeSize);
+
+      var offset = 0;
+
+      while (raster.length - offset > 255) {
+        out.writeByte(255);
+        out.writeBytes(raster, offset, 255);
+        offset += 255;
+      }
+
+      out.writeByte(raster.length - offset);
+      out.writeBytes(raster, offset, raster.length - offset);
+      out.writeByte(0x00);
+
+      //---------------------------------
+      // GIF Terminator
+      out.writeString(';');
+    };
+
+    var bitOutputStream = function(out) {
+
+      var _out = out;
+      var _bitLength = 0;
+      var _bitBuffer = 0;
+
+      var _this = {};
+
+      _this.write = function(data, length) {
+
+        if ( (data >>> length) != 0) {
+          throw 'length over';
+        }
+
+        while (_bitLength + length >= 8) {
+          _out.writeByte(0xff & ( (data << _bitLength) | _bitBuffer) );
+          length -= (8 - _bitLength);
+          data >>>= (8 - _bitLength);
+          _bitBuffer = 0;
+          _bitLength = 0;
+        }
+
+        _bitBuffer = (data << _bitLength) | _bitBuffer;
+        _bitLength = _bitLength + length;
+      };
+
+      _this.flush = function() {
+        if (_bitLength > 0) {
+          _out.writeByte(_bitBuffer);
+        }
+      };
+
+      return _this;
+    };
+
+    var getLZWRaster = function(lzwMinCodeSize) {
+
+      var clearCode = 1 << lzwMinCodeSize;
+      var endCode = (1 << lzwMinCodeSize) + 1;
+      var bitLength = lzwMinCodeSize + 1;
+
+      // Setup LZWTable
+      var table = lzwTable();
+
+      for (var i = 0; i < clearCode; i += 1) {
+        table.add(String.fromCharCode(i) );
+      }
+      table.add(String.fromCharCode(clearCode) );
+      table.add(String.fromCharCode(endCode) );
+
+      var byteOut = byteArrayOutputStream();
+      var bitOut = bitOutputStream(byteOut);
+
+      // clear code
+      bitOut.write(clearCode, bitLength);
+
+      var dataIndex = 0;
+
+      var s = String.fromCharCode(_data[dataIndex]);
+      dataIndex += 1;
+
+      while (dataIndex < _data.length) {
+
+        var c = String.fromCharCode(_data[dataIndex]);
+        dataIndex += 1;
+
+        if (table.contains(s + c) ) {
+
+          s = s + c;
+
+        } else {
+
+          bitOut.write(table.indexOf(s), bitLength);
+
+          if (table.size() < 0xfff) {
+
+            if (table.size() == (1 << bitLength) ) {
+              bitLength += 1;
+            }
+
+            table.add(s + c);
+          }
+
+          s = c;
+        }
+      }
+
+      bitOut.write(table.indexOf(s), bitLength);
+
+      // end code
+      bitOut.write(endCode, bitLength);
+
+      bitOut.flush();
+
+      return byteOut.toByteArray();
+    };
+
+    var lzwTable = function() {
+
+      var _map = {};
+      var _size = 0;
+
+      var _this = {};
+
+      _this.add = function(key) {
+        if (_this.contains(key) ) {
+          throw 'dup key:' + key;
+        }
+        _map[key] = _size;
+        _size += 1;
+      };
+
+      _this.size = function() {
+        return _size;
+      };
+
+      _this.indexOf = function(key) {
+        return _map[key];
+      };
+
+      _this.contains = function(key) {
+        return typeof _map[key] != 'undefined';
+      };
+
+      return _this;
+    };
+
+    return _this;
+  };
+
+  var createDataURL = function(width, height, getPixel) {
+    var gif = gifImage(width, height);
+    for (var y = 0; y < height; y += 1) {
+      for (var x = 0; x < width; x += 1) {
+        gif.setPixel(x, y, getPixel(x, y) );
+      }
+    }
+
+    var b = byteArrayOutputStream();
+    gif.write(b);
+
+    var base64 = base64EncodeOutputStream();
+    var bytes = b.toByteArray();
+    for (var i = 0; i < bytes.length; i += 1) {
+      base64.writeByte(bytes[i]);
+    }
+    base64.flush();
+
+    return 'data:image/gif;base64,' + base64;
+  };
+
+  //---------------------------------------------------------------------
+  // returns qrcode function.
+
+  return qrcode;
+}();
+
+// multibyte support
+!function() {
+
+  qrcode.stringToBytesFuncs['UTF-8'] = function(s) {
+    // http://stackoverflow.com/questions/18729405/how-to-convert-utf8-string-to-byte-array
+    function toUTF8Array(str) {
+      var utf8 = [];
+      for (var i=0; i < str.length; i++) {
+        var charcode = str.charCodeAt(i);
+        if (charcode < 0x80) utf8.push(charcode);
+        else if (charcode < 0x800) {
+          utf8.push(0xc0 | (charcode >> 6),
+              0x80 | (charcode & 0x3f));
+        }
+        else if (charcode < 0xd800 || charcode >= 0xe000) {
+          utf8.push(0xe0 | (charcode >> 12),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+        // surrogate pair
+        else {
+          i++;
+          // UTF-16 encodes 0x10000-0x10FFFF by
+          // subtracting 0x10000 and splitting the
+          // 20 bits of 0x0-0xFFFFF into two halves
+          charcode = 0x10000 + (((charcode & 0x3ff)<<10)
+            | (str.charCodeAt(i) & 0x3ff));
+          utf8.push(0xf0 | (charcode >>18),
+              0x80 | ((charcode>>12) & 0x3f),
+              0x80 | ((charcode>>6) & 0x3f),
+              0x80 | (charcode & 0x3f));
+        }
+      }
+      return utf8;
+    }
+    return toUTF8Array(s);
+  };
+
+}();
+</script>
+
+<script>
+"use strict";
+/* ==========================================================================
+   Layout-constanten (mm). Eén bron van waarheid: de CSS krijgt deze waarden
+   ingespoten, en de controle "past het aantal boulders op de kaart" rekent
+   met exact dezelfde getallen.
+   ========================================================================== */
+const L = { card:148.5, pad:8, hdr:28, gap:2, thead:11, tfoot:9, minRow:8, maxRow:14 };
+L.body = L.card - 2*L.pad - L.hdr - L.gap - L.thead - L.tfoot;   // 82.5mm
+L.maxRows = Math.floor(L.body / L.minRow);                        // 10
+const MM = 96/25.4;          // mm -> px bij 96dpi
+
+/* Papierformaten. De kaart is in beide gevallen identiek (§6.1); alleen het blad
+   eromheen verschilt.
+
+   ISO A5 is 148mm hoog, een halve A4 is 148.5mm. Bij "A5 landscape" valt de kaart
+   dus 0.5mm buiten de pagina en schuift elk blad een lege pagina op. Daarom een
+   expliciete paginamaat gelijk aan de kaart; die halve millimeter valt op echt
+   A5-papier binnen de onbedrukbare rand en daar staat niets. */
+const PAPER = {
+  A4: { page:'A4 portrait',      sheet:297,   perSheet:2, cut:true  },
+  A5: { page:'210mm 148.5mm',    sheet:148.5, perSheet:1, cut:false }
+};
+
+/* Zonder QR schuift het naamveld 24mm op; de controle op te lange namen (§5)
+   volgt die breedte, zodat er maar één getal is dat klopt. */
+const nameFieldMm = showQr => showQr ? 150 : 174;
+
+function applyLayoutVars(el){
+  const s = el.style;
+  s.setProperty('--pad',     L.pad + 'mm');
+  s.setProperty('--hdr-h',   L.hdr + 'mm');
+  s.setProperty('--gap',     L.gap + 'mm');
+  s.setProperty('--tfoot-h', L.tfoot + 'mm');
+  s.setProperty('--body-h',  L.body + 'mm');
+  s.setProperty('--max-row', L.maxRow + 'mm');
+}
+
+/* ==========================================================================
+   CSV — RFC 4180: quotes, ingesloten scheidingstekens en newlines, "" -> "
+   ========================================================================== */
+function sniffDelimiter(text){
+  const line = text.split(/\r?\n/, 1)[0] || '';
+  const counts = [[';', 0], ['\t', 0], [',', 0]];
+  let inQ = false;
+  for (const ch of line){
+    if (ch === '"') inQ = !inQ;
+    else if (!inQ) for (const c of counts) if (ch === c[0]) c[1]++;
+  }
+  counts.sort((a,b) => b[1] - a[1]);
+  return counts[0][1] > 0 ? counts[0][0] : ';';
+}
+
+function parseCSV(text, delim){
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);   // BOM
+  delim = delim || sniffDelimiter(text);
+  const rows = [];
+  let row = [], field = '', i = 0, inQ = false, dirty = false;
+  while (i < text.length){
+    const c = text[i];
+    if (inQ){
+      if (c === '"'){
+        if (text[i+1] === '"'){ field += '"'; i += 2; continue; }
+        inQ = false; i++; continue;
+      }
+      field += c; i++; continue;
+    }
+    if (c === '"' && field === ''){ inQ = true; dirty = true; i++; continue; }
+    if (c === delim){ row.push(field); field = ''; dirty = true; i++; continue; }
+    if (c === '\r'){ i++; continue; }
+    if (c === '\n'){
+      row.push(field);
+      if (dirty || row.length > 1 || row[0] !== '') rows.push(row);
+      row = []; field = ''; dirty = false; i++; continue;
+    }
+    field += c; dirty = true; i++;
+  }
+  if (dirty){ row.push(field); rows.push(row); }
+  return rows;
+}
+
+/* Kolommen op naam zoeken, niet op positie: de export bevat ook Ranking en
+   mogelijk extra kolommen. */
+const COLS = {
+  category: ['category', 'categorie'],
+  number:   ['starting number', 'startnummer', 'startnr'],
+  name:     ['name', 'naam']
+};
+function findColumns(header){
+  const norm = header.map(h => String(h).trim().toLowerCase());
+  const idx = {};
+  for (const key in COLS) idx[key] = norm.findIndex(h => COLS[key].includes(h));
+  return idx;
+}
+
+/* rows -> deelnemers. rowNo is het regelnummer zoals de gebruiker het in Excel
+   ziet (1 = kopregel), zodat foutmeldingen aanwijsbaar zijn. */
+function toParticipants(rows){
+  if (!rows.length) throw new Error('Het bestand is leeg.');
+  const idx = findColumns(rows[0]);
+  const missing = Object.keys(COLS).filter(k => idx[k] < 0);
+  if (missing.length){
+    const want = missing.map(k => COLS[k][0]).join(', ');
+    throw new Error('Kolom niet gevonden: ' + want + '. Gevonden kopregel: ' + rows[0].join(' | '));
+  }
+  return rows.slice(1).map((r, i) => ({
+    rowNo:    i + 2,
+    category: (r[idx.category] ?? '').trim(),
+    numberRaw:(r[idx.number]   ?? '').trim(),
+    name:     (r[idx.name]     ?? '').trim(),
+    number:   Number((r[idx.number] ?? '').trim())
+  }));
+}
+
+/* ==========================================================================
+   QR — payload bevat bewust geen persoonsgegevens.
+   Komt er ooit een athleteId in de export, dan is dat hier één regel.
+   ========================================================================== */
+function qrPayload(competitionId, startingNumber, athleteId){
+  return [competitionId, startingNumber].concat(athleteId ? [athleteId] : []).join(':');
+}
+function qrSvg(payload){
+  const q = qrcode(0, 'M');                 // foutcorrectieniveau M
+  q.addData(payload);
+  q.make();
+  return q.createSvgTag({ cellSize:1, margin:0, scalable:true });
+}
+
+/* ==========================================================================
+   Validatie — alle controles draaien altijd, het rapport toont alles tegelijk.
+   ========================================================================== */
+function textWidthMm(text, font){
+  const c = textWidthMm._c || (textWidthMm._c = document.createElement('canvas').getContext('2d'));
+  c.font = font;
+  return c.measureText(text).width / MM;
+}
+
+function validate(participants, mapping, catOrder, opts){
+  const errors = [], warnings = [];
+  const seen = new Map();
+  const nameMax = nameFieldMm(!opts || opts.showQr !== false);
+
+  participants.forEach(p => {
+    const at = 'Rij ' + p.rowNo;
+    if (!p.name)     errors.push(at + ': naam is leeg.');
+    if (!p.category) errors.push(at + ': categorie is leeg.');
+    if (!p.numberRaw) errors.push(at + ': startnummer is leeg.');
+    else if (!/^\d+$/.test(p.numberRaw) || p.number < 1)
+      errors.push(at + ': startnummer "' + p.numberRaw + '" is geen positief geheel getal.');
+    else if (seen.has(p.number))
+      errors.push('Startnummer ' + p.number + ' komt twee keer voor: rij ' +
+                  seen.get(p.number).rowNo + ' (' + seen.get(p.number).name + ') en rij ' +
+                  p.rowNo + ' (' + p.name + ').');
+    else seen.set(p.number, p);
+
+    if (p.name && textWidthMm(p.name, 'bold 13pt Arial') > nameMax)
+      warnings.push('Rij ' + p.rowNo + ': de naam "' + p.name + '" is te lang voor het naamveld en wordt afgekapt.');
+  });
+
+  const csvCats = new Set(participants.map(p => p.category).filter(Boolean));
+  const mapCats = catOrder.filter(c => mapping[c]);
+
+  csvCats.forEach(c => {
+    if (!mapping[c]) errors.push('Categorie "' + c + '" staat in de deelnemerslijst maar heeft geen boulders toegekend.');
+  });
+  mapCats.forEach(c => {
+    if (!csvCats.has(c)) errors.push('Categorie "' + c + '" heeft boulders toegekend maar geen deelnemers.');
+    const nums = mapping[c];
+    if (!nums.length) errors.push('Categorie "' + c + '" heeft nul boulders.');
+    const dup = nums.filter((n, i) => nums.indexOf(n) !== i);
+    [...new Set(dup)].forEach(n =>
+      errors.push('Boulder ' + n + ' komt meer dan één keer voor in categorie "' + c + '".'));
+  });
+
+  const counts = mapCats.filter(c => csvCats.has(c)).map(c => mapping[c].length);
+  if (new Set(counts).size > 1)
+    warnings.push('Niet alle categorieën hebben evenveel boulders (' +
+      mapCats.filter(c => csvCats.has(c)).map(c => c + ': ' + mapping[c].length).join(', ') +
+      '). Klopt voor een finale, meestal een vergissing in een kwalificatie.');
+  mapCats.forEach(c => {
+    if (mapping[c].length > L.maxRows)
+      warnings.push('Categorie "' + c + '" heeft ' + mapping[c].length + ' boulders; er passen er ' +
+        L.maxRows + ' op een kaart bij ' + L.minRow + 'mm rijhoogte. De vakjes worden krap.');
+  });
+
+  return { errors, warnings };
+}
+
+/* ==========================================================================
+   Sortering — categorie (volgorde uit de boulderindeling), dan startnummer.
+   ========================================================================== */
+function sortCards(participants, catOrder){
+  const rank = new Map(catOrder.map((c, i) => [c, i]));
+  return participants.slice().sort((a, b) => {
+    const ra = rank.has(a.category) ? rank.get(a.category) : 1e9;
+    const rb = rank.has(b.category) ? rank.get(b.category) : 1e9;
+    if (ra !== rb) return ra - rb;
+    if (a.category !== b.category) return a.category < b.category ? -1 : 1;
+    return a.number - b.number;
+  });
+}
+
+/* ==========================================================================
+   Boulderindeling plakken (§4.2 methode 1 en 2)
+
+   Beide parsers leveren hetzelfde op als het handmatige raster:
+   { mapping: {categorie: [nummers]}, order: [categorie...] }.
+   De categorieën uit de deelnemerslijst zijn het anker — zonder CSV kan er niets
+   herkend worden.
+   ========================================================================== */
+function emptyResult(knownCats){
+  const mapping = {};
+  knownCats.forEach(c => mapping[c] = []);
+  return { mapping, order: [] };
+}
+function addBoulder(res, cat, n){
+  if (!res.mapping[cat]) { res.mapping[cat] = []; }
+  if (!res.order.includes(cat)) res.order.push(cat);
+  if (!res.mapping[cat].includes(n)) res.mapping[cat].push(n);
+}
+
+/* Categorienamen als deeltekst zoeken, langste eerst, en elke treffer
+   dichtmetselen. Nodig omdat de badges aan elkaar geplakt worden en omdat
+   categorienamen zelf cijfers bevatten (u11, u13) die anders als boulder tellen. */
+function extractCats(text, knownCats){
+  let rest = text;
+  const found = [];
+  for (const c of knownCats.slice().sort((a, b) => b.length - a.length)){
+    let i;
+    while (c && (i = rest.indexOf(c)) >= 0){
+      found.push(c);
+      rest = rest.slice(0, i) + ' '.repeat(c.length) + rest.slice(i + c.length);
+    }
+  }
+  return { cats: [...new Set(found)], rest };
+}
+
+/* Chrome plakt deze tabel niet als nette TSV: één tab per rij, de overige cellen
+   op eigen regels. Een nieuwe rij begint dus bij elke regel mét tab. Dezelfde
+   regel werkt ook voor echte TSV, waar elke regel tabs heeft. */
+function splitRecords(text){
+  const records = [];
+  for (const line of text.split(/\r?\n/)){
+    if (!line.trim()) continue;
+    if (line.includes('\t') || !records.length) records.push(line);
+    else records[records.length - 1] += '\n' + line;
+  }
+  return records;
+}
+
+function parseBoulderTable(text, knownCats){
+  const res = emptyResult(knownCats);
+  let matched = 0;
+  for (const rec of splitRecords(text)){
+    const { cats, rest } = extractCats(rec, knownCats);
+    const first = rec.split('\t')[0].split('\n')[0].trim();
+    if (/^\d+$/.test(first)){                       // boulders als rijen
+      cats.forEach(c => addBoulder(res, c, Number(first)));
+      if (cats.length) matched++;
+    } else if (knownCats.includes(first)){          // categorieën als rijen
+      (rest.match(/\d+/g) || []).forEach(n => addBoulder(res, first, Number(n)));
+      matched++;
+    }
+  }
+  if (!matched) throw new Error('Geen enkele categorie herkend in de geplakte tekst. ' +
+    'Verwacht een van deze namen: ' + knownCats.join(', ') + '.');
+  res.info = matched + ' rijen herkend.';
+  return res;
+}
+
+/* ---- JSON (§4.2 methode 1) ---- */
+function findObjectArrays(data, depth, out){
+  out = out || []; depth = depth || 0;
+  if (depth > 5 || !data || typeof data !== 'object') return out;
+  if (Array.isArray(data)){
+    if (data.length && data.every(x => x && typeof x === 'object' && !Array.isArray(x))) out.push(data);
+    return out;
+  }
+  for (const k in data) findObjectArrays(data[k], depth + 1, out);
+  return out;
+}
+const asArray = v => Array.isArray(v) ? v : [v];
+const isNumish = v => typeof v === 'number' || (typeof v === 'string' && /^\d+$/.test(v.trim()));
+
+function detectFields(rows, keys, knownCats){
+  const catKeys = keys.filter(k => rows.some(r =>
+    asArray(r[k]).some(v => typeof v === 'string' && knownCats.includes(v.trim()))));
+  const numKeys = keys.filter(k => !catKeys.includes(k) && rows.some(r =>
+    asArray(r[k]).length && asArray(r[k]).every(isNumish)));
+  return (catKeys.length === 1 && numKeys.length === 1) ? { cat: catKeys[0], num: numKeys[0] } : null;
+}
+
+/* Eén reductie voor beide oriëntaties: het kruisproduct van de categorieën en de
+   nummers in een rij. Rij = één categorie met veel boulders, óf één boulder met
+   veel categorieën — beide komen hier goed uit. */
+function reduceRows(rows, fm, knownCats){
+  const res = emptyResult(knownCats);
+  for (const r of rows){
+    const cats = asArray(r[fm.cat]).filter(v => typeof v === 'string').map(v => v.trim());
+    const nums = asArray(r[fm.num]).filter(isNumish).map(Number);
+    for (const c of cats) for (const n of nums) addBoulder(res, c, n);
+  }
+  return res;
+}
+
+function parseBoulderJSON(text, knownCats, fieldMap){
+  const data = JSON.parse(text);
+  // Vorm 1: { "u11 (meisjes/jongens)": [1,2,3] }
+  if (data && !Array.isArray(data) && typeof data === 'object'){
+    const keys = Object.keys(data);
+    if (keys.length && keys.every(k => Array.isArray(data[k]) && data[k].every(isNumish))){
+      const res = emptyResult(knownCats);
+      keys.forEach(k => data[k].forEach(n => addBoulder(res, k.trim(), Number(n))));
+      res.info = keys.length + ' categorieën gelezen.';
+      return res;
+    }
+  }
+  // Vorm 2: ergens in de JSON een lijst met objecten
+  const arrays = findObjectArrays(data).sort((a, b) => b.length - a.length);
+  if (!arrays.length) throw new Error('Geen lijst met objecten gevonden in deze JSON.');
+  const rows = arrays[0];
+  const keys = [...new Set(rows.flatMap(r => Object.keys(r)))];
+  const fm = fieldMap || detectFields(rows, keys, knownCats);
+  if (!fm) return { needsMapping: true, keys, rows: rows.length, sample: rows[0] };
+  const res = reduceRows(rows, fm, knownCats);
+  if (!res.order.length) throw new Error('Met die velden komt er geen enkele bekende categorie uit.');
+  res.info = rows.length + ' rijen gelezen via "' + fm.cat + '" en "' + fm.num + '".';
+  res.fieldMap = fm;
+  return res;
+}
+
+/* ==========================================================================
+   Kaart
+   ========================================================================== */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function scoreTableHTML(nums, maxAttempts){
+  const n = maxAttempts;
+  let h1 = '<tr class="h1"><th rowspan="2">BOULDER</th>';
+  let h2 = '<tr class="h2">';
+  for (let i = 1; i <= n; i++){ h1 += '<th colspan="2">POGING ' + i + '</th>'; h2 += '<th>Z</th><th>T</th>'; }
+  h1 += '<th colspan="2">SCORE</th></tr>';
+  h2 += '<th>Z</th><th>T</th></tr>';
+
+  const blanks = '<td></td>'.repeat(2 * n + 2);
+  const body = nums.map(b => '<tr><td class="bnum">' + b + '</td>' + blanks + '</tr>').join('');
+  const foot = '<tfoot><tr><td class="lab" colspan="' + (1 + 2 * n) + '">TOTALE SCORE</td><td></td><td></td></tr></tfoot>';
+
+  return '<table class="score"><colgroup><col style="width:20mm">' +
+         '<col span="' + (2 * n + 2) + '"></colgroup><thead>' + h1 + h2 + '</thead><tbody>' +
+         body + '</tbody>' + foot + '</table>';
+}
+
+function cardHTML(p, ctx){
+  const nums = (ctx.mapping[p.category] || []).slice().sort((a, b) => a - b);
+  const i = ctx.catOrder.indexOf(p.category);
+  const span = L.card - 2 * L.pad - 14;
+  const top = L.pad + (ctx.catOrder.length > 1 ? i * span / (ctx.catOrder.length - 1) : span / 2);
+  const colour = ctx.colour ? ';--cat-colour:hsl(' + Math.round(360 * i / Math.max(1, ctx.catOrder.length)) + ' 70% 45%)' : '';
+
+  return '<div class="card' + (ctx.colour ? ' colour' : '') + '" style="--rows:' + nums.length + colour + '">' +
+    '<div class="band" style="top:' + top.toFixed(1) + 'mm"></div>' +
+    '<div class="chdr"><div class="chdr-l">' +
+      '<div class="ctitle">' + esc(ctx.title) + (ctx.subtitle ? '<span class="sub">' + esc(ctx.subtitle) + '</span>' : '') + '</div>' +
+      '<div class="cname"><span class="lbl">NAAM</span><span class="val">' + esc(p.name) + '</span></div>' +
+      '<div class="cbot">' +
+        '<div class="f nr"><span class="lbl">STARTNUMMER</span><span class="val">' + p.number + '</span></div>' +
+        '<div class="f cat"><span class="lbl">CATEGORIE</span><span class="val">' + esc(p.category) + '</span></div>' +
+      '</div>' +
+    '</div>' +
+    (ctx.showQr ? '<div class="qr">' + qrSvg(qrPayload(ctx.competitionId, p.number)) + '</div>' : '') +
+    '</div>' +
+    // ponytail: één aanroep, zodat een ander wedstrijdformaat (§12.2) hier een
+    // andere tabelbouwer kan kiezen zonder de rest van de kaart aan te raken.
+    '<div class="tblwrap">' + scoreTableHTML(nums, ctx.maxAttempts) + '</div>' +
+  '</div>';
+}
+
+/* Matrix in één richting opbouwen; A4 en A5 verschillen alleen in wie de rijen
+   levert en wie de kolommen (§6.6). */
+function matrixHTML(rowKeys, colKeys, vertHeads, hit){
+  const head = '<tr><th></th>' + colKeys.map(c =>
+    '<th' + (vertHeads ? ' class="vert"' : '') + '>' + esc(c) + '</th>').join('') + '</tr>';
+  const body = rowKeys.map(r => '<tr><td><b>' + esc(r) + '</b></td>' +
+    colKeys.map(c => hit(r, c) ? '<td class="on">&#9679;</td>' : '<td></td>').join('') + '</tr>').join('');
+  return '<table><thead>' + head + '</thead><tbody>' + body + '</tbody></table>';
+}
+
+function controlSheetHTML(ctx, participants){
+  const cats = ctx.catOrder;
+  const all = [...new Set(cats.flatMap(c => ctx.mapping[c]))].sort((a, b) => a - b);
+  const has = (b, c) => ctx.mapping[c].includes(Number(b));
+  const matrix = ctx.paper === 'A5'
+    ? matrixHTML(cats, all, false, (c, b) => has(b, c))   // liggend: categorieën als rijen
+    : matrixHTML(all, cats, true,  (b, c) => has(b, c));  // staand: boulders als rijen
+  const counts = cats.map(c => '<tr><td>' + esc(c) + '</td><td><b>' +
+    participants.filter(p => p.category === c).length + '</b> deelnemers</td><td>' +
+    ctx.mapping[c].length + ' boulders</td></tr>').join('');
+
+  // ponytail: A4 zet matrix en aantallen naast elkaar (past tot ~50 boulders),
+  // A5 zet ze onder elkaar (past tot ~30). Daarboven loopt de matrix van het blad.
+  return '<div class="sheet' + (ctx.paper === 'A5' ? ' a5' : '') + '"><div class="ctl">' +
+    '<h2>' + esc(ctx.title) + (ctx.subtitle ? ' &ndash; ' + esc(ctx.subtitle) : '') + '</h2>' +
+    '<div class="meta">Controleblad &middot; ' + esc(ctx.competitionId) + ' &middot; gegenereerd ' +
+      new Date().toLocaleString('nl-BE') + '</div>' +
+    '<div class="ctl-cols' + (ctx.paper === 'A5' ? ' stacked' : '') + '">' + matrix +
+      '<table class="counts"><tbody>' + counts +
+        '<tr><td><b>Totaal</b></td><td><b>' + participants.length + '</b> deelnemers</td><td>' +
+        all.length + ' boulders in de zaal</td></tr></tbody></table>' +
+    '</div></div></div>';
+}
+
+function buildSheets(participants, ctx){
+  const paper = PAPER[ctx.paper] || PAPER.A4;
+  const cards = sortCards(participants, ctx.catOrder).map(p => cardHTML(p, ctx));
+  let html = ctx.controlSheet ? controlSheetHTML(ctx, participants) : '';
+  for (let i = 0; i < cards.length; i += paper.perSheet){
+    const on = cards.slice(i, i + paper.perSheet).join('');
+    html += '<div class="sheet cards' + (paper.cut ? '' : ' a5') + '">' + on + '</div>';
+  }
+  return html;
+}
+
+/* @page kent geen custom properties, dus de regel wordt hier verwisseld (§6.1). */
+function applyPaper(paper){
+  const p = PAPER[paper] || PAPER.A4;
+  $('pagerule').textContent = '@page{size:' + p.page + ';margin:0}';
+  $('print').classList.toggle('a5', paper === 'A5');
+}
+
+/* ==========================================================================
+   App-state en UI
+   ========================================================================== */
+const $ = id => document.getElementById(id);
+const S = {
+  participants: [],      // alleen in geheugen, nooit naar localStorage
+  loadError: '',
+  mapping: {},           // categorie -> [boulders]
+  catOrder: null,        // volgorde uit een geplakte indeling; null = alfabetisch
+  gridMax: 30,
+  ack: false,
+  tab: 'grid',
+  pasteMsg: null,        // {ok|err, text} onder het actieve tabblad
+  jsonKeys: null         // veldkeuze tonen als de JSON-vorm onbekend is
+};
+
+/* Categorieën uit de CSV, alfabetisch. */
+function categories(){
+  return [...new Set(S.participants.map(p => p.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'nl'));
+}
+/* Kaartvolgorde (§6.3): volgorde uit de geplakte indeling als die er is, anders
+   alfabetisch. Alleen categorieën die ook echt deelnemers hebben. */
+function orderedCategories(){
+  // Ook categorieën die alleen in de indeling zitten: die horen een harde fout
+  // op te leveren (§5) en mogen dus niet stilletjes wegvallen.
+  const all = [...new Set(categories().concat(Object.keys(S.mapping)))];
+  if (!S.catOrder) return all.sort((a, b) => a.localeCompare(b, 'nl'));
+  const known = S.catOrder.filter(c => all.includes(c));
+  return known.concat(all.filter(c => !known.includes(c)).sort((a, b) => a.localeCompare(b, 'nl')));
+}
+function settings(){
+  return {
+    title: $('f-title').value.trim() || 'WEDSTRIJD',
+    subtitle: $('f-sub').value.trim(),
+    competitionId: $('f-id').value.trim() || 'wedstrijd',
+    maxAttempts: Math.max(1, Math.min(12, Number($('f-att').value) || 5))
+  };
+}
+function options(){
+  return {
+    paper: $('o-paper').value === 'A5' ? 'A5' : 'A4',
+    showQr: $('o-qr').checked,
+    controlSheet: $('o-ctl').checked,
+    colour: $('o-colour').checked
+  };
+}
+
+/* ==========================================================================
+   Opslag (§4.4) — instellingen en indeling per competitionId. Deelnemers nooit.
+   ========================================================================== */
+const STORE = 'scorecard:';
+
+function collectState(){
+  return { version: 1, saved: Date.now(), settings: settings(), options: options(),
+           mapping: S.mapping, catOrder: S.catOrder, gridMax: S.gridMax };
+}
+
+/* Onbekende sleutels worden genegeerd en ontbrekende blijven staan, zodat een
+   latere instelling (§12) geen migratie nodig heeft. */
+function applyState(st){
+  if (!st || typeof st !== 'object') return false;
+  const s = st.settings || {}, o = st.options || {};
+  if (s.title !== undefined)    $('f-title').value = s.title;
+  if (s.subtitle !== undefined) $('f-sub').value = s.subtitle;
+  if (s.maxAttempts)            $('f-att').value = s.maxAttempts;
+  if (o.paper)                  $('o-paper').value = o.paper;
+  if (o.showQr !== undefined)   $('o-qr').checked = !!o.showQr;
+  if (o.controlSheet !== undefined) $('o-ctl').checked = !!o.controlSheet;
+  if (o.colour !== undefined)   $('o-colour').checked = !!o.colour;
+  if (st.gridMax)               S.gridMax = st.gridMax, $('f-gridmax').value = st.gridMax;
+  if (st.mapping && typeof st.mapping === 'object'){
+    S.mapping = {};
+    for (const c in st.mapping) if (Array.isArray(st.mapping[c])) S.mapping[c] = st.mapping[c].map(Number);
+  }
+  if (Array.isArray(st.catOrder)) S.catOrder = st.catOrder;
+  return true;
+}
+
+let saveTimer = null;
+function saveState(){
+  const id = $('f-id').value.trim();
+  if (!id) return;
+  // ponytail: 800ms debounce, anders krijgt elke aanslag in het ID zijn eigen
+  // sleutel. Ruim op via "Vergeet deze wedstrijd" als er toch rommel ontstaat.
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem(STORE + id, JSON.stringify(collectState())); }
+    catch (e){ /* volle of geblokkeerde opslag mag het afdrukken niet breken */ }
+    renderSaved();
+  }, 800);
+}
+
+function listSaved(){
+  const out = [];
+  for (let i = 0; i < localStorage.length; i++){
+    const k = localStorage.key(i);
+    if (!k.startsWith(STORE)) continue;
+    try { out.push({ id: k.slice(STORE.length), saved: JSON.parse(localStorage.getItem(k)).saved || 0 }); }
+    catch (e){ /* onleesbare sleutel overslaan */ }
+  }
+  return out.sort((a, b) => b.saved - a.saved);
+}
+
+function loadSaved(id){
+  try {
+    const st = JSON.parse(localStorage.getItem(STORE + id));
+    if (!applyState(st)) return false;
+    $('f-id').value = id;
+    return true;
+  } catch (e){ return false; }
+}
+
+function exportMapping(){
+  const st = collectState();
+  const blob = new Blob([JSON.stringify(st, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = (st.settings.competitionId || 'wedstrijd') + '-boulders.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+/* Accepteert zowel een volledig geëxporteerd bestand als een kale
+   { categorie: [nummers] } — dezelfde soepelheid als het JSON-tabblad. */
+function importMapping(text){
+  const data = JSON.parse(text);
+  if (data && data.mapping) return applyState(data);
+  return applyState({ mapping: data });
+}
+
+/* --- deelnemers --- */
+function loadCSVText(text){
+  S.loadError = '';
+  try {
+    S.participants = toParticipants(parseCSV(text));
+  } catch (e){
+    S.participants = [];
+    S.loadError = e.message;
+  }
+  // Ontbrekende categorieën aanvullen, maar niets weggooien: een categorie die
+  // wel in de indeling zit en niet in de CSV moet een harde fout geven (§5).
+  for (const c of categories()) if (!S.mapping[c]) S.mapping[c] = [];
+  refresh();
+}
+
+function renderParticipants(){
+  const st = $('csv-status'), tags = $('csv-cats');
+  if (S.loadError){ st.innerHTML = '<div class="msg err">' + esc(S.loadError) + '</div>'; tags.innerHTML = ''; return; }
+  if (!S.participants.length){ st.innerHTML = ''; tags.innerHTML = ''; return; }
+  st.innerHTML = '<div class="msg ok">' + S.participants.length + ' deelnemers ingelezen, ' +
+    categories().length + ' categorieën.</div>';
+  tags.innerHTML = categories().map(c => '<span class="tag">' + esc(c) + ' &middot; <b>' +
+    S.participants.filter(p => p.category === c).length + '</b></span>').join('');
+}
+
+/* --- boulderraster --- */
+function renderGrid(){
+  const cats = categories(), wrap = $('gridwrap');
+  if (!cats.length){ wrap.innerHTML = '<p class="hint" style="padding:14px">Laad eerst de deelnemerslijst; de categorieën komen daaruit.</p>'; return; }
+  let h = '<table class="grid"><thead><tr><th>Boulder</th>' +
+    cats.map((c, i) => '<th data-col="' + i + '">' + esc(c) + '</th>').join('') + '</tr></thead><tbody>';
+  for (let b = 1; b <= S.gridMax; b++){
+    h += '<tr><td class="b" data-row="' + b + '">' + b + '</td>' +
+      cats.map(c => '<td class="c' + (S.mapping[c].includes(b) ? ' on' : '') +
+        '" data-cat="' + esc(c) + '" data-b="' + b + '"></td>').join('') + '</tr>';
+  }
+  h += '</tbody><tfoot><tr><td>aantal</td>' + cats.map(c => '<td>' + S.mapping[c].length + '</td>').join('') +
+       '</tr></tfoot></table>';
+  wrap.innerHTML = h;
+}
+
+function setCell(cat, b, on){
+  const arr = S.mapping[cat], i = arr.indexOf(b);
+  if (on && i < 0) arr.push(b);
+  if (!on && i >= 0) arr.splice(i, 1);
+}
+
+/* --- rapport --- */
+function renderReport(v){
+  const box = $('report');
+  if (!S.participants.length || !Object.keys(S.mapping).length){
+    box.innerHTML = '<p class="hint">Laad de deelnemerslijst en vul het boulderraster in.</p>';
+    return;
+  }
+  let h = '';
+  if (!v.errors.length && !v.warnings.length) h = '<div class="msg ok">Alles in orde. Geen fouten of waarschuwingen.</div>';
+  if (v.errors.length){
+    h += '<div class="msg err"><b>' + v.errors.length + ' fout(en).</b> Er worden geen kaarten gemaakt zolang deze niet opgelost zijn.</div>';
+    h += '<ul class="report">' + v.errors.map(e => '<li class="e">' + esc(e) + '</li>').join('') + '</ul>';
+  }
+  if (v.warnings.length){
+    h += '<ul class="report" style="margin-top:10px">' + v.warnings.map(w => '<li class="w">' + esc(w) + '</li>').join('') + '</ul>';
+    h += '<label class="ackbox"><input type="checkbox" id="ack"' + (S.ack ? ' checked' : '') + '>' +
+         '<span>Ik heb de ' + v.warnings.length + ' waarschuwing(en) gelezen en wil toch afdrukken.</span></label>';
+  }
+  box.innerHTML = h;
+  const a = $('ack');
+  if (a) a.onchange = () => { S.ack = a.checked; refresh(); };
+}
+
+/* --- tabbladen, plakresultaat en overzicht --- */
+function renderTabs(){
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
+  ['grid','table','json'].forEach(t => $('pane-' + t).hidden = t !== S.tab);
+
+  const m = $('paste-msg');
+  m.innerHTML = S.pasteMsg
+    ? '<div class="msg ' + S.pasteMsg.type + '">' + esc(S.pasteMsg.text) + '</div>' : '';
+
+  // veldkeuze als de JSON-vorm onbekend is
+  const f = $('json-fields');
+  if (S.jsonKeys){
+    const sel = (id, label) => '<label style="margin:0">' + label + ' ' +
+      '<select id="' + id + '">' + S.jsonKeys.map(k => '<option>' + esc(k) + '</option>').join('') +
+      '</select></label>';
+    f.innerHTML = sel('js-cat', 'Categorieveld') + sel('js-num', 'Boulderveld') +
+      '<button class="sec" id="btn-json2" type="button">Toepassen</button>';
+    $('btn-json2').onclick = () => applyPaste(() =>
+      parseBoulderJSON($('f-json').value, categories(), { cat: $('js-cat').value, num: $('js-num').value }));
+  } else f.innerHTML = '';
+
+  const cats = orderedCategories();
+  $('map-summary').innerHTML = cats.length ? cats.map(c => '<span class="tag">' + esc(c) +
+    ' &middot; <b>' + (S.mapping[c] || []).length + '</b> boulders</span>').join('') : '';
+}
+
+function renderSaved(){
+  const list = listSaved(), id = $('f-id').value.trim();
+  const here = list.find(x => x.id === id);
+  const others = list.filter(x => x.id !== id).slice(0, 4);
+  $('saved').innerHTML =
+    (here ? 'Bewaard: <b>' + esc(here.id) + '</b> &middot; ' + new Date(here.saved).toLocaleString('nl-BE') +
+       ' <button class="sec" id="btn-forget" type="button">Vergeet deze wedstrijd</button>' : '') +
+    (others.length ? '<span>Ook bewaard: ' + others.map(x =>
+       '<a href="#" data-load="' + esc(x.id) + '">' + esc(x.id) + '</a>').join(', ') + '</span>' : '');
+  const b = $('btn-forget');
+  if (b) b.onclick = () => { localStorage.removeItem(STORE + id); renderSaved(); };
+  $('saved').querySelectorAll('[data-load]').forEach(a => a.onclick = e => {
+    e.preventDefault();
+    if (loadSaved(a.dataset.load)) refresh();
+  });
+}
+
+/* Eén plad voor beide plakmethodes: parse, toon de uitkomst, vul de indeling. */
+function applyPaste(parse){
+  S.pasteMsg = null; S.jsonKeys = null;
+  if (!categories().length){
+    S.pasteMsg = { type: 'err', text: 'Laad eerst de deelnemerslijst; de categorienamen komen daaruit.' };
+    return refresh();
+  }
+  try {
+    const res = parse();
+    if (res.needsMapping){
+      S.jsonKeys = res.keys;
+      S.pasteMsg = { type: 'err', text: 'De vorm van deze JSON is niet herkend (' + res.rows +
+        ' rijen). Kies zelf welk veld de categorie is en welk veld de boulders.' };
+    } else {
+      S.mapping = res.mapping;
+      S.catOrder = res.order.length ? res.order : null;
+      S.pasteMsg = { type: 'ok', text: res.info + ' ' + res.order.length + ' categorieën ingevuld. ' +
+        'Controleer hieronder en corrigeer eventueel in het raster.' };
+    }
+  } catch (e){
+    S.pasteMsg = { type: 'err', text: e.message };
+  }
+  refresh();
+}
+
+/* --- alles opnieuw opbouwen --- */
+function refresh(){
+  renderParticipants();
+  renderGrid();
+  renderTabs();
+  renderSaved();
+
+  const cats = orderedCategories();
+  const opts = options();
+  const v = (S.participants.length && cats.length)
+    ? validate(S.participants, S.mapping, cats, opts)
+    : { errors: [], warnings: [] };
+  renderReport(v);
+  applyPaper(opts.paper);
+  saveState();
+
+  const blocked = !!v.errors.length || !S.participants.length || !cats.length ||
+                  (v.warnings.length > 0 && !S.ack);
+  $('btn-print').disabled = blocked;
+
+  const out = $('print');
+  if (blocked){ out.innerHTML = ''; $('print-stat').textContent = ''; return; }
+
+  const t0 = performance.now();
+  const ctx = Object.assign(settings(), opts, { mapping: S.mapping, catOrder: cats });
+  out.innerHTML = buildSheets(S.participants, ctx);
+  const sheets = out.querySelectorAll('.sheet.cards').length;
+  $('print-stat').textContent = S.participants.length + ' kaarten op ' + sheets + ' bladen ' +
+    opts.paper + ', ' + Math.round(performance.now() - t0) + ' ms.';
+}
+
+/* --- gebeurtenissen --- */
+function wire(){
+  ['f-title','f-sub','f-att'].forEach(id => $(id).addEventListener('input', refresh));
+  ['o-ctl','o-colour','o-qr','o-paper'].forEach(id => $(id).addEventListener('change', refresh));
+
+  // een bestaand wedstrijd-ID haalt zijn eigen instellingen en indeling terug
+  $('f-id').addEventListener('input', () => {
+    const id = $('f-id').value.trim();
+    if (id && listSaved().some(x => x.id === id)) loadSaved(id);
+    refresh();
+  });
+
+  $('f-csv').addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (f) f.text().then(loadCSVText);
+  });
+
+  document.querySelectorAll('.tab').forEach(b =>
+    b.addEventListener('click', () => { S.tab = b.dataset.tab; S.pasteMsg = null; refresh(); }));
+  $('btn-table').addEventListener('click', () => applyPaste(() =>
+    parseBoulderTable($('f-table').value, categories())));
+  $('btn-json').addEventListener('click', () => applyPaste(() =>
+    parseBoulderJSON($('f-json').value, categories())));
+
+  $('btn-export').addEventListener('click', exportMapping);
+  $('f-import').addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    f.text().then(t => {
+      try { importMapping(t); S.pasteMsg = { type: 'ok', text: 'Indeling geïmporteerd uit ' + f.name + '.' }; }
+      catch (err){ S.pasteMsg = { type: 'err', text: 'Kon ' + f.name + ' niet lezen: ' + err.message }; }
+      refresh();
+    });
+    e.target.value = '';
+  });
+  $('f-gridmax').addEventListener('input', e => {
+    S.gridMax = Math.max(1, Math.min(200, Number(e.target.value) || 30));
+    refresh();
+  });
+  $('btn-clear').addEventListener('click', () => {
+    S.mapping = {};
+    categories().forEach(c => S.mapping[c] = []);   // ook restanten uit een geplakte indeling
+    S.catOrder = null;
+    refresh();
+  });
+
+  // klikken en slepen in het raster
+  let paint = null;
+  $('gridwrap').addEventListener('mousedown', e => {
+    const td = e.target.closest('td.c, td.b, th[data-col]');
+    if (!td) return;
+    e.preventDefault();
+    const cats = categories();
+    if (td.dataset.row !== undefined){            // hele rij
+      const b = Number(td.dataset.row);
+      const on = !cats.every(c => S.mapping[c].includes(b));
+      cats.forEach(c => setCell(c, b, on));
+    } else if (td.dataset.col !== undefined){     // hele kolom
+      const c = cats[Number(td.dataset.col)];
+      const on = S.mapping[c].length < S.gridMax;
+      S.mapping[c] = on ? Array.from({length: S.gridMax}, (_, i) => i + 1) : [];
+    } else {
+      paint = !td.classList.contains('on');
+      setCell(td.dataset.cat, Number(td.dataset.b), paint);
+    }
+    refresh();
+  });
+  $('gridwrap').addEventListener('mouseover', e => {
+    if (paint === null) return;
+    const td = e.target.closest('td.c');
+    if (!td || td.classList.contains('on') === paint) return;
+    setCell(td.dataset.cat, Number(td.dataset.b), paint);
+    td.classList.toggle('on', paint);
+  });
+  document.addEventListener('mouseup', () => { if (paint !== null){ paint = null; refresh(); } });
+
+  $('btn-print').addEventListener('click', () => window.print());
+}
+
+/* ==========================================================================
+   Zelftest — open dit bestand met ?selftest
+   ========================================================================== */
+function selfTest(){
+  const out = [];
+  const ok = (name, cond, extra) => out.push({ name, pass: !!cond, extra: cond ? '' : (extra || '') });
+  const eq = (name, a, b) => ok(name, JSON.stringify(a) === JSON.stringify(b), 'kreeg ' + JSON.stringify(a) + ', verwacht ' + JSON.stringify(b));
+
+  // --- CSV ---
+  const csv = '﻿Category;Starting number;Ranking;Name\r\n' +
+              'u15 (meisjes);6;2;"Peeters; Amélie"\r\n' +
+              'u19 (jongens);69;5;"D\'\'Hondt ""Théo"""\r\n' +
+              'u11 (meisjes/jongens);80;8;"Van der\nStraeten Noah"\r\n';
+  const rows = parseCSV(csv);
+  eq('CSV: 4 records (BOM weg, CRLF, newline in veld)', rows.length, 4);
+  eq('CSV: puntkomma in aanhalingstekens blijft één veld', rows[1][3], 'Peeters; Amélie');
+  eq('CSV: dubbele aanhalingstekens worden er één', rows[2][3], 'D\'\'Hondt "Théo"');
+  eq('CSV: newline binnen een veld blijft behouden', rows[3][3], 'Van der\nStraeten Noah');
+  eq('CSV: accenten intact', rows[1][3].includes('é'), true);
+  eq('CSV: scheidingsteken geraden (tab)', sniffDelimiter('a\tb\tc'), '\t');
+  eq('CSV: kolommen op naam, Ranking genegeerd', toParticipants(rows)[0].number, 6);
+  eq('CSV: rijnummer telt de kopregel mee', toParticipants(rows)[0].rowNo, 2);
+
+  // --- basis voor validatie ---
+  const P = (n, cat, name) => ({ rowNo: n + 1, category: cat, numberRaw: String(n), number: n,
+                                 name: name === undefined ? 'Naam ' + n : name });
+  const base = [P(1, 'A'), P(2, 'A'), P(3, 'B')];
+  const map  = { A: [1,2,3,4], B: [1,2,3,4] };
+  const cats = ['A', 'B'];
+  eq('Validatie: schone invoer geeft niets', validate(base, map, cats), { errors: [], warnings: [] });
+
+  const has = (v, needle) => v.errors.some(e => e.includes(needle));
+  ok('Fout: categorie zonder boulderindeling noemt de categorie',
+     has(validate(base, { A: [1,2] }, ['A']), '"B"'));
+  ok('Fout: categorie zonder deelnemers noemt de categorie',
+     has(validate([P(1,'A')], { A:[1], B:[1] }, ['A','B']), '"B"'));
+  ok('Fout: dubbele boulder noemt categorie en nummer',
+     has(validate(base, { A:[1,1,2], B:[1] }, cats), 'Boulder 1') &&
+     has(validate(base, { A:[1,1,2], B:[1] }, cats), '"A"'));
+  ok('Fout: nul boulders', has(validate(base, { A:[], B:[1] }, cats), 'nul boulders'));
+  ok('Fout: dubbel startnummer noemt beide rijen',
+     has(validate([P(1,'A'), {rowNo:3, category:'A', numberRaw:'1', number:1, name:'Bis'}], {A:[1]}, ['A']), 'rij 2'));
+  ok('Fout: lege naam noemt de rij',
+     has(validate([P(1,'A','')], { A:[1] }, ['A']), 'Rij 2'));
+  ok('Fout: startnummer 0 is niet positief',
+     has(validate([{rowNo:2,category:'A',numberRaw:'0',number:0,name:'X'}], {A:[1]}, ['A']), 'positief'));
+  ok('Fout: startnummer met letters',
+     has(validate([{rowNo:2,category:'A',numberRaw:'12a',number:NaN,name:'X'}], {A:[1]}, ['A']), '"12a"'));
+  ok('C6: fouten blokkeren, ze stoppen niet bij de eerste',
+     validate([P(1,'A',''), {rowNo:3,category:'',numberRaw:'',number:NaN,name:''}], {}, []).errors.length >= 4);
+
+  // --- waarschuwingen ---
+  const wHas = (v, needle) => v.warnings.some(w => w.includes(needle));
+  ok('Waarschuwing: ongelijke boulderaantallen',
+     wHas(validate(base, { A:[1,2,3], B:[1,2] }, cats), 'evenveel'));
+  ok('Waarschuwing: meer boulders dan er passen',
+     wHas(validate(base, { A: Array.from({length: L.maxRows + 1}, (_, i) => i + 1), B:[1] }, cats), 'krap'));
+  ok('Geen waarschuwing bij precies het maximum',
+     !wHas(validate(base, { A: Array.from({length: L.maxRows}, (_, i) => i + 1),
+                            B: Array.from({length: L.maxRows}, (_, i) => i + 1) }, cats), 'krap'));
+  ok('Waarschuwing: te lange naam',
+     wHas(validate([P(1,'A','Vandenbroucke-Van Nieuwenhuyse Alexander Maximiliaan Jean-Baptiste de la Court')],
+                   { A:[1] }, ['A']), 'te lang'));
+
+  // --- layout ---
+  eq('Layout: kaarthoogte klopt met de rijruimte', L.body, 82.5);
+  eq('Layout: 10 boulders passen bij 8mm', L.maxRows >= 10, true);
+  ok('Layout: 4 boulders vullen tot de maximale rijhoogte', L.body / 4 > L.maxRow);
+
+  // --- sortering ---
+  const mixed = [P(9,'B'), P(2,'A'), P(1,'B'), P(5,'A')];
+  eq('Sortering: categorie uit de indeling, dan startnummer',
+     sortCards(mixed, ['B','A']).map(p => p.category + p.number), ['B1','B9','A2','A5']);
+
+  // --- QR ---
+  eq('QR: payload', qrPayload('abyc2026-m4', 69), 'abyc2026-m4:69');
+  eq('QR: payload met athleteId (toekomst)', qrPayload('abyc2026-m4', 69, 'A123'), 'abyc2026-m4:69:A123');
+  ok('QR: svg gegenereerd', qrSvg('abyc2026-m4:69').startsWith('<svg'));
+
+  // --- opbouw kaarten ---
+  const ctx = { title:'T', subtitle:'', competitionId:'x', maxAttempts:5, paper:'A4', showQr:true,
+                mapping: map, catOrder: cats, controlSheet:false, colour:false };
+  const html = buildSheets(base, ctx);
+  const d = document.createElement('div'); d.innerHTML = html;
+  eq('Opbouw: 3 kaarten op 2 bladen', d.querySelectorAll('.card').length + '/' + d.querySelectorAll('.sheet').length, '3/2');
+  eq('Opbouw: 13 kolommen bij 5 pogingen', d.querySelector('.score tbody tr').children.length, 13);
+  eq('Opbouw: boulternummer voorgedrukt', d.querySelector('.score tbody td.bnum').textContent, '1');
+  ok('Opbouw: laatste blad heeft één kaart, geen halve',
+     d.querySelectorAll('.sheet')[1].querySelectorAll('.card').length === 1);
+
+  // --- papierformaat (§6.1) ---
+  const ctxA5 = Object.assign({}, ctx, { paper: 'A5' });
+  const d5 = document.createElement('div'); d5.innerHTML = buildSheets(base, ctxA5);
+  eq('A5: 3 kaarten op 3 bladen', d5.querySelectorAll('.sheet').length, 3);
+  ok('A5: elk blad krijgt de a5-klasse', [...d5.querySelectorAll('.sheet')].every(s => s.classList.contains('a5')));
+  ok('A5: geen snijlijn, A4 wel', !d5.querySelector('.sheet:not(.a5)') && !!d.querySelector('.sheet.cards:not(.a5)'));
+  eq('A4 blijft twee kaarten per blad', d.querySelectorAll('.sheet').length, 2);
+
+  // --- QR-schakelaar (§7) ---
+  const dq = document.createElement('div');
+  dq.innerHTML = buildSheets(base, Object.assign({}, ctx, { showQr: false }));
+  eq('QR uit: geen qr-element op de kaart', dq.querySelectorAll('.qr').length, 0);
+  eq('QR aan: wel een qr per kaart', d.querySelectorAll('.qr').length, 3);
+  eq('QR uit: kaarten blijven verder gelijk', dq.querySelectorAll('.score tbody tr').length,
+     d.querySelectorAll('.score tbody tr').length);
+  ok('QR uit: naamveld is breder', nameFieldMm(false) > nameFieldMm(true));
+  const longName = 'Vandenbroucke-Van Nieuwenhuyse Alexander Maximiliaan';
+  ok('QR uit: die extra breedte telt mee in de controle',
+     validate([P(1,'A',longName)], {A:[1]}, ['A'], {showQr:true}).warnings.length >=
+     validate([P(1,'A',longName)], {A:[1]}, ['A'], {showQr:false}).warnings.length);
+
+  // --- tabel plakken (§4.2), exact de vorm die Chrome op het klembord zet ---
+  const cats3 = ['u11 (meisjes/jongens)', 'u13 (jongens)', 'u13 (meisjes)'];
+  const pasted = 'Route number\nColor\nJudged\nHas zone(s)\nGroups\n' +
+    '1\t\nN/A\n1\nu11 (meisjes/jongens)\n' +
+    '7\t\nN/A\n2\nu11 (meisjes/jongens)u13 (jongens)u13 (meisjes)\n' +
+    '11\t\nN/A\n1\nu13 (jongens)u13 (meisjes)\n';
+  const pt = parseBoulderTable(pasted, cats3);
+  eq('Plaktabel: aaneengeplakte badges uit elkaar gehaald', pt.mapping['u13 (jongens)'], [7, 11]);
+  eq('Plaktabel: boulder uit de eerste cel, niet uit de zonekolom', pt.mapping['u11 (meisjes/jongens)'], [1, 7]);
+  ok('Plaktabel: cijfers in categorienamen tellen niet als boulder',
+     !pt.mapping['u13 (jongens)'].includes(13) && !pt.mapping['u11 (meisjes/jongens)'].includes(11));
+  eq('Plaktabel: volgorde van eerste voorkomen bewaard', pt.order, cats3);
+  eq('Plaktabel: categorieën als rijen werkt ook',
+     parseBoulderTable('u13 (jongens)\t7\t8\t9\nu13 (meisjes)\t7\t8\n', cats3).mapping['u13 (jongens)'], [7,8,9]);
+  ok('Plaktabel: nette TSV met categorieën per boulder werkt ook',
+     parseBoulderTable('3\tred\tja\t1\tu13 (jongens)\tu13 (meisjes)\n', cats3).mapping['u13 (meisjes)'][0] === 3);
+  ok('Plaktabel: onherkenbare tekst geeft een duidelijke fout', (() => {
+     try { parseBoulderTable('appel\tpeer\n', cats3); return false; }
+     catch (e){ return e.message.includes('Geen enkele categorie herkend'); } })());
+
+  // --- JSON plakken (§4.2) ---
+  eq('JSON: platte vorm {categorie:[nummers]}',
+     parseBoulderJSON('{"u13 (jongens)":[7,8]}', cats3).mapping['u13 (jongens)'], [7, 8]);
+  eq('JSON: rij per categorie, genest in een respons',
+     parseBoulderJSON('{"data":{"groups":[{"name":"u13 (jongens)","routes":[7,8,9]}]}}', cats3)
+       .mapping['u13 (jongens)'], [7, 8, 9]);
+  eq('JSON: rij per boulder met een lijst categorieën (etto-vorm)',
+     parseBoulderJSON('[{"number":10,"groups":["u13 (jongens)","u13 (meisjes)"]},' +
+                      '{"number":11,"groups":["u13 (jongens)"]}]', cats3).mapping['u13 (jongens)'], [10, 11]);
+  const amb = parseBoulderJSON('[{"a":"u13 (jongens)","b":"u13 (meisjes)","n":1,"m":2}]', cats3);
+  ok('JSON: onbekende vorm vraagt om veldkeuze', amb.needsMapping && amb.keys.includes('a'));
+  eq('JSON: met handmatige veldkeuze alsnog verwerkt',
+     parseBoulderJSON('[{"a":"u13 (jongens)","b":"x","n":1,"m":2}]', cats3, {cat:'a', num:'n'})
+       .mapping['u13 (jongens)'], [1]);
+  ok('JSON: ongeldige JSON gooit', (() => {
+     try { parseBoulderJSON('{niet json', cats3); return false; } catch (e){ return true; } })());
+  ok('JSON: dubbele nummers worden niet dubbel opgeslagen',
+     parseBoulderJSON('{"u13 (jongens)":[7,7,8]}', cats3).mapping['u13 (jongens)'].length === 2);
+
+  // --- plaktabel = raster ---
+  ok('Plakken levert hetzelfde als handmatig invullen',
+     JSON.stringify(parseBoulderTable('1\t\nu11 (meisjes/jongens)\n', cats3).mapping['u11 (meisjes/jongens)']) ===
+     JSON.stringify([1]));
+
+  // --- opslag (§4.4) ---
+  const key = STORE + '__zelftest__';
+  try {
+    localStorage.setItem(key, JSON.stringify({ version:1, saved:1, settings:{title:'T'}, mapping:{'A':[1,2]} }));
+    ok('Opslag: bewaarde wedstrijden worden gevonden', listSaved().some(x => x.id === '__zelftest__'));
+    ok('Opslag: onbekende sleutels breken applyState niet',
+       applyState({ mapping:{A:[1]}, ietsNieuws:'later', options:{paper:'A5'} }) === true);
+    eq('Opslag: import van een kale indeling', (() => {
+       importMapping('{"A":[3,4]}'); return S.mapping.A; })(), [3, 4]);
+    eq('Opslag: import van een volledig exportbestand', (() => {
+       importMapping('{"mapping":{"A":[5]},"settings":{"title":"X"}}'); return S.mapping.A; })(), [5]);
+    ok('Opslag: deelnemers staan nooit in de bewaarde staat',
+       !JSON.stringify(collectState()).includes('numberRaw'));
+  } finally { localStorage.removeItem(key); }
+
+  const fails = out.filter(t => !t.pass).length;
+  document.body.innerHTML = '<div id="selftest"><h1>Zelftest &mdash; ' +
+    (fails ? fails + ' van ' + out.length + ' GEZAKT' : out.length + ' geslaagd') + '</h1>' +
+    out.map(t => '<div class="t ' + (t.pass ? 'p' : 'f') + '">' + (t.pass ? '✓' : '✗') + ' ' +
+      esc(t.name) + (t.extra ? ' — ' + esc(t.extra) : '') + '</div>').join('') + '</div>';
+}
+
+/* --- start --- */
+applyLayoutVars(document.documentElement);
+if (location.search.includes('selftest')) selfTest();
+else {
+  wire();
+  const last = listSaved()[0];        // na een herlaad of crash verdergaan (§4.4)
+  if (last) loadSaved(last.id);
+  refresh();
+}
+</script>
+</body>
+</html>
