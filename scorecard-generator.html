@@ -145,6 +145,12 @@
     "ui.print.paper": "Papier",
     "ui.print.paper.a4": "A4 — 2 kaarten per blad",
     "ui.print.paper.a5": "A5 — 1 kaart per blad",
+    "ui.print.sort": "Sorteervolgorde",
+    "ui.print.sort.catNumber": "Categorie, dan startnummer",
+    "ui.print.sort.catName": "Categorie, dan naam",
+    "ui.print.sort.number": "Startnummer",
+    "ui.print.sort.name": "Naam",
+    "ui.footer.credit": "Ontwikkeld door Jeroen Mabille",
     "ui.print.qr": "QR-code op de kaart",
     "ui.print.controlSheet": "Controleblad vooraan",
     "ui.print.colour": "Kleurband op de kaart",
@@ -296,6 +302,12 @@
     "ui.print.paper": "Papier",
     "ui.print.paper.a4": "A4 — 2 feuilles par page",
     "ui.print.paper.a5": "A5 — 1 feuille par page",
+    "ui.print.sort": "Ordre de tri",
+    "ui.print.sort.catNumber": "Cat\u00e9gorie, puis dossard",
+    "ui.print.sort.catName": "Cat\u00e9gorie, puis nom",
+    "ui.print.sort.number": "Dossard",
+    "ui.print.sort.name": "Nom",
+    "ui.footer.credit": "D\u00e9velopp\u00e9 par Jeroen Mabille",
     "ui.print.qr": "Code QR sur la feuille",
     "ui.print.controlSheet": "Feuille de contrôle en tête",
     "ui.print.colour": "Bande de couleur sur la feuille",
@@ -447,6 +459,12 @@
     "ui.print.paper": "Paper",
     "ui.print.paper.a4": "A4 — 2 cards per sheet",
     "ui.print.paper.a5": "A5 — 1 card per sheet",
+    "ui.print.sort": "Sort order",
+    "ui.print.sort.catNumber": "Category, then start number",
+    "ui.print.sort.catName": "Category, then name",
+    "ui.print.sort.number": "Start number",
+    "ui.print.sort.name": "Name",
+    "ui.footer.credit": "Developed by Jeroen Mabille",
     "ui.print.qr": "QR code on the card",
     "ui.print.controlSheet": "Control sheet in front",
     "ui.print.colour": "Colour band on the card",
@@ -512,7 +530,7 @@ section > h2 .n{display:inline-flex;width:22px;height:22px;border-radius:50%;bac
   align-items:center;justify-content:center;font-size:12px;flex:none}
 label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
 input[type=text],input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:5px;font:inherit}
-.grid4{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:2fr 1fr;gap:12px}
 .row{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
 button{font:inherit;padding:8px 14px;border:1px solid var(--ink);background:var(--ink);color:#fff;
   border-radius:5px;cursor:pointer}
@@ -710,6 +728,8 @@ table.score.timed td.cell-mark{
 #selftest .t.f{color:var(--err);font-weight:700}
 #selftest h1{font-family:system-ui,sans-serif}
 
+.credit{margin:24px 0 0;text-align:center;font-size:12px;color:var(--muted)}
+
 /* taalkeuze en diagnose */
 .apphdr{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
 .apphdr + p{margin:0 0 24px;color:var(--muted)}
@@ -740,9 +760,6 @@ table.score.timed td.cell-mark{
   <section>
     <h2><span class="n">1</span> <span data-i18n="ui.settings.heading"></span></h2>
     <div class="grid4">
-      <div><label for="f-title" data-i18n="ui.settings.title"></label><input id="f-title" type="text" placeholder="ANTWERP BOULDER YOUTH CUP 2026"></div>
-      <div><label for="f-sub" data-i18n="ui.settings.subtitle"></label><input id="f-sub" type="text" placeholder="Manche 4"></div>
-      <div><label for="f-id" data-i18n="ui.settings.id"></label><input id="f-id" type="text" placeholder="abyc2026-m4"></div>
       <div><label for="f-format" data-i18n="ui.settings.format"></label>
         <select id="f-format">
           <option value="abyc" data-i18n="ui.settings.format.abyc"></option>
@@ -751,13 +768,18 @@ table.score.timed td.cell-mark{
         </select>
       </div>
       <div><label for="f-att" data-i18n="ui.settings.maxAttempts"></label><input id="f-att" type="number" min="1" max="12" value="5"></div>
+      <div><label for="f-title" data-i18n="ui.settings.title"></label><input id="f-title" type="text" placeholder="ANTWERP BOULDER YOUTH CUP 2026"></div>
+      <div><label for="f-sub" data-i18n="ui.settings.subtitle"></label><input id="f-sub" type="text" placeholder="Manche 4"></div>
       <div><label for="f-cardlang" data-i18n="ui.lang.card"></label>
         <select id="f-cardlang">
           <option value="" data-i18n="ui.lang.card.same"></option>
         </select>
       </div>
+      <!-- Wedstrijd-ID: nog niet in gebruik, dus verborgen; de opslag en de QR
+           gebruiken het veld nog wel, dus het blijft in de DOM. -->
+      <div hidden><label for="f-id" data-i18n="ui.settings.id"></label><input id="f-id" type="text" placeholder="abyc2026-m4"></div>
     </div>
-    <p class="hint" style="margin:10px 0 0" data-i18n="ui.settings.hint"></p>
+    <p class="hint" style="margin:10px 0 0" hidden data-i18n="ui.settings.hint"></p>
     <div id="saved"></div>
   </section>
 
@@ -832,19 +854,30 @@ table.score.timed td.cell-mark{
           <option value="A5" data-i18n="ui.print.paper.a5"></option>
         </select>
       </div>
-      <label style="margin:0"><input type="checkbox" id="o-qr" checked> <span data-i18n="ui.print.qr"></span></label>
+      <div style="max-width:230px">
+        <label for="o-sort" data-i18n="ui.print.sort"></label>
+        <select id="o-sort">
+          <option value="cat-number" data-i18n="ui.print.sort.catNumber"></option>
+          <option value="cat-name" data-i18n="ui.print.sort.catName"></option>
+          <option value="number" data-i18n="ui.print.sort.number"></option>
+          <option value="name" data-i18n="ui.print.sort.name"></option>
+        </select>
+      </div>
+      <label style="margin:0"><input type="checkbox" id="o-qr"> <span data-i18n="ui.print.qr"></span></label>
       <label style="margin:0"><input type="checkbox" id="o-ctl" checked> <span data-i18n="ui.print.controlSheet"></span></label>
-      <label style="margin:0"><input type="checkbox" id="o-colour"> <span data-i18n="ui.print.colour"></span></label>
+      <label style="margin:0"><input type="checkbox" id="o-colour" checked> <span data-i18n="ui.print.colour"></span></label>
       <button id="btn-print" type="button" disabled data-i18n="ui.print.button"></button>
       <span class="hint" id="print-stat"></span>
     </div>
     <p class="hint" style="margin:10px 0 0" data-i18n="ui.print.hint"></p>
   </section>
 
-  <details id="diag">
+  <details id="diag" hidden>
     <summary data-i18n="ui.diag.heading"></summary>
     <div id="diag-body"></div>
   </details>
+
+  <p class="credit" data-i18n="ui.footer.credit"></p>
 </div>
 
 <!-- Staat bewust buiten #ui: bij afdrukken wordt #ui verborgen en blijft dit
@@ -3509,18 +3542,28 @@ function validate(participants, mapping, catOrder, opts){
 }
 
 /* ==========================================================================
-   Sortering — categorie (volgorde uit de boulderindeling), dan startnummer.
-   Sorteren gebeurt met de interfacetaal, want het is de volgorde waarin de
+   Sortering — standaard categorie (volgorde uit de boulderindeling), dan
+   startnummer; de organisator kan ook op naam of startnummer sorteren.
+   Namen sorteren met de interfacetaal, want het is de volgorde waarin de
    organisator de stapel krijgt.
    ========================================================================== */
-function sortCards(participants, catOrder){
+function sortCards(participants, catOrder, sortBy){
   const rank = new Map(catOrder.map((c, i) => [c, i]));
-  return participants.slice().sort((a, b) => {
+  const byCat = (a, b) => {
     const ra = rank.has(a.category) ? rank.get(a.category) : 1e9;
     const rb = rank.has(b.category) ? rank.get(b.category) : 1e9;
     if (ra !== rb) return ra - rb;
-    if (a.category !== b.category) return a.category < b.category ? -1 : 1;
-    return a.number - b.number;
+    return a.category === b.category ? 0 : (a.category < b.category ? -1 : 1);
+  };
+  const byName = (a, b) => a.name.localeCompare(b.name, fmtLocale());
+  const byNum  = (a, b) => a.number - b.number;
+  return participants.slice().sort((a, b) => {
+    switch (sortBy){
+      case 'name':     return byName(a, b) || byNum(a, b);
+      case 'number':   return byNum(a, b);
+      case 'cat-name': return byCat(a, b) || byName(a, b) || byNum(a, b);
+      default:         return byCat(a, b) || byNum(a, b);
+    }
   });
 }
 
@@ -3919,7 +3962,7 @@ function controlSheetHTML(ctx, participants){
 
 function buildSheets(participants, ctx){
   const paper = PAPER[ctx.paper] || PAPER.A4;
-  const cards = sortCards(participants, ctx.catOrder).map(p => cardHTML(p, ctx));
+  const cards = sortCards(participants, ctx.catOrder, ctx.sortBy).map(p => cardHTML(p, ctx));
   let html = ctx.controlSheet ? controlSheetHTML(ctx, participants) : '';
   for (let i = 0; i < cards.length; i += paper.perSheet){
     const on = cards.slice(i, i + paper.perSheet).join('');
@@ -3988,6 +4031,7 @@ function settings(){
 function options(){
   return {
     paper: $('o-paper').value === 'A5' ? 'A5' : 'A4',
+    sortBy: ['name', 'number', 'cat-name'].includes($('o-sort').value) ? $('o-sort').value : 'cat-number',
     showQr: $('o-qr').checked,
     controlSheet: $('o-ctl').checked,
     colour: $('o-colour').checked
@@ -4020,6 +4064,7 @@ function applyState(st){
     $('f-cardlang').value = cardLangSetting;
   }
   if (o.paper)                  $('o-paper').value = o.paper;
+  if (o.sortBy)                 $('o-sort').value = o.sortBy;
   if (o.showQr !== undefined)   $('o-qr').checked = !!o.showQr;
   if (o.controlSheet !== undefined) $('o-ctl').checked = !!o.controlSheet;
   if (o.colour !== undefined)   $('o-colour').checked = !!o.colour;
@@ -4382,7 +4427,7 @@ function wire(){
 
   ['f-title','f-sub','f-att'].forEach(id => $(id).addEventListener('input', refresh));
   $('f-format').addEventListener('change', refresh);
-  ['o-ctl','o-colour','o-qr','o-paper'].forEach(id => $(id).addEventListener('change', refresh));
+  ['o-ctl','o-colour','o-qr','o-paper','o-sort'].forEach(id => $(id).addEventListener('change', refresh));
 
   // een bestaand wedstrijd-ID haalt zijn eigen instellingen en indeling terug
   $('f-id').addEventListener('input', () => {
@@ -4537,9 +4582,15 @@ function selfTest(){
   ok('Layout: 4 boulders vullen tot de maximale rijhoogte', L.body / 4 > L.maxRow);
 
   // --- sortering ---
-  const mixed = [P(9,'B'), P(2,'A'), P(1,'B'), P(5,'A')];
-  eq('Sortering: categorie uit de indeling, dan startnummer',
+  const mixed = [P(9,'B','Claes'), P(2,'A','Peeters'), P(1,'B','Aerts'), P(5,'A','Bogaert')];
+  eq('Sortering: categorie uit de indeling, dan startnummer (standaard)',
      sortCards(mixed, ['B','A']).map(p => p.category + p.number), ['B1','B9','A2','A5']);
+  eq('Sortering: categorie, dan naam',
+     sortCards(mixed, ['B','A'], 'cat-name').map(p => p.name), ['Aerts','Claes','Bogaert','Peeters']);
+  eq('Sortering: startnummer over categorieën heen',
+     sortCards(mixed, ['B','A'], 'number').map(p => p.number), [1,2,5,9]);
+  eq('Sortering: naam over categorieën heen',
+     sortCards(mixed, ['B','A'], 'name').map(p => p.name), ['Aerts','Bogaert','Claes','Peeters']);
 
   // --- QR ---
   eq('QR: payload', qrPayload('abyc2026-m4', 69), 'abyc2026-m4:69');
