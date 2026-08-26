@@ -19,6 +19,8 @@
     "card.header.boulder": 10,
     "card.header.attempt": 12,
     "card.header.score": 12,
+    "card.header.scoreTop": 12,
+    "card.header.scoreZone": 12,
     "card.footer.total": 24,
     "card.marker.zone": 2,
     "card.marker.top": 2,
@@ -40,6 +42,8 @@
     "card.header.boulder": "BOULDER",
     "card.header.attempt": "POGING {n}",
     "card.header.score": "SCORE",
+    "card.header.scoreTop": "SCORE TOP",
+    "card.header.scoreZone": "SCORE ZONE",
     "card.footer.total": "TOTALE SCORE",
     "card.marker.zone": "Z",
     "card.marker.top": "T",
@@ -188,6 +192,8 @@
     "card.header.boulder": "BLOC",
     "card.header.attempt": "ESSAI {n}",
     "card.header.score": "SCORE",
+    "card.header.scoreTop": "SCORE TOP",
+    "card.header.scoreZone": "SCORE ZONE",
     "card.footer.total": "SCORE TOTAL",
     "card.marker.zone": "Z",
     "card.marker.top": "T",
@@ -336,6 +342,8 @@
     "card.header.boulder": "BOULDER",
     "card.header.attempt": "ATTEMPT {n}",
     "card.header.score": "SCORE",
+    "card.header.scoreTop": "SCORE TOP",
+    "card.header.scoreZone": "SCORE ZONE",
     "card.footer.total": "TOTAL SCORE",
     "card.marker.zone": "Z",
     "card.marker.top": "T",
@@ -3217,13 +3225,14 @@ const FORMATS = {
     capture: 'fixed-columns', zones: 1, rowScoreColumn: true, totalsRow: true,
     usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: L.thead, below: L.tfoot
   },
-  // Identiek aan abyc op de voetregels na: twee tellingen in plaats van een
-  // totaal. Dat kost een extra voetrij, dus `below` telt er een tfoot bij en de
-  // controle "passen deze boulders" rekent vanzelf met een rij minder.
+  // Eén vakje per poging (geen Z/T: de jury noteert per poging), aparte
+  // kolommen SCORE TOP en SCORE ZONE, en twee telregels in de voet. De extra
+  // voetrij telt in `below`; de kop is één regel, dus `thead` is de h1-hoogte.
   rcyc: {
-    capture: 'fixed-columns', zones: 1, rowScoreColumn: true, totalsRow: true,
+    capture: 'fixed-columns', zones: 0, rowScoreColumn: true, totalsRow: true,
+    scoreLabels:  ['card.header.scoreTop', 'card.header.scoreZone'],
     footerLabels: ['card.header.score', 'card.header.attempts'],
-    usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: L.thead, below: 2 * L.tfoot
+    usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: 6, below: 2 * L.tfoot
   },
   timed: {
     capture: 'attempts-to', zones: 1, rowScoreColumn: true, totalsRow: true,
@@ -3259,6 +3268,7 @@ function seamOptions(format, nums, lang, maxAttempts){
     rowHeight: { min: f.minRow, max: f.maxRow },
     bodyHeight: bodyMm(format),
     footerLabels: f.footerLabels,
+    scoreLabels: f.scoreLabels,
     lang: lang
   };
   // Alleen een formaat met vaste kolommen krijgt een kolomaantal; de seam wijst
@@ -3663,11 +3673,38 @@ function renderScoreTable(opts){
     throw new Error('renderScoreTable: zones moet 0, 1 of 2 zijn');
 
   switch (cfg.capture){
-    case 'fixed-columns': return fixedColumnsTable(cfg);
+    case 'fixed-columns': return cfg.scoreLabels ? plainColumnsTable(cfg) : fixedColumnsTable(cfg);
     case 'attempts-to':   return attemptsToTable(cfg);
     default:
       throw new Error("renderScoreTable: capture '" + cfg.capture + "' is niet geïmplementeerd");
   }
+}
+
+/* RCYC-variant van het vaste raster: geen Z/T-onderverdeling, dus één kopregel
+   en één vakje per poging; de score staat in eigen kolommen (`scoreLabels`).
+   Bewust een eigen bouwer: de twee tabellen delen alleen de rijhoogtesom, en
+   vlaggen door fixedColumnsTable rijgen maakt beide onleesbaar. */
+function plainColumnsTable(cfg){
+  const { rows, attemptColumns: n, scoreLabels, footerLabels, totalsRow, lang } = cfg;
+  const cells = n + scoreLabels.length;
+
+  const h1 = '<tr class="h1"><th>' + et('card.header.boulder', null, lang) + '</th>' +
+    Array.from({ length: n }, (_, i) => '<th>' + et('card.header.attempt', { n: i + 1 }, lang) + '</th>').join('') +
+    scoreLabels.map(k => '<th>' + et(k, null, lang) + '</th>').join('') + '</tr>';
+
+  const blanks = '<td></td>'.repeat(cells);
+  const body = rows.map(r => '<tr><td class="bnum">' + esc(r.label) + '</td>' + blanks + '</tr>').join('');
+  const foot = totalsRow
+    ? '<tfoot>' + footerLabels.map(k => '<tr><td class="lab" colspan="' + (1 + n) + '">' +
+      et(k, null, lang) + '</td>' + '<td></td>'.repeat(scoreLabels.length) + '</tr>').join('') + '</tfoot>'
+    : '';
+
+  const budget = cfg.bodyHeight || L.body;
+  const maxRow = (cfg.rowHeight && cfg.rowHeight.max) || L.maxRow;
+  return '<table class="score" style="--body-h:' + budget.toFixed(1) + 'mm;' +
+         '--max-row:' + maxRow + 'mm"><colgroup><col style="width:20mm">' +
+         '<col span="' + cells + '"></colgroup><thead>' + h1 + '</thead><tbody>' +
+         body + '</tbody>' + foot + '</table>';
 }
 
 function fixedColumnsTable(cfg){
@@ -4520,20 +4557,21 @@ function selfTest(){
      st({ rows: numRows(10), attemptColumns: 5 }).innerHTML,
      st({ rows: numRows(10), attemptColumns: 5, zones: 1, rowScoreColumn: true, totalsRow: true }).innerHTML);
 
-  // --- RCYC: gelijk aan ABYC op de voet na (twee tellingen i.p.v. een totaal) ---
+  // --- RCYC: één vakje per poging, eigen scorekolommen, twee telregels ---
   const rcyc = st(seamOptions('rcyc', [1,2,3,4,5,6,7,8,9], 'nl', 5));
+  eq('RCYC: één kopregel', rcyc.querySelectorAll('thead tr').length, 1);
+  eq('RCYC: 1 + 5 pogingen + 2 scorekolommen = 8 kolommen',
+     rcyc.querySelector('tbody tr').children.length, 8);
+  eq('RCYC: koppen BOULDER, POGING 1..5, SCORE TOP, SCORE ZONE',
+     Array.from(rcyc.querySelectorAll('thead th')).map(th => th.textContent).join('|'),
+     'BOULDER|POGING 1|POGING 2|POGING 3|POGING 4|POGING 5|SCORE TOP|SCORE ZONE');
   eq('RCYC: twee voetregels', rcyc.querySelectorAll('tfoot tr').length, 2);
   eq('RCYC: voetregels heten SCORE en POGINGEN',
      Array.from(rcyc.querySelectorAll('tfoot td.lab')).map(td => td.textContent).join('/'),
      'SCORE/POGINGEN');
-  eq('RCYC: elke voetregel overspant 11 kolommen met 2 vakjes',
+  eq('RCYC: elke voetregel overspant 6 kolommen met 2 vakjes',
      rcyc.querySelector('tfoot td.lab').colSpan + '/' + (rcyc.querySelectorAll('tfoot tr:first-child td').length - 1),
-     '11/2');
-  eq('RCYC: lichaam en kop identiek aan ABYC',
-     rcyc.querySelector('thead').innerHTML + rcyc.querySelector('tbody').innerHTML,
-     st({ rows: numRows(9), attemptColumns: 5 }).querySelector('thead').innerHTML +
-     st({ rows: numRows(9), attemptColumns: 5 }).querySelector('tbody').innerHTML);
-  eq('RCYC: de extra voetregel kost een boulderrij', maxRowsFor('rcyc'), maxRowsFor('abyc') - 1);
+     '6/2');
   // De tabel moet met zijn eigen ruimte rekenen; op de globale ABYC-waarde liep
   // hij door de extra voetregel 9mm onder de kaart uit.
   eq('RCYC: de tabel rekent met zijn eigen hoogte, niet met de globale',
