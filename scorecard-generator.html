@@ -3703,7 +3703,14 @@ function fixedColumnsTable(cfg){
       et(k, null, lang) + '</td>' + '<td></td>'.repeat(scoreCols) + '</tr>').join('') + '</tfoot>'
     : '';
 
-  return '<table class="score"><colgroup><col style="width:20mm">' +
+  // De rijhoogte rekent met de ruimte die dit formaat overhoudt, niet met de
+  // globale ABYC-waarde: een formaat met een extra voetregel houdt minder over
+  // en liet de tabel anders onder de kaart uit lopen.
+  const budget = cfg.bodyHeight || L.body;
+  const maxRow = (cfg.rowHeight && cfg.rowHeight.max) || L.maxRow;
+
+  return '<table class="score" style="--body-h:' + budget.toFixed(1) + 'mm;' +
+         '--max-row:' + maxRow + 'mm"><colgroup><col style="width:20mm">' +
          '<col span="' + cells + '"></colgroup><thead>' + h1 + h2 + '</thead><tbody>' +
          body + '</tbody>' + foot + '</table>';
 }
@@ -4527,6 +4534,11 @@ function selfTest(){
      st({ rows: numRows(9), attemptColumns: 5 }).querySelector('thead').innerHTML +
      st({ rows: numRows(9), attemptColumns: 5 }).querySelector('tbody').innerHTML);
   eq('RCYC: de extra voetregel kost een boulderrij', maxRowsFor('rcyc'), maxRowsFor('abyc') - 1);
+  // De tabel moet met zijn eigen ruimte rekenen; op de globale ABYC-waarde liep
+  // hij door de extra voetregel 9mm onder de kaart uit.
+  eq('RCYC: de tabel rekent met zijn eigen hoogte, niet met de globale',
+     rcyc.querySelector('table.score').style.getPropertyValue('--body-h'),
+     bodyMm('rcyc').toFixed(1) + 'mm');
   throws('Tabel: lege voetregellijst is een fout',
          () => renderScoreTable({ rows: numRows(4), capture: 'fixed-columns', attemptColumns: 5,
                                   footerLabels: [], lang: 'nl' }), /footerLabels/);
@@ -4550,7 +4562,7 @@ function selfTest(){
   const fr = st({ rows: numRows(4), attemptColumns: 5, lang: 'fr' }).textContent;
   uiLang = savedUiLang;
   ok('Tabel: kaarttaal fr bij interfacetaal nl geeft BLOC / ESSAI / SCORE TOTAL',
-     /BLOC/.test(fr) && /ESSAI 1/.test(fr) && /SCORE TOTAL/.test(fr) && !/POGING/.test(fr), fr);
+     /BLOC/.test(fr) && /ESSAI\s?1/.test(fr) && /SCORE TOTAL/.test(fr) && !/POGING/.test(fr), fr);
 
   // --- categorie: onbegrensde namen uit de CSV ---
   const catLang = ['u11 (meisjes/jongens)', 'u15 (meisjes)', 'u19 (jongens)'];
@@ -4767,7 +4779,8 @@ function selfTest(){
   dfr.innerHTML = buildSheets(base, Object.assign({}, ctx, { cardLang: cardLang() }));
   const kaartTekst = dfr.querySelector('.card').textContent;
   ok('AC5: de kaart draagt de franse labels',
-     ['NOM', 'DOSSARD', 'CATÉGORIE', 'BLOC', 'ESSAI 1'].every(w => kaartTekst.includes(w)));
+     ['NOM', 'DOSSARD', 'CATÉGORIE', 'BLOC'].every(w => kaartTekst.includes(w)) &&
+     /ESSAI\s?1/.test(kaartTekst));
   ok('AC5: en geen nederlandse meer', !/NAAM|STARTNUMMER|POGING/.test(kaartTekst));
 
   // AC 7 — categorienamen blijven letterlijk, in elke taal
