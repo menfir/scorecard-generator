@@ -1,2 +1,4 @@
 .claude/settings.local.json
 *.pdf
+etto-login/node_modules/
+etto-login/etto_state.json
