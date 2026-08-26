@@ -762,8 +762,8 @@ table.score.timed td.cell-mark{
     <div class="grid4">
       <div><label for="f-format" data-i18n="ui.settings.format"></label>
         <select id="f-format">
-          <option value="abyc" data-i18n="ui.settings.format.abyc"></option>
           <option value="rcyc" data-i18n="ui.settings.format.rcyc"></option>
+          <option value="abyc" data-i18n="ui.settings.format.abyc"></option>
           <option value="timed" data-i18n="ui.settings.format.timed"></option>
         </select>
       </div>
@@ -3291,7 +3291,7 @@ const FORMATS = {
     usesAttempts: false, minRow: 12, maxRow: 20, thead: 9, below: 20 // een kopregel, samenvattingsblok
   }
 };
-const DEFAULT_FORMAT = 'abyc';
+const DEFAULT_FORMAT = 'rcyc';
 const fmtDef = f => FORMATS[f] || FORMATS[DEFAULT_FORMAT];
 
 /* De rijen krijgen wat er over is; de rechter kolom van de controle (§5) telt met
@@ -3305,7 +3305,7 @@ function maxRowsFor(format){
 }
 
 /* De CSS-variabelen en de oude controle rekenen met het standaardformaat. */
-L.body    = bodyMm(DEFAULT_FORMAT);        // 82.5mm
+L.body    = bodyMm(DEFAULT_FORMAT);        // 80.5mm
 L.maxRows = maxRowsFor(DEFAULT_FORMAT);    // 10
 
 /* Formaat -> seamparameters. Het enige wat de kaartbouwer hierover weet. */
@@ -4577,7 +4577,7 @@ function selfTest(){
                    { A:[1] }, ['A']), 'validation.warning.nameTooLong'));
 
   // --- layout ---
-  eq('Layout: kaarthoogte klopt met de rijruimte', L.body, 82.5);
+  eq('Layout: kaarthoogte klopt met de rijruimte', L.body, 80.5);
   eq('Layout: 10 boulders passen bij 8mm', L.maxRows >= 10, true);
   ok('Layout: 4 boulders vullen tot de maximale rijhoogte', L.body / 4 > L.maxRow);
 
@@ -4598,8 +4598,10 @@ function selfTest(){
   ok('QR: svg gegenereerd', qrSvg('abyc2026-m4:69').startsWith('<svg'));
 
   // --- opbouw kaarten ---
+  // expliciet abyc: deze tests beschrijven de ABYC-kaart en mogen niet
+  // meebewegen met het standaardformaat (sinds rcyc de default is).
   const ctx = { title:'T', subtitle:'', competitionId:'x', maxAttempts:5, paper:'A4', showQr:true,
-                mapping: map, catOrder: cats, controlSheet:false, colour:false, cardLang:'nl' };
+                format:'abyc', mapping: map, catOrder: cats, controlSheet:false, colour:false, cardLang:'nl' };
   const html = buildSheets(base, ctx);
   const d = document.createElement('div'); d.innerHTML = html;
   eq('Opbouw: 3 kaarten op 2 bladen', d.querySelectorAll('.card').length + '/' + d.querySelectorAll('.sheet').length, '3/2');
