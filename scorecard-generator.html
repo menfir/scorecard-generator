@@ -637,7 +637,7 @@ table.score tfoot tr{height:var(--tfoot-h)}
 table.score tfoot td{font-size:8.5pt;font-weight:700}
 table.score tfoot td.lab{text-align:right;padding-right:3mm}
 
-/* RCYC (platte kolommen) — exact het sjabloon van de organisator: grijze
+/* RCYC (platte kolommen): grijze
    scorekolommen, dikke buitenrand, dikke lijn onder de kop en links van het
    scoreblok, en een grijze voetband met witte invulvakken. */
 table.score.plain{border:.6mm solid #000}
@@ -3716,8 +3716,8 @@ function plainColumnsTable(cfg){
     scoreLabels.map((_, i) => '<td class="' + scCls(i) + '"></td>').join('');
   const body = rows.map(r => '<tr><td class="bnum">' + esc(r.label) + '</td>' + blanks + '</tr>').join('');
   // Voet als in het sjabloon: grijze band, wit labelvak in de laatste
-  // pogingkolom, witte invulvakken onder de scorekolommen.
-  const footCells = scoreLabels.map((_, i) => '<td' + (i ? '' : ' class="sc0"') + '></td>').join('');
+  // pogingkolom, grijze invulvakken onder de scorekolommen.
+  const footCells = scoreLabels.map((_, i) => '<td class="' + scCls(i) + '"></td>').join('');
   const foot = totalsRow
     ? '<tfoot>' + footerLabels.map(k => '<tr><td class="spacer" colspan="' + n + '"></td>' +
       '<td class="lab">' + et(k, null, lang) + '</td>' + footCells + '</tr>').join('') + '</tfoot>'
@@ -4596,9 +4596,9 @@ function selfTest(){
   eq('RCYC: voetregels heten SCORE en POGINGEN',
      Array.from(rcyc.querySelectorAll('tfoot td.lab')).map(td => td.textContent).join('/'),
      'SCORE/POGINGEN');
-  eq('RCYC: voetregel = grijze band over 5 kolommen, labelvak, 2 invulvakken',
+  eq('RCYC: voetregel = grijze band over 5 kolommen, labelvak, 2 grijze invulvakken',
      Array.from(rcyc.querySelectorAll('tfoot tr:first-child td')).map(td => td.className + ':' + td.colSpan).join('|'),
-     'spacer:5|lab:1|sc0:1|:1');
+     'spacer:5|lab:1|sc sc0:1|sc:1');
   // De tabel moet met zijn eigen ruimte rekenen; op de globale ABYC-waarde liep
   // hij door de extra voetregel 9mm onder de kaart uit.
   eq('RCYC: de tabel rekent met zijn eigen hoogte, niet met de globale',
