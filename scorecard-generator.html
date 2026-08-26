@@ -75,6 +75,7 @@
     "ui.settings.maxAttempts": "Max. pogingen",
     "ui.settings.format": "Wedstrijdformaat",
     "ui.settings.format.abyc": "Vaste pogingen (ABYC)",
+    "ui.settings.format.rcyc": "Vaste pogingen (RCYC)",
     "ui.settings.format.timed": "Tijdslot, onbeperkte pogingen",
     "ui.settings.hint": "Het wedstrijd-ID staat in de QR-code, bv. `abyc2026-m4:69`. Instellingen en boulderindeling worden per wedstrijd-ID op dit toestel bewaard; deelnemers nooit.",
 
@@ -222,6 +223,7 @@
     "ui.settings.maxAttempts": "Essais max.",
     "ui.settings.format": "Format de comp\u00e9tition",
     "ui.settings.format.abyc": "Essais fixes (ABYC)",
+    "ui.settings.format.rcyc": "Essais fixes (RCYC)",
     "ui.settings.format.timed": "Temps imparti, essais illimit\u00e9s",
     "ui.settings.hint": "L’ID de compétition figure dans le code QR, p. ex. `abyc2026-m4:69`. Les réglages et la répartition des blocs sont conservés par ID sur cet appareil ; jamais les participants.",
 
@@ -369,6 +371,7 @@
     "ui.settings.maxAttempts": "Max. attempts",
     "ui.settings.format": "Competition format",
     "ui.settings.format.abyc": "Fixed attempts (ABYC)",
+    "ui.settings.format.rcyc": "Fixed attempts (RCYC)",
     "ui.settings.format.timed": "Timed, unlimited attempts",
     "ui.settings.hint": "The competition ID appears in the QR code, e.g. `abyc2026-m4:69`. Settings and the boulder mapping are kept per competition ID on this device; participants never are.",
 
@@ -717,6 +720,7 @@ table.score.timed td.cell-mark{
       <div><label for="f-format" data-i18n="ui.settings.format"></label>
         <select id="f-format">
           <option value="abyc" data-i18n="ui.settings.format.abyc"></option>
+          <option value="rcyc" data-i18n="ui.settings.format.rcyc"></option>
           <option value="timed" data-i18n="ui.settings.format.timed"></option>
         </select>
       </div>
@@ -3213,6 +3217,14 @@ const FORMATS = {
     capture: 'fixed-columns', zones: 1, rowScoreColumn: true, totalsRow: true,
     usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: L.thead, below: L.tfoot
   },
+  // Identiek aan abyc op de voetregels na: twee tellingen in plaats van een
+  // totaal. Dat kost een extra voetrij, dus `below` telt er een tfoot bij en de
+  // controle "passen deze boulders" rekent vanzelf met een rij minder.
+  rcyc: {
+    capture: 'fixed-columns', zones: 1, rowScoreColumn: true, totalsRow: true,
+    footerLabels: ['card.header.score', 'card.header.attempts'],
+    usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: L.thead, below: 2 * L.tfoot
+  },
   timed: {
     capture: 'attempts-to', zones: 1, rowScoreColumn: true, totalsRow: true,
     usesAttempts: false, minRow: 12, maxRow: 20, thead: 9, below: 20 // een kopregel, samenvattingsblok
@@ -3246,6 +3258,7 @@ function seamOptions(format, nums, lang, maxAttempts){
     totalsRow: f.totalsRow,
     rowHeight: { min: f.minRow, max: f.maxRow },
     bodyHeight: bodyMm(format),
+    footerLabels: f.footerLabels,
     lang: lang
   };
   // Alleen een formaat met vaste kolommen krijgt een kolomaantal; de seam wijst
@@ -3628,6 +3641,11 @@ function renderScoreTable(opts){
   const cfg = Object.assign({
     zones: 1, rowScoreColumn: true, totalsRow: true, attemptColumns: 0
   }, opts);
+  // Een formaat mag de voet weglaten (undefined in FORMATS), niet leegmaken:
+  // een lege lijst met totalsRow aan zou een voet zonder regels betekenen.
+  if (!cfg.footerLabels) cfg.footerLabels = ['card.footer.total'];
+  if (!Array.isArray(cfg.footerLabels) || !cfg.footerLabels.length)
+    throw new Error('renderScoreTable: footerLabels moet een niet-lege array met tekstsleutels zijn');
 
   if (!Array.isArray(cfg.rows) || !cfg.rows.length)
     throw new Error('renderScoreTable: rows moet een niet-lege array zijn');
@@ -3653,7 +3671,7 @@ function renderScoreTable(opts){
 }
 
 function fixedColumnsTable(cfg){
-  const { rows, attemptColumns: n, zones, rowScoreColumn, totalsRow, lang } = cfg;
+  const { rows, attemptColumns: n, zones, rowScoreColumn, totalsRow, footerLabels, lang } = cfg;
   const z = et('card.marker.zone', null, lang), tp = et('card.marker.top', null, lang);
   // 0 zones -> [T], 1 -> [Z,T], 2 -> [Z1,Z2,T]
   const markers = zones === 0 ? [tp] : zones === 1 ? [z, tp] : [z + '1', z + '2', tp];
@@ -3681,8 +3699,8 @@ function fixedColumnsTable(cfg){
   const blanks = '<td></td>'.repeat(cells);
   const body = rows.map(r => '<tr><td class="bnum">' + esc(r.label) + '</td>' + blanks + '</tr>').join('');
   const foot = totalsRow
-    ? '<tfoot><tr><td class="lab" colspan="' + (1 + n * per) + '">' +
-      et('card.footer.total', null, lang) + '</td>' + '<td></td>'.repeat(scoreCols) + '</tr></tfoot>'
+    ? '<tfoot>' + footerLabels.map(k => '<tr><td class="lab" colspan="' + (1 + n * per) + '">' +
+      et(k, null, lang) + '</td>' + '<td></td>'.repeat(scoreCols) + '</tr>').join('') + '</tfoot>'
     : '';
 
   return '<table class="score"><colgroup><col style="width:20mm">' +
@@ -4494,6 +4512,24 @@ function selfTest(){
   eq('Tabel: standaardwaarden geven de ABYC-kaart',
      st({ rows: numRows(10), attemptColumns: 5 }).innerHTML,
      st({ rows: numRows(10), attemptColumns: 5, zones: 1, rowScoreColumn: true, totalsRow: true }).innerHTML);
+
+  // --- RCYC: gelijk aan ABYC op de voet na (twee tellingen i.p.v. een totaal) ---
+  const rcyc = st(seamOptions('rcyc', [1,2,3,4,5,6,7,8,9], 'nl', 5));
+  eq('RCYC: twee voetregels', rcyc.querySelectorAll('tfoot tr').length, 2);
+  eq('RCYC: voetregels heten SCORE en POGINGEN',
+     Array.from(rcyc.querySelectorAll('tfoot td.lab')).map(td => td.textContent).join('/'),
+     'SCORE/POGINGEN');
+  eq('RCYC: elke voetregel overspant 11 kolommen met 2 vakjes',
+     rcyc.querySelector('tfoot td.lab').colSpan + '/' + (rcyc.querySelectorAll('tfoot tr:first-child td').length - 1),
+     '11/2');
+  eq('RCYC: lichaam en kop identiek aan ABYC',
+     rcyc.querySelector('thead').innerHTML + rcyc.querySelector('tbody').innerHTML,
+     st({ rows: numRows(9), attemptColumns: 5 }).querySelector('thead').innerHTML +
+     st({ rows: numRows(9), attemptColumns: 5 }).querySelector('tbody').innerHTML);
+  eq('RCYC: de extra voetregel kost een boulderrij', maxRowsFor('rcyc'), maxRowsFor('abyc') - 1);
+  throws('Tabel: lege voetregellijst is een fout',
+         () => renderScoreTable({ rows: numRows(4), capture: 'fixed-columns', attemptColumns: 5,
+                                  footerLabels: [], lang: 'nl' }), /footerLabels/);
 
   throws('Tabel: onbekende opnamewijze wordt geweigerd',
          () => renderScoreTable({ rows: numRows(4), capture: 'stopwatch', lang: 'nl' }), /capture/);
