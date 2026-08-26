@@ -647,7 +647,8 @@ table.score.plain th.sc,table.score.plain td.sc{background:#bfbfbf;
 table.score.plain .sc0{border-left-width:.6mm}
 table.score.plain tfoot td.spacer{background:#bfbfbf;border:0;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
-table.score.plain tfoot td.lab{text-align:center;padding:0}
+table.score.plain tfoot td.lab{text-align:center;padding:0;background:#bfbfbf;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
 
 /* tijdslotformaat: turfstrook, twee registratievakjes, samenvatting */
 .tbl-stack{width:100%;display:flex;flex-direction:column;gap:3mm}
@@ -3715,8 +3716,8 @@ function plainColumnsTable(cfg){
   const blanks = '<td></td>'.repeat(n) +
     scoreLabels.map((_, i) => '<td class="' + scCls(i) + '"></td>').join('');
   const body = rows.map(r => '<tr><td class="bnum">' + esc(r.label) + '</td>' + blanks + '</tr>').join('');
-  // Voet als in het sjabloon: grijze band, wit labelvak in de laatste
-  // pogingkolom, grijze invulvakken onder de scorekolommen.
+  // Voet als in het sjabloon: volledig grijs, met het labelvak in de laatste
+  // pogingkolom en de invulvakken onder de scorekolommen als omlijnde vakken.
   const footCells = scoreLabels.map((_, i) => '<td class="' + scCls(i) + '"></td>').join('');
   const foot = totalsRow
     ? '<tfoot>' + footerLabels.map(k => '<tr><td class="spacer" colspan="' + n + '"></td>' +
