@@ -17,6 +17,7 @@
     "card.label.startNumber": 16,
     "card.label.category": 16,
     "card.header.boulder": 10,
+    "card.header.route": 10,
     "card.header.attempt": 12,
     "card.header.score": 12,
     "card.header.scoreTop": 12,
@@ -40,6 +41,7 @@
     "card.label.startNumber": "STARTNUMMER",
     "card.label.category": "CATEGORIE",
     "card.header.boulder": "BOULDER",
+    "card.header.route": "ROUTES",
     "card.header.attempt": "POGING {n}",
     "card.header.score": "SCORE",
     "card.header.scoreTop": "SCORE TOP",
@@ -190,6 +192,7 @@
     "card.label.startNumber": "DOSSARD",
     "card.label.category": "CATÉGORIE",
     "card.header.boulder": "BLOC",
+    "card.header.route": "VOIES",
     "card.header.attempt": "ESSAI {n}",
     "card.header.score": "SCORE",
     "card.header.scoreTop": "SCORE TOP",
@@ -340,6 +343,7 @@
     "card.label.startNumber": "START NUMBER",
     "card.label.category": "CATEGORY",
     "card.header.boulder": "BOULDER",
+    "card.header.route": "ROUTES",
     "card.header.attempt": "ATTEMPT {n}",
     "card.header.score": "SCORE",
     "card.header.scoreTop": "SCORE TOP",
@@ -632,6 +636,18 @@ table.score tbody td.bnum{font-size:13pt;font-weight:700}
 table.score tfoot tr{height:var(--tfoot-h)}
 table.score tfoot td{font-size:8.5pt;font-weight:700}
 table.score tfoot td.lab{text-align:right;padding-right:3mm}
+
+/* RCYC (platte kolommen) — exact het sjabloon van de organisator: grijze
+   scorekolommen, dikke buitenrand, dikke lijn onder de kop en links van het
+   scoreblok, en een grijze voetband met witte invulvakken. */
+table.score.plain{border:.6mm solid #000}
+table.score.plain thead th{border-bottom-width:.6mm}
+table.score.plain th.sc,table.score.plain td.sc{background:#bfbfbf;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.score.plain .sc0{border-left-width:.6mm}
+table.score.plain tfoot td.spacer{background:#bfbfbf;border:0;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.score.plain tfoot td.lab{text-align:center;padding:0}
 
 /* tijdslotformaat: turfstrook, twee registratievakjes, samenvatting */
 .tbl-stack{width:100%;display:flex;flex-direction:column;gap:3mm}
@@ -3230,6 +3246,7 @@ const FORMATS = {
   // voetrij telt in `below`; de kop is één regel, dus `thead` is de h1-hoogte.
   rcyc: {
     capture: 'fixed-columns', zones: 0, rowScoreColumn: true, totalsRow: true,
+    itemLabel: 'card.header.route',
     scoreLabels:  ['card.header.scoreTop', 'card.header.scoreZone'],
     footerLabels: ['card.header.score', 'card.header.attempts'],
     usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: 6, below: 2 * L.tfoot
@@ -3269,6 +3286,7 @@ function seamOptions(format, nums, lang, maxAttempts){
     bodyHeight: bodyMm(format),
     footerLabels: f.footerLabels,
     scoreLabels: f.scoreLabels,
+    itemLabel: f.itemLabel,
     lang: lang
   };
   // Alleen een formaat met vaste kolommen krijgt een kolomaantal; de seam wijst
@@ -3687,21 +3705,27 @@ function renderScoreTable(opts){
 function plainColumnsTable(cfg){
   const { rows, attemptColumns: n, scoreLabels, footerLabels, totalsRow, lang } = cfg;
   const cells = n + scoreLabels.length;
+  // .sc = grijze scorekolom, .sc0 = dikke lijn waar het scoreblok begint
+  const scCls = i => 'sc' + (i ? '' : ' sc0');
 
-  const h1 = '<tr class="h1"><th>' + et('card.header.boulder', null, lang) + '</th>' +
+  const h1 = '<tr class="h1"><th>' + et(cfg.itemLabel || 'card.header.boulder', null, lang) + '</th>' +
     Array.from({ length: n }, (_, i) => '<th>' + et('card.header.attempt', { n: i + 1 }, lang) + '</th>').join('') +
-    scoreLabels.map(k => '<th>' + et(k, null, lang) + '</th>').join('') + '</tr>';
+    scoreLabels.map((k, i) => '<th class="' + scCls(i) + '">' + et(k, null, lang) + '</th>').join('') + '</tr>';
 
-  const blanks = '<td></td>'.repeat(cells);
+  const blanks = '<td></td>'.repeat(n) +
+    scoreLabels.map((_, i) => '<td class="' + scCls(i) + '"></td>').join('');
   const body = rows.map(r => '<tr><td class="bnum">' + esc(r.label) + '</td>' + blanks + '</tr>').join('');
+  // Voet als in het sjabloon: grijze band, wit labelvak in de laatste
+  // pogingkolom, witte invulvakken onder de scorekolommen.
+  const footCells = scoreLabels.map((_, i) => '<td' + (i ? '' : ' class="sc0"') + '></td>').join('');
   const foot = totalsRow
-    ? '<tfoot>' + footerLabels.map(k => '<tr><td class="lab" colspan="' + (1 + n) + '">' +
-      et(k, null, lang) + '</td>' + '<td></td>'.repeat(scoreLabels.length) + '</tr>').join('') + '</tfoot>'
+    ? '<tfoot>' + footerLabels.map(k => '<tr><td class="spacer" colspan="' + n + '"></td>' +
+      '<td class="lab">' + et(k, null, lang) + '</td>' + footCells + '</tr>').join('') + '</tfoot>'
     : '';
 
   const budget = cfg.bodyHeight || L.body;
   const maxRow = (cfg.rowHeight && cfg.rowHeight.max) || L.maxRow;
-  return '<table class="score" style="--body-h:' + budget.toFixed(1) + 'mm;' +
+  return '<table class="score plain" style="--body-h:' + budget.toFixed(1) + 'mm;' +
          '--max-row:' + maxRow + 'mm"><colgroup><col style="width:20mm">' +
          '<col span="' + cells + '"></colgroup><thead>' + h1 + '</thead><tbody>' +
          body + '</tbody>' + foot + '</table>';
@@ -4562,16 +4586,19 @@ function selfTest(){
   eq('RCYC: één kopregel', rcyc.querySelectorAll('thead tr').length, 1);
   eq('RCYC: 1 + 5 pogingen + 2 scorekolommen = 8 kolommen',
      rcyc.querySelector('tbody tr').children.length, 8);
-  eq('RCYC: koppen BOULDER, POGING 1..5, SCORE TOP, SCORE ZONE',
+  eq('RCYC: koppen ROUTES, POGING 1..5, SCORE TOP, SCORE ZONE',
      Array.from(rcyc.querySelectorAll('thead th')).map(th => th.textContent).join('|'),
-     'BOULDER|POGING 1|POGING 2|POGING 3|POGING 4|POGING 5|SCORE TOP|SCORE ZONE');
+     'ROUTES|POGING 1|POGING 2|POGING 3|POGING 4|POGING 5|SCORE TOP|SCORE ZONE');
+  eq('RCYC: scorekolommen dragen de sjabloonklassen (grijs, dikke lijn)',
+     Array.from(rcyc.querySelectorAll('tbody tr:first-child td')).map(td => td.className).join('|'),
+     'bnum|||||' + '|sc sc0|sc');
   eq('RCYC: twee voetregels', rcyc.querySelectorAll('tfoot tr').length, 2);
   eq('RCYC: voetregels heten SCORE en POGINGEN',
      Array.from(rcyc.querySelectorAll('tfoot td.lab')).map(td => td.textContent).join('/'),
      'SCORE/POGINGEN');
-  eq('RCYC: elke voetregel overspant 6 kolommen met 2 vakjes',
-     rcyc.querySelector('tfoot td.lab').colSpan + '/' + (rcyc.querySelectorAll('tfoot tr:first-child td').length - 1),
-     '6/2');
+  eq('RCYC: voetregel = grijze band over 5 kolommen, labelvak, 2 invulvakken',
+     Array.from(rcyc.querySelectorAll('tfoot tr:first-child td')).map(td => td.className + ':' + td.colSpan).join('|'),
+     'spacer:5|lab:1|sc0:1|:1');
   // De tabel moet met zijn eigen ruimte rekenen; op de globale ABYC-waarde liep
   // hij door de extra voetregel 9mm onder de kaart uit.
   eq('RCYC: de tabel rekent met zijn eigen hoogte, niet met de globale',
