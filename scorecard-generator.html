@@ -645,6 +645,7 @@ table.score.plain thead th{border-bottom-width:.6mm}
 table.score.plain th.sc,table.score.plain td.sc{background:#bfbfbf;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
 table.score.plain .sc0{border-left-width:.6mm}
+table.score.plain tfoot tr{height:8mm} /* 2 telregels; hoort bij below:16 in FORMATS.rcyc */
 table.score.plain tfoot td.spacer{background:#bfbfbf;border:0;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
 table.score.plain tfoot td.lab{text-align:center;padding:0;background:#bfbfbf;
@@ -3250,7 +3251,7 @@ const FORMATS = {
     itemLabel: 'card.header.route',
     scoreLabels:  ['card.header.scoreTop', 'card.header.scoreZone'],
     footerLabels: ['card.header.score', 'card.header.attempts'],
-    usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: 6, below: 2 * L.tfoot
+    usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: 6, below: 16 // 2 telregels van 8mm (CSS .plain tfoot)
   },
   timed: {
     capture: 'attempts-to', zones: 1, rowScoreColumn: true, totalsRow: true,
@@ -4600,6 +4601,9 @@ function selfTest(){
   eq('RCYC: voetregel = grijze band over 5 kolommen, labelvak, 2 grijze invulvakken',
      Array.from(rcyc.querySelectorAll('tfoot tr:first-child td')).map(td => td.className + ':' + td.colSpan).join('|'),
      'spacer:5|lab:1|sc sc0:1|sc:1');
+  // De standaardronde van de organisator telt 10 routes; die moeten zonder
+  // waarschuwing op een kaart passen.
+  eq('RCYC: 10 routes passen op een kaart', maxRowsFor('rcyc'), 10);
   // De tabel moet met zijn eigen ruimte rekenen; op de globale ABYC-waarde liep
   // hij door de extra voetregel 9mm onder de kaart uit.
   eq('RCYC: de tabel rekent met zijn eigen hoogte, niet met de globale',
