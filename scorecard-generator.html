@@ -17,8 +17,11 @@
     "card.label.startNumber": 16,
     "card.label.category": 16,
     "card.header.boulder": 10,
+    "card.header.route": 10,
     "card.header.attempt": 12,
     "card.header.score": 12,
+    "card.header.scoreTop": 12,
+    "card.header.scoreZone": 12,
     "card.footer.total": 24,
     "card.marker.zone": 2,
     "card.marker.top": 2,
@@ -38,8 +41,11 @@
     "card.label.startNumber": "STARTNUMMER",
     "card.label.category": "CATEGORIE",
     "card.header.boulder": "BOULDER",
+    "card.header.route": "ROUTES",
     "card.header.attempt": "POGING {n}",
     "card.header.score": "SCORE",
+    "card.header.scoreTop": "SCORE TOP",
+    "card.header.scoreZone": "SCORE ZONE",
     "card.footer.total": "TOTALE SCORE",
     "card.marker.zone": "Z",
     "card.marker.top": "T",
@@ -75,6 +81,7 @@
     "ui.settings.maxAttempts": "Max. pogingen",
     "ui.settings.format": "Wedstrijdformaat",
     "ui.settings.format.abyc": "Vaste pogingen (ABYC)",
+    "ui.settings.format.rcyc": "Vaste pogingen (RCYC)",
     "ui.settings.format.timed": "Tijdslot, onbeperkte pogingen",
     "ui.settings.hint": "Het wedstrijd-ID staat in de QR-code, bv. `abyc2026-m4:69`. Instellingen en boulderindeling worden per wedstrijd-ID op dit toestel bewaard; deelnemers nooit.",
 
@@ -185,8 +192,11 @@
     "card.label.startNumber": "DOSSARD",
     "card.label.category": "CATÉGORIE",
     "card.header.boulder": "BLOC",
+    "card.header.route": "VOIES",
     "card.header.attempt": "ESSAI {n}",
     "card.header.score": "SCORE",
+    "card.header.scoreTop": "SCORE TOP",
+    "card.header.scoreZone": "SCORE ZONE",
     "card.footer.total": "SCORE TOTAL",
     "card.marker.zone": "Z",
     "card.marker.top": "T",
@@ -222,6 +232,7 @@
     "ui.settings.maxAttempts": "Essais max.",
     "ui.settings.format": "Format de comp\u00e9tition",
     "ui.settings.format.abyc": "Essais fixes (ABYC)",
+    "ui.settings.format.rcyc": "Essais fixes (RCYC)",
     "ui.settings.format.timed": "Temps imparti, essais illimit\u00e9s",
     "ui.settings.hint": "L’ID de compétition figure dans le code QR, p. ex. `abyc2026-m4:69`. Les réglages et la répartition des blocs sont conservés par ID sur cet appareil ; jamais les participants.",
 
@@ -332,8 +343,11 @@
     "card.label.startNumber": "START NUMBER",
     "card.label.category": "CATEGORY",
     "card.header.boulder": "BOULDER",
+    "card.header.route": "ROUTES",
     "card.header.attempt": "ATTEMPT {n}",
     "card.header.score": "SCORE",
+    "card.header.scoreTop": "SCORE TOP",
+    "card.header.scoreZone": "SCORE ZONE",
     "card.footer.total": "TOTAL SCORE",
     "card.marker.zone": "Z",
     "card.marker.top": "T",
@@ -369,6 +383,7 @@
     "ui.settings.maxAttempts": "Max. attempts",
     "ui.settings.format": "Competition format",
     "ui.settings.format.abyc": "Fixed attempts (ABYC)",
+    "ui.settings.format.rcyc": "Fixed attempts (RCYC)",
     "ui.settings.format.timed": "Timed, unlimited attempts",
     "ui.settings.hint": "The competition ID appears in the QR code, e.g. `abyc2026-m4:69`. Settings and the boulder mapping are kept per competition ID on this device; participants never are.",
 
@@ -622,6 +637,20 @@ table.score tfoot tr{height:var(--tfoot-h)}
 table.score tfoot td{font-size:8.5pt;font-weight:700}
 table.score tfoot td.lab{text-align:right;padding-right:3mm}
 
+/* RCYC (platte kolommen): grijze
+   scorekolommen, dikke buitenrand, dikke lijn onder de kop en links van het
+   scoreblok, en een grijze voetband met witte invulvakken. */
+table.score.plain{border:.6mm solid #000}
+table.score.plain thead th{border-bottom-width:.6mm}
+table.score.plain th.sc,table.score.plain td.sc{background:#bfbfbf;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.score.plain .sc0{border-left-width:.6mm}
+table.score.plain tfoot tr{height:8mm} /* 2 telregels; hoort bij below:16 in FORMATS.rcyc */
+table.score.plain tfoot td.spacer{background:#bfbfbf;border:0;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+table.score.plain tfoot td.lab{text-align:center;padding:0;background:#bfbfbf;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+
 /* tijdslotformaat: turfstrook, twee registratievakjes, samenvatting */
 .tbl-stack{width:100%;display:flex;flex-direction:column;gap:3mm}
 table.score.timed thead tr.h1{height:9mm;line-height:1.05}
@@ -717,6 +746,7 @@ table.score.timed td.cell-mark{
       <div><label for="f-format" data-i18n="ui.settings.format"></label>
         <select id="f-format">
           <option value="abyc" data-i18n="ui.settings.format.abyc"></option>
+          <option value="rcyc" data-i18n="ui.settings.format.rcyc"></option>
           <option value="timed" data-i18n="ui.settings.format.timed"></option>
         </select>
       </div>
@@ -3213,6 +3243,16 @@ const FORMATS = {
     capture: 'fixed-columns', zones: 1, rowScoreColumn: true, totalsRow: true,
     usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: L.thead, below: L.tfoot
   },
+  // Eén vakje per poging (geen Z/T: de jury noteert per poging), aparte
+  // kolommen SCORE TOP en SCORE ZONE, en twee telregels in de voet. De extra
+  // voetrij telt in `below`; de kop is één regel, dus `thead` is de h1-hoogte.
+  rcyc: {
+    capture: 'fixed-columns', zones: 0, rowScoreColumn: true, totalsRow: true,
+    itemLabel: 'card.header.route',
+    scoreLabels:  ['card.header.scoreTop', 'card.header.scoreZone'],
+    footerLabels: ['card.header.score', 'card.header.attempts'],
+    usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: 6, below: 16 // 2 telregels van 8mm (CSS .plain tfoot)
+  },
   timed: {
     capture: 'attempts-to', zones: 1, rowScoreColumn: true, totalsRow: true,
     usesAttempts: false, minRow: 12, maxRow: 20, thead: 9, below: 20 // een kopregel, samenvattingsblok
@@ -3246,6 +3286,9 @@ function seamOptions(format, nums, lang, maxAttempts){
     totalsRow: f.totalsRow,
     rowHeight: { min: f.minRow, max: f.maxRow },
     bodyHeight: bodyMm(format),
+    footerLabels: f.footerLabels,
+    scoreLabels: f.scoreLabels,
+    itemLabel: f.itemLabel,
     lang: lang
   };
   // Alleen een formaat met vaste kolommen krijgt een kolomaantal; de seam wijst
@@ -3628,6 +3671,11 @@ function renderScoreTable(opts){
   const cfg = Object.assign({
     zones: 1, rowScoreColumn: true, totalsRow: true, attemptColumns: 0
   }, opts);
+  // Een formaat mag de voet weglaten (undefined in FORMATS), niet leegmaken:
+  // een lege lijst met totalsRow aan zou een voet zonder regels betekenen.
+  if (!cfg.footerLabels) cfg.footerLabels = ['card.footer.total'];
+  if (!Array.isArray(cfg.footerLabels) || !cfg.footerLabels.length)
+    throw new Error('renderScoreTable: footerLabels moet een niet-lege array met tekstsleutels zijn');
 
   if (!Array.isArray(cfg.rows) || !cfg.rows.length)
     throw new Error('renderScoreTable: rows moet een niet-lege array zijn');
@@ -3645,15 +3693,48 @@ function renderScoreTable(opts){
     throw new Error('renderScoreTable: zones moet 0, 1 of 2 zijn');
 
   switch (cfg.capture){
-    case 'fixed-columns': return fixedColumnsTable(cfg);
+    case 'fixed-columns': return cfg.scoreLabels ? plainColumnsTable(cfg) : fixedColumnsTable(cfg);
     case 'attempts-to':   return attemptsToTable(cfg);
     default:
       throw new Error("renderScoreTable: capture '" + cfg.capture + "' is niet geïmplementeerd");
   }
 }
 
+/* RCYC-variant van het vaste raster: geen Z/T-onderverdeling, dus één kopregel
+   en één vakje per poging; de score staat in eigen kolommen (`scoreLabels`).
+   Bewust een eigen bouwer: de twee tabellen delen alleen de rijhoogtesom, en
+   vlaggen door fixedColumnsTable rijgen maakt beide onleesbaar. */
+function plainColumnsTable(cfg){
+  const { rows, attemptColumns: n, scoreLabels, footerLabels, totalsRow, lang } = cfg;
+  const cells = n + scoreLabels.length;
+  // .sc = grijze scorekolom, .sc0 = dikke lijn waar het scoreblok begint
+  const scCls = i => 'sc' + (i ? '' : ' sc0');
+
+  const h1 = '<tr class="h1"><th>' + et(cfg.itemLabel || 'card.header.boulder', null, lang) + '</th>' +
+    Array.from({ length: n }, (_, i) => '<th>' + et('card.header.attempt', { n: i + 1 }, lang) + '</th>').join('') +
+    scoreLabels.map((k, i) => '<th class="' + scCls(i) + '">' + et(k, null, lang) + '</th>').join('') + '</tr>';
+
+  const blanks = '<td></td>'.repeat(n) +
+    scoreLabels.map((_, i) => '<td class="' + scCls(i) + '"></td>').join('');
+  const body = rows.map(r => '<tr><td class="bnum">' + esc(r.label) + '</td>' + blanks + '</tr>').join('');
+  // Voet als in het sjabloon: volledig grijs, met het labelvak in de laatste
+  // pogingkolom en de invulvakken onder de scorekolommen als omlijnde vakken.
+  const footCells = scoreLabels.map((_, i) => '<td class="' + scCls(i) + '"></td>').join('');
+  const foot = totalsRow
+    ? '<tfoot>' + footerLabels.map(k => '<tr><td class="spacer" colspan="' + n + '"></td>' +
+      '<td class="lab">' + et(k, null, lang) + '</td>' + footCells + '</tr>').join('') + '</tfoot>'
+    : '';
+
+  const budget = cfg.bodyHeight || L.body;
+  const maxRow = (cfg.rowHeight && cfg.rowHeight.max) || L.maxRow;
+  return '<table class="score plain" style="--body-h:' + budget.toFixed(1) + 'mm;' +
+         '--max-row:' + maxRow + 'mm"><colgroup><col style="width:20mm">' +
+         '<col span="' + cells + '"></colgroup><thead>' + h1 + '</thead><tbody>' +
+         body + '</tbody>' + foot + '</table>';
+}
+
 function fixedColumnsTable(cfg){
-  const { rows, attemptColumns: n, zones, rowScoreColumn, totalsRow, lang } = cfg;
+  const { rows, attemptColumns: n, zones, rowScoreColumn, totalsRow, footerLabels, lang } = cfg;
   const z = et('card.marker.zone', null, lang), tp = et('card.marker.top', null, lang);
   // 0 zones -> [T], 1 -> [Z,T], 2 -> [Z1,Z2,T]
   const markers = zones === 0 ? [tp] : zones === 1 ? [z, tp] : [z + '1', z + '2', tp];
@@ -3681,11 +3762,18 @@ function fixedColumnsTable(cfg){
   const blanks = '<td></td>'.repeat(cells);
   const body = rows.map(r => '<tr><td class="bnum">' + esc(r.label) + '</td>' + blanks + '</tr>').join('');
   const foot = totalsRow
-    ? '<tfoot><tr><td class="lab" colspan="' + (1 + n * per) + '">' +
-      et('card.footer.total', null, lang) + '</td>' + '<td></td>'.repeat(scoreCols) + '</tr></tfoot>'
+    ? '<tfoot>' + footerLabels.map(k => '<tr><td class="lab" colspan="' + (1 + n * per) + '">' +
+      et(k, null, lang) + '</td>' + '<td></td>'.repeat(scoreCols) + '</tr>').join('') + '</tfoot>'
     : '';
 
-  return '<table class="score"><colgroup><col style="width:20mm">' +
+  // De rijhoogte rekent met de ruimte die dit formaat overhoudt, niet met de
+  // globale ABYC-waarde: een formaat met een extra voetregel houdt minder over
+  // en liet de tabel anders onder de kaart uit lopen.
+  const budget = cfg.bodyHeight || L.body;
+  const maxRow = (cfg.rowHeight && cfg.rowHeight.max) || L.maxRow;
+
+  return '<table class="score" style="--body-h:' + budget.toFixed(1) + 'mm;' +
+         '--max-row:' + maxRow + 'mm"><colgroup><col style="width:20mm">' +
          '<col span="' + cells + '"></colgroup><thead>' + h1 + h2 + '</thead><tbody>' +
          body + '</tbody>' + foot + '</table>';
 }
@@ -4495,6 +4583,36 @@ function selfTest(){
      st({ rows: numRows(10), attemptColumns: 5 }).innerHTML,
      st({ rows: numRows(10), attemptColumns: 5, zones: 1, rowScoreColumn: true, totalsRow: true }).innerHTML);
 
+  // --- RCYC: één vakje per poging, eigen scorekolommen, twee telregels ---
+  const rcyc = st(seamOptions('rcyc', [1,2,3,4,5,6,7,8,9], 'nl', 5));
+  eq('RCYC: één kopregel', rcyc.querySelectorAll('thead tr').length, 1);
+  eq('RCYC: 1 + 5 pogingen + 2 scorekolommen = 8 kolommen',
+     rcyc.querySelector('tbody tr').children.length, 8);
+  eq('RCYC: koppen ROUTES, POGING 1..5, SCORE TOP, SCORE ZONE',
+     Array.from(rcyc.querySelectorAll('thead th')).map(th => th.textContent).join('|'),
+     'ROUTES|POGING 1|POGING 2|POGING 3|POGING 4|POGING 5|SCORE TOP|SCORE ZONE');
+  eq('RCYC: scorekolommen dragen de sjabloonklassen (grijs, dikke lijn)',
+     Array.from(rcyc.querySelectorAll('tbody tr:first-child td')).map(td => td.className).join('|'),
+     'bnum|||||' + '|sc sc0|sc');
+  eq('RCYC: twee voetregels', rcyc.querySelectorAll('tfoot tr').length, 2);
+  eq('RCYC: voetregels heten SCORE en POGINGEN',
+     Array.from(rcyc.querySelectorAll('tfoot td.lab')).map(td => td.textContent).join('/'),
+     'SCORE/POGINGEN');
+  eq('RCYC: voetregel = grijze band over 5 kolommen, labelvak, 2 grijze invulvakken',
+     Array.from(rcyc.querySelectorAll('tfoot tr:first-child td')).map(td => td.className + ':' + td.colSpan).join('|'),
+     'spacer:5|lab:1|sc sc0:1|sc:1');
+  // De standaardronde van de organisator telt 10 routes; die moeten zonder
+  // waarschuwing op een kaart passen.
+  eq('RCYC: 10 routes passen op een kaart', maxRowsFor('rcyc'), 10);
+  // De tabel moet met zijn eigen ruimte rekenen; op de globale ABYC-waarde liep
+  // hij door de extra voetregel 9mm onder de kaart uit.
+  eq('RCYC: de tabel rekent met zijn eigen hoogte, niet met de globale',
+     rcyc.querySelector('table.score').style.getPropertyValue('--body-h'),
+     bodyMm('rcyc').toFixed(1) + 'mm');
+  throws('Tabel: lege voetregellijst is een fout',
+         () => renderScoreTable({ rows: numRows(4), capture: 'fixed-columns', attemptColumns: 5,
+                                  footerLabels: [], lang: 'nl' }), /footerLabels/);
+
   throws('Tabel: onbekende opnamewijze wordt geweigerd',
          () => renderScoreTable({ rows: numRows(4), capture: 'stopwatch', lang: 'nl' }), /capture/);
   throws("Tabel: 'tally' noemt zichzelf als niet geïmplementeerd",
@@ -4514,7 +4632,7 @@ function selfTest(){
   const fr = st({ rows: numRows(4), attemptColumns: 5, lang: 'fr' }).textContent;
   uiLang = savedUiLang;
   ok('Tabel: kaarttaal fr bij interfacetaal nl geeft BLOC / ESSAI / SCORE TOTAL',
-     /BLOC/.test(fr) && /ESSAI 1/.test(fr) && /SCORE TOTAL/.test(fr) && !/POGING/.test(fr), fr);
+     /BLOC/.test(fr) && /ESSAI\s?1/.test(fr) && /SCORE TOTAL/.test(fr) && !/POGING/.test(fr), fr);
 
   // --- categorie: onbegrensde namen uit de CSV ---
   const catLang = ['u11 (meisjes/jongens)', 'u15 (meisjes)', 'u19 (jongens)'];
@@ -4731,7 +4849,8 @@ function selfTest(){
   dfr.innerHTML = buildSheets(base, Object.assign({}, ctx, { cardLang: cardLang() }));
   const kaartTekst = dfr.querySelector('.card').textContent;
   ok('AC5: de kaart draagt de franse labels',
-     ['NOM', 'DOSSARD', 'CATÉGORIE', 'BLOC', 'ESSAI 1'].every(w => kaartTekst.includes(w)));
+     ['NOM', 'DOSSARD', 'CATÉGORIE', 'BLOC'].every(w => kaartTekst.includes(w)) &&
+     /ESSAI\s?1/.test(kaartTekst));
   ok('AC5: en geen nederlandse meer', !/NAAM|STARTNUMMER|POGING/.test(kaartTekst));
 
   // AC 7 — categorienamen blijven letterlijk, in elke taal

@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "playwright-firefox": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--browser",
+        "firefox",
+        "--headless"
+      ],
+      "env": {}
+    }
+  }
+}
