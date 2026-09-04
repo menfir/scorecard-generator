@@ -1,0 +1,11 @@
+Category;Starting number;Ranking;Name
+u11 (meisjes/jongens);80;;Testperson-Alpha 01
+u19 (jongens);69;;Testperson-O'Connor 02
+u19 (meisjes);76;;Testperson-Very-Long-Double-Surname 03
+u15 (meisjes);6;;"Testperson ""Quoted"" 04"
+u15 (meisjes);1;;Testperson-Éclair 05
+u15 (jongens);2;;Testperson-Nguyen 06
+u13 (jongens);3;;Testperson-Björnsdottir 07
+u13 (meisjes);11;;Testperson-Ångström 08
+u17 (jongens);16;;Testperson-D'Artagnan 09
+u17 (meisjes);27;;Testperson-Hyphenated-Example 10
