@@ -43,6 +43,26 @@ byte-identically.
 5. Read the validation report and fix anything it blocks on.
 6. Print to PDF.
 
+## GitHub Pages
+
+The same local-only application can be published as a static GitHub Pages site.
+The repository includes `.github/workflows/deploy-pages.yml`, which deploys the
+static application files when `main` is pushed. `index.html` redirects the
+project URL to the generator; samples and development helpers are not deployed.
+
+One-time repository setup: in **Settings → Pages**, select **GitHub Actions** as
+the publishing source. After the next push to `main` (or a manual run of the
+workflow), GitHub will show the published URL; for this repository it will
+normally be `https://menfir.github.io/scorecard-generator/`.
+
+Publishing does not add a backend. CSV and JSON files selected by an organiser
+are read and processed in that organiser's browser only; participant data is
+not uploaded by this application. The settings and boulder mapping stay in that
+browser's `localStorage`, and participants remain in memory for the tab session.
+Do not add analytics, remote fonts, third-party scripts, or API calls if that
+local-only property must be retained. As with any hosted site, GitHub Pages may
+process visitor technical data such as IP addresses to operate the service.
+
 Competition settings and the boulder mapping persist to `localStorage` per competition
 ID, and can be exported to JSON to seed next season. Participant data is never
 persisted — it lives in memory for the session only.
@@ -55,9 +75,8 @@ persisted — it lives in memory for the session only.
 | `scorecard-generator-spec.md` | Development spec: constraints, data formats, layout, validation rules. |
 | `i18n-feature-spec.md` | Spec for the NL/FR/EN support. |
 | `check_locales.py` | Stdlib-only checker for the translation block. Run before every release. |
-| `sample-participants.csv` | Synthetic participant list with awkward names, for testing the parser. |
+| `sample-participants.csv` | Clearly fictitious participant list with awkward names, for testing the parser. |
 | `boulders-per-category-sample` | Raw clipboard HTML from the platform's boulder table, for testing the paste parser. |
-| `Competition Results - ....ods` | Sample results export, participant names redacted. |
 
 ## Translating
 
