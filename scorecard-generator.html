@@ -80,7 +80,7 @@
     "ui.settings.id": "Wedstrijd-ID",
     "ui.settings.maxAttempts": "Max. pogingen",
     "ui.settings.bouldersPerCat": "Boulders per categorie",
-    "ui.settings.bouldersPerCatHint": "Voor de blanco kaart en om categorieën te melden die van dit aantal afwijken.",
+    "ui.settings.bouldersPerCatHint": "Aantal rijen op elke kaart: ontbrekende boulders worden lege rijen zonder nummer. Ook voor de blanco kaart en om afwijkende categorieën te melden.",
     "ui.settings.format": "Wedstrijdformaat",
     "ui.settings.format.abyc": "Vaste pogingen (ABYC)",
     "ui.settings.format.rcyc": "Vaste pogingen (RCYC)",
@@ -158,8 +158,6 @@
     "ui.print.colour": "Kleurband op de kaart",
     "ui.print.button": "Afdrukken (Ctrl+P → Opslaan als PDF)",
     "ui.print.blankButton": "Blanco kaart afdrukken",
-    "ui.print.noNumbers": "Zonder bouldernummers",
-    "ui.print.noNumbersHint": "“Zonder bouldernummers” drukt de deelnemerskaarten met “Boulders per categorie” lege rijen en laat de nummers open, handig bij last-minute wijzigingen. De indeling en het controleblad doen dan niet mee.",
     "ui.print.blankHint": "Vul “Boulders per categorie” in om een blanco kaart af te drukken: titel en ondertitel staan erop, naam, startnummer, categorie en boulders vult de deelnemer zelf in.",
     "ui.print.hint": "Druk af op 100% zonder schaling. Kies in het printvenster hetzelfde papierformaat. Het voorbeeld hieronder is exact wat er uit de printer komt. Let op: in het verkleinde voorbeeld van het printvenster kunnen dunne tabellijnen wegvallen — de afdruk en de PDF zijn wel correct.",
     "ui.print.stat.one": "{cards} kaart op {sheets} bladen {paper}, {ms} ms.",
@@ -197,6 +195,7 @@
     "validation.warning.categoryTooLong": "Categorie “{category}” is te lang voor het categorieveld, ook op de kleinste maat, en wordt afgekapt.",
     "validation.warning.differingBoulderCounts": "Niet alle categorieën hebben evenveel boulders ({summary}). Klopt voor een finale, meestal een vergissing in een kwalificatie.",
     "validation.warning.tooManyBoulders": "Categorie “{category}” heeft {count} boulders; er passen er {max} op een kaart bij {rowHeight}mm rijhoogte. De vakjes worden krap.",
+    "validation.warning.categoryBlankRows": "Categorie “{category}” heeft geen boulders toegekend; de kaarten krijgen {count} lege rijen zonder nummer.",
     "validation.warning.boulderCountMismatch": "Categorie “{category}” heeft {count} boulders, ingesteld is {expected}."
   },
 
@@ -244,7 +243,7 @@
     "ui.settings.id": "ID de compétition",
     "ui.settings.maxAttempts": "Essais max.",
     "ui.settings.bouldersPerCat": "Blocs par cat\u00e9gorie",
-    "ui.settings.bouldersPerCatHint": "Pour la carte vierge et pour signaler les cat\u00e9gories qui s'\u00e9cartent de ce nombre.",
+    "ui.settings.bouldersPerCatHint": "Nombre de lignes sur chaque feuille : les blocs manquants deviennent des lignes vides sans numéro. Sert aussi pour la carte vierge et pour signaler les catégories qui s'écartent.",
     "ui.settings.format": "Format de comp\u00e9tition",
     "ui.settings.format.abyc": "Essais fixes (ABYC)",
     "ui.settings.format.rcyc": "Essais fixes (RCYC)",
@@ -322,8 +321,6 @@
     "ui.print.colour": "Bande de couleur sur la feuille",
     "ui.print.button": "Imprimer (Ctrl+P → Enregistrer en PDF)",
     "ui.print.blankButton": "Imprimer une carte vierge",
-    "ui.print.noNumbers": "Sans numéros de bloc",
-    "ui.print.noNumbersHint": "« Sans numéros de bloc » imprime les feuilles des participants avec « Blocs par catégorie » lignes vides et laisse les numéros ouverts, pratique en cas de changements de dernière minute. La répartition et la feuille de contrôle ne sont alors pas utilisées.",
     "ui.print.blankHint": "Renseignez « Blocs par catégorie » pour imprimer une carte vierge : titre et sous-titre y figurent, le participant remplit lui-même son nom, dossard, catégorie et blocs.",
     "ui.print.hint": "Imprimez à 100 % sans mise à l’échelle. Choisissez le même format de papier dans la boîte d’impression. L’aperçu ci-dessous correspond exactement à la sortie. Attention : dans l’aperçu réduit de la boîte d’impression, des lignes fines du tableau peuvent disparaître — l’impression et le PDF restent corrects.",
     "ui.print.stat.one": "{cards} feuille sur {sheets} pages {paper}, {ms} ms.",
@@ -361,6 +358,7 @@
     "validation.warning.categoryTooLong": "La catégorie « {category} » est trop longue pour le champ, même à la plus petite taille, et sera tronquée.",
     "validation.warning.differingBoulderCounts": "Les catégories n’ont pas toutes le même nombre de blocs ({summary}). Normal pour une finale, généralement une erreur en qualification.",
     "validation.warning.tooManyBoulders": "La catégorie « {category} » a {count} blocs ; {max} tiennent sur une feuille à {rowHeight} mm de hauteur de ligne. Les cases seront serrées.",
+    "validation.warning.categoryBlankRows": "La catégorie « {category} » n’a aucun bloc attribué ; ses feuilles reçoivent {count} lignes vides sans numéro.",
     "validation.warning.boulderCountMismatch": "La catégorie « {category} » a {count} blocs, {expected} sont configurés."
   },
 
@@ -408,7 +406,7 @@
     "ui.settings.id": "Competition ID",
     "ui.settings.maxAttempts": "Max. attempts",
     "ui.settings.bouldersPerCat": "Boulders per category",
-    "ui.settings.bouldersPerCatHint": "For the blank card, and to flag categories that differ from this count.",
+    "ui.settings.bouldersPerCatHint": "Number of rows on every card: missing boulders become empty rows without a number. Also used for the blank card and to flag categories that differ.",
     "ui.settings.format": "Competition format",
     "ui.settings.format.abyc": "Fixed attempts (ABYC)",
     "ui.settings.format.rcyc": "Fixed attempts (RCYC)",
@@ -486,8 +484,6 @@
     "ui.print.colour": "Colour band on the card",
     "ui.print.button": "Print (Ctrl+P → Save as PDF)",
     "ui.print.blankButton": "Print blank card",
-    "ui.print.noNumbers": "Without boulder numbers",
-    "ui.print.noNumbersHint": "“Without boulder numbers” prints the participant cards with “Boulders per category” empty rows and leaves the numbers open, handy for last-minute changes. The boulder mapping and the control sheet are then not used.",
     "ui.print.blankHint": "Fill in “Boulders per category” to print a blank card: title and subtitle are printed, the participant fills in their own name, start number, category and boulders.",
     "ui.print.hint": "Print at 100% with no scaling. Choose the same paper size in the print dialog. The preview below is exactly what comes out of the printer. Note: the scaled-down preview in the print dialog may drop thin table lines — the print and the PDF are correct.",
     "ui.print.stat.one": "{cards} card on {sheets} {paper} sheets, {ms} ms.",
@@ -525,6 +521,7 @@
     "validation.warning.categoryTooLong": "Category “{category}” is too long for the category field, even at the smallest size, and will be cut off.",
     "validation.warning.differingBoulderCounts": "Not all categories have the same number of boulders ({summary}). Correct for a final, usually a mistake in a qualification.",
     "validation.warning.tooManyBoulders": "Category “{category}” has {count} boulders; {max} fit on a card at {rowHeight}mm row height. The boxes will be cramped.",
+    "validation.warning.categoryBlankRows": "Category “{category}” has no boulders assigned; its cards get {count} empty rows without a number.",
     "validation.warning.boulderCountMismatch": "Category “{category}” has {count} boulders, {expected} configured."
   }
 }
@@ -891,13 +888,11 @@ table.score.timed td.cell-mark{
       <label style="margin:0"><input type="checkbox" id="o-qr"> <span data-i18n="ui.print.qr"></span></label>
       <label style="margin:0"><input type="checkbox" id="o-ctl" checked> <span data-i18n="ui.print.controlSheet"></span></label>
       <label style="margin:0"><input type="checkbox" id="o-colour" checked> <span data-i18n="ui.print.colour"></span></label>
-      <label style="margin:0"><input type="checkbox" id="o-nonums"> <span data-i18n="ui.print.noNumbers"></span></label>
       <button id="btn-print" type="button" disabled data-i18n="ui.print.button"></button>
       <button id="btn-print-blank" type="button" disabled data-i18n="ui.print.blankButton"></button>
       <span class="hint" id="print-stat"></span>
     </div>
     <p class="hint" style="margin:10px 0 0" data-i18n="ui.print.hint"></p>
-    <p class="hint" style="margin:4px 0 0" data-i18n="ui.print.noNumbersHint"></p>
     <p class="hint" style="margin:4px 0 0" data-i18n="ui.print.blankHint"></p>
   </section>
 
@@ -3536,21 +3531,28 @@ function validate(participants, mapping, catOrder, opts){
   const csvCats = new Set(participants.map(p => p.category).filter(Boolean));
   const mapCats = catOrder.filter(c => mapping[c]);
 
+  // Het ingestelde aantal is het aantal rijen op elke kaart; ontbrekende
+  // boulders worden lege rijen. Met dat aantal is een tekort dus geen harde
+  // stop meer maar een waarschuwing; zonder valt er niets af te drukken.
+  const bpc = (opts && opts.bouldersPerCat) || 0;
   const catMax = catFieldMm(!opts || opts.showQr !== false);
   csvCats.forEach(c => {
-    if (!mapping[c]) err('validation.error.categoryMissingInMapping', { category: c });
+    if (!(mapping[c] && mapping[c].length) && bpc)
+      warn('validation.warning.categoryBlankRows', { category: c, count: bpc });
+    else if (!mapping[c]) err('validation.error.categoryMissingInMapping', { category: c });
     // Onder de kleinste maat past de categorie niet meer; melden in plaats van
     // hem stil van de kaart te knippen.
     if (textWidthMm(c, 'bold ' + CAT_PT.min + 'pt Arial') > catMax)
       warn('validation.warning.categoryTooLong', { category: c });
   });
   mapCats.forEach(c => {
-    if (!csvCats.has(c)) err('validation.error.categoryWithoutParticipants', { category: c });
+    // Levert geen kaart en geen verkeerde kaart op: melden volstaat.
+    if (!csvCats.has(c)) warn('validation.error.categoryWithoutParticipants', { category: c });
     const nums = mapping[c];
-    if (!nums.length) err('validation.error.categoryZeroBoulders', { category: c });
+    if (!nums.length && !bpc && csvCats.has(c)) err('validation.error.categoryZeroBoulders', { category: c });
     const dup = nums.filter((n, i) => nums.indexOf(n) !== i);
     [...new Set(dup)].forEach(n =>
-      err('validation.error.duplicateBoulder', { number: n, category: c }));
+      warn('validation.error.duplicateBoulder', { number: n, category: c }));
   });
 
   const live = mapCats.filter(c => csvCats.has(c));
@@ -3561,7 +3563,7 @@ function validate(participants, mapping, catOrder, opts){
   // blanco kaart): 0 betekent niet ingesteld, geen controle.
   if (opts && opts.bouldersPerCat)
     live.forEach(c => {
-      if (mapping[c].length !== opts.bouldersPerCat)
+      if (mapping[c].length && mapping[c].length !== opts.bouldersPerCat)
         warn('validation.warning.boulderCountMismatch',
           { category: c, count: mapping[c].length, expected: opts.bouldersPerCat });
     });
@@ -3569,10 +3571,12 @@ function validate(participants, mapping, catOrder, opts){
   // een tijdslotkaart heeft bredere rijen en dus minder plaats (timed-spec §5).
   const format = (opts && opts.format) || DEFAULT_FORMAT;
   const maxRows = maxRowsFor(format), minRow = fmtDef(format).minRow;
-  mapCats.forEach(c => {
-    if (mapping[c].length > maxRows)
+  // Telt de rijen zoals ze gedrukt worden, opgevuld tot het ingestelde aantal.
+  [...new Set(mapCats.concat([...csvCats]))].forEach(c => {
+    const rows = Math.max((mapping[c] || []).length, bpc);
+    if (rows > maxRows)
       warn('validation.warning.tooManyBoulders', {
-        category: c, count: mapping[c].length, max: maxRows, rowHeight: minRow });
+        category: c, count: rows, max: maxRows, rowHeight: minRow });
   });
 
   return { errors, warnings };
@@ -3923,8 +3927,9 @@ function attemptsToTable(cfg){
 function cardHTML(p, ctx){
   const lang = ctx.cardLang;
   const sorted = (ctx.mapping[p.category] || []).slice().sort((a, b) => a - b);
-  // Zonder bouldernummers: zelfde aantal rijen, nummervak leeg om in te vullen.
-  const nums = ctx.noNumbers ? sorted.map(() => '') : sorted;
+  // Altijd minstens het ingestelde aantal rijen; wat de indeling niet invult,
+  // blijft een lege rij om ter plaatse een nummer op te schrijven.
+  const nums = sorted.concat(Array(Math.max(0, (ctx.bouldersPerCat || 0) - sorted.length)).fill(''));
   const i = ctx.catOrder.indexOf(p.category);
   const span = L.card - 2 * L.pad - 14;
   const top = L.pad + (ctx.catOrder.length > 1 ? i * span / (ctx.catOrder.length - 1) : span / 2);
@@ -4034,9 +4039,13 @@ function controlSheetHTML(ctx, participants){
 function buildSheets(participants, ctx){
   const paper = PAPER[ctx.paper] || PAPER.A4;
   const cards = sortCards(participants, ctx.catOrder, ctx.sortBy).map(p => cardHTML(p, ctx));
-  // Het controleblad toont welke boulders bij welke categorie horen; zonder
-  // nummers is er niets te controleren.
-  let html = ctx.controlSheet && !ctx.noNumbers ? controlSheetHTML(ctx, participants) : '';
+  // Het controleblad toont welke boulders bij welke categorie horen; een
+  // categorie zonder ingedeelde boulders heeft daar niets te zoeken.
+  const numbered = ctx.catOrder.filter(c => (ctx.mapping[c] || []).length);
+  let html = ctx.controlSheet && numbered.length
+    ? controlSheetHTML(Object.assign({}, ctx, { catOrder: numbered }),
+                       participants.filter(p => numbered.includes(p.category)))
+    : '';
   for (let i = 0; i < cards.length; i += paper.perSheet){
     const on = cards.slice(i, i + paper.perSheet).join('');
     html += '<div class="sheet cards' + (paper.cut ? '' : ' a5') + '">' + on + '</div>';
@@ -4109,8 +4118,7 @@ function options(){
     sortBy: ['name', 'number', 'cat-name'].includes($('o-sort').value) ? $('o-sort').value : 'cat-number',
     showQr: $('o-qr').checked,
     controlSheet: $('o-ctl').checked,
-    colour: $('o-colour').checked,
-    noNumbers: $('o-nonums').checked
+    colour: $('o-colour').checked
   };
 }
 
@@ -4145,7 +4153,6 @@ function applyState(st){
   if (o.showQr !== undefined)   $('o-qr').checked = !!o.showQr;
   if (o.controlSheet !== undefined) $('o-ctl').checked = !!o.controlSheet;
   if (o.colour !== undefined)   $('o-colour').checked = !!o.colour;
-  if (o.noNumbers !== undefined) $('o-nonums').checked = !!o.noNumbers;
   if (st.gridMax)               S.gridMax = st.gridMax, $('f-gridmax').value = st.gridMax;
   if (st.mapping && typeof st.mapping === 'object'){
     S.mapping = {};
@@ -4290,9 +4297,9 @@ function setCell(cat, b, on){
 }
 
 /* --- rapport --- */
-function renderReport(v){
+function renderReport(v, ready){
   const box = $('report');
-  if (!S.participants.length || !Object.keys(S.mapping).length){
+  if (!ready){
     box.innerHTML = '<p class="hint">' + et('ui.validation.empty') + '</p>';
     return;
   }
@@ -4461,28 +4468,19 @@ function refresh(){
   // Het formaat bepaalt hoeveel boulders er op een kaart passen, dus de controle
   // moet het kennen (timed-spec §5).
   const opts = Object.assign(options(), { format: set.format, bouldersPerCat: set.bouldersPerCat });
-  // Zonder bouldernummers telt de indeling niet: elke categorie met deelnemers
-  // krijgt "boulders per categorie" rijen. Zo blijven controle en kaartbouw
-  // ongewijzigd en verdwijnen alleen de nummers van de kaart.
-  const noNums = opts.noNumbers;
-  const csvCats = categories();
-  const cats = noNums ? orderedCategories().filter(c => csvCats.includes(c)) : orderedCategories();
-  const mapping = noNums
-    ? Object.fromEntries(cats.map(c => [c, Array.from({ length: set.bouldersPerCat }, (_, i) => i + 1)]))
-    : S.mapping;
+  const cats = orderedCategories();
   // Een tijdslotformaat kent geen vast aantal pogingen; het veld hoort dan uit.
   $('f-att').disabled = !fmtDef(set.format).usesAttempts;
   const v = (S.participants.length && cats.length)
-    ? validate(S.participants, mapping, cats, opts)
+    ? validate(S.participants, S.mapping, cats, opts)
     : { errors: [], warnings: [] };
-  renderReport(v);
+  renderReport(v, S.participants.length && (Object.keys(S.mapping).length || set.bouldersPerCat));
   applyPaper(opts.paper);
   saveState();
 
   document.title = t('ui.print.documentTitle', { title: set.title });
 
   const blocked = !!v.errors.length || !S.participants.length || !cats.length ||
-                  (noNums && !set.bouldersPerCat) ||
                   (v.warnings.length > 0 && !S.ack);
   $('btn-print').disabled = blocked;
   // De blanco kaart heeft geen deelnemers of indeling nodig, alleen het aantal
@@ -4495,7 +4493,7 @@ function refresh(){
   if (blocked){ out.innerHTML = ''; $('print-stat').textContent = ''; return; }
 
   const t0 = performance.now();
-  const ctx = Object.assign(set, opts, { mapping, catOrder: cats, cardLang: cardLang() });
+  const ctx = Object.assign(set, opts, { mapping: S.mapping, catOrder: cats, cardLang: cardLang() });
   out.innerHTML = buildSheets(S.participants, ctx);
   const sheets = out.querySelectorAll('.sheet.cards').length;
   $('print-stat').textContent = tn('ui.print.stat', S.participants.length, {
@@ -4519,7 +4517,7 @@ function wire(){
 
   ['f-title','f-sub','f-att','f-bpc'].forEach(id => $(id).addEventListener('input', refresh));
   $('f-format').addEventListener('change', refresh);
-  ['o-ctl','o-colour','o-qr','o-paper','o-sort','o-nonums'].forEach(id => $(id).addEventListener('change', refresh));
+  ['o-ctl','o-colour','o-qr','o-paper','o-sort'].forEach(id => $(id).addEventListener('change', refresh));
 
   // een bestaand wedstrijd-ID haalt zijn eigen instellingen en indeling terug
   $('f-id').addEventListener('input', () => {
@@ -4647,11 +4645,16 @@ function selfTest(){
   const wHas = (v, key, check) => v.warnings.some(w => w.key === key && (!check || check(w.params)));
   ok('Fout: categorie zonder boulderindeling noemt de categorie',
      has(validate(base, { A: [1,2] }, ['A']), 'validation.error.categoryMissingInMapping', p => p.category === 'B'));
-  ok('Fout: categorie zonder deelnemers noemt de categorie',
-     has(validate([P(1,'A')], { A:[1], B:[1] }, ['A','B']), 'validation.error.categoryWithoutParticipants', p => p.category === 'B'));
-  ok('Fout: dubbele boulder noemt categorie en nummer',
-     has(validate(base, { A:[1,1,2], B:[1] }, cats), 'validation.error.duplicateBoulder',
+  ok('Waarschuwing: categorie zonder deelnemers noemt de categorie',
+     wHas(validate([P(1,'A')], { A:[1], B:[1] }, ['A','B']), 'validation.error.categoryWithoutParticipants', p => p.category === 'B'));
+  ok('Waarschuwing: dubbele boulder noemt categorie en nummer',
+     wHas(validate(base, { A:[1,1,2], B:[1] }, cats), 'validation.error.duplicateBoulder',
          p => p.number === 1 && p.category === 'A'));
+  const vb = validate(base, { A: [1,2] }, ['A'], { bouldersPerCat: 4 });
+  ok('Ingesteld aantal: categorie zonder indeling is een waarschuwing, geen fout',
+     !vb.errors.length && wHas(vb, 'validation.warning.categoryBlankRows', p => p.category === 'B' && p.count === 4));
+  ok('Ingesteld aantal: nul boulders is geen fout',
+     !validate(base, { A:[], B:[1] }, cats, { bouldersPerCat: 4 }).errors.length);
   ok('Fout: nul boulders', has(validate(base, { A:[], B:[1] }, cats), 'validation.error.categoryZeroBoulders'));
   ok('Fout: dubbel startnummer noemt beide rijen',
      has(validate([P(1,'A'), {rowNo:3, category:'A', numberRaw:'1', number:1, name:'Bis'}], {A:[1]}, ['A']),
@@ -4720,13 +4723,18 @@ function selfTest(){
      d.querySelectorAll('.sheet')[1].querySelectorAll('.card').length === 1);
 
   const dn = document.createElement('div');
-  dn.innerHTML = buildSheets(base, Object.assign({}, ctx, { noNumbers: true, controlSheet: true }));
-  eq('Zonder nummers: zelfde aantal rijen als de indeling',
-     dn.querySelector('.score tbody').querySelectorAll('tr').length, 4);
-  ok('Zonder nummers: geen boulder vooringevuld, naam wel',
-     [...dn.querySelectorAll('.score tbody td.bnum')].every(td => td.textContent === '') &&
-     dn.querySelector('.cname .val').textContent === base[0].name);
-  ok('Zonder nummers: geen controleblad', !dn.querySelector('.ctl'));
+  dn.innerHTML = buildSheets(base, Object.assign({}, ctx,
+    { mapping: { A: [3, 1] }, bouldersPerCat: 4, controlSheet: true }));
+  const bn = c => [...c.querySelectorAll('.score tbody td.bnum')].map(td => td.textContent).join(',');
+  const dc = [...dn.querySelectorAll('.card')];
+  eq('Rijen: opgevuld tot het ingestelde aantal, zonder indeling helemaal leeg',
+     dc.map(bn), ['1,3,,', '1,3,,', ',,,']);
+  eq('Rijen: naam staat op de kaart zonder nummers', dc[2].querySelector('.cname .val').textContent, base[2].name);
+  eq('Rijen: controleblad toont alleen ingedeelde categorieën',
+     [...dn.querySelectorAll('.ctl .counts td:first-child')].slice(0, -1).map(td => td.textContent), ['A']);
+  const dn2 = document.createElement('div');
+  dn2.innerHTML = buildSheets(base, Object.assign({}, ctx, { mapping: {}, bouldersPerCat: 4, controlSheet: true }));
+  ok('Rijen: zonder indeling geen controleblad', !dn2.querySelector('.ctl'));
 
   // --- blanco kaart ---
   const blankCtx = { title:'Titel', subtitle:'Sub', maxAttempts:5, paper:'A4',
