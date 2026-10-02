@@ -3656,6 +3656,25 @@ function splitRecords(text){
   return records;
 }
 
+/* Etto zet sinds eind 2026 elke cel op een eigen regel, met regels vol witruimte
+   ertussen en zonder tab die een rij afbakent. Dan per cel lezen: een cel met
+   enkel een getal opent een boulder, een cel met categorieën hoort bij de
+   laatst geopende. Alleen als terugval: in de oude vorm staat het zonegetal
+   ook als losse cel en zou het hier als boulder tellen. */
+function parseBoulderCells(text, knownCats){
+  const res = emptyResult(knownCats);
+  let current = null, matched = 0;
+  for (const cell of text.split(/[\r\n\t]+/).map(s => s.trim()).filter(Boolean)){
+    if (/^\d+$/.test(cell)){ current = Number(cell); continue; }
+    const { cats } = extractCats(cell, knownCats);
+    if (current === null || !cats.length) continue;
+    cats.forEach(c => addBoulder(res, c, current));
+    matched++;
+  }
+  res.info = { key: 'ui.paste.rowsMatched', count: matched };
+  return matched ? res : null;
+}
+
 function parseBoulderTable(text, knownCats){
   const res = emptyResult(knownCats);
   let matched = 0;
@@ -3669,6 +3688,11 @@ function parseBoulderTable(text, knownCats){
       (rest.match(/\d+/g) || []).forEach(n => addBoulder(res, first, Number(n)));
       matched++;
     }
+  }
+  // Niets bruikbaars uit de rijvorm (geen enkele boulder): de celvorm proberen.
+  if (Object.values(res.mapping).every(a => !a.length)){
+    const cells = parseBoulderCells(text, knownCats);
+    if (cells) return cells;
   }
   if (!matched) throw terr('error.paste.noCategories', { names: knownCats.join(', ') });
   res.info = { key: 'ui.paste.rowsMatched', count: matched };
@@ -4941,6 +4965,17 @@ function selfTest(){
      parseBoulderTable('u13 (jongens)\t7\t8\t9\nu13 (meisjes)\t7\t8\n', cats3).mapping['u13 (jongens)'], [7,8,9]);
   ok('Plaktabel: nette TSV met categorieën per boulder werkt ook',
      parseBoulderTable('3\tred\tja\t1\tu13 (jongens)\tu13 (meisjes)\n', cats3).mapping['u13 (meisjes)'][0] === 3);
+  // Nieuwere etto-vorm: elke cel op een eigen regel, witruimteregels ertussen.
+  const cellPaste = sep => ['Route number', 'Color', 'Judged', 'Has zone(s)', 'Groups', 'Tags', '',
+    '1', 'N/A', '', '', 'u11 (meisjes/jongens)', 'N/A', '',
+    '7', 'N/A', '', '', 'u11 (meisjes/jongens)u13 (jongens)u13 (meisjes)', 'N/A', '',
+    '11', 'N/A', '', '', 'u13 (jongens)u13 (meisjes)', 'N/A'].join('\n' + sep + '\n');
+  ['    ', '\t'].forEach(sep => {
+    const pc = parseBoulderTable(cellPaste(sep), cats3);
+    eq('Plaktabel celvorm (' + JSON.stringify(sep) + '): boulders per categorie',
+       [pc.mapping['u11 (meisjes/jongens)'], pc.mapping['u13 (jongens)'], pc.mapping['u13 (meisjes)']],
+       [[1, 7], [7, 11], [7, 11]]);
+  });
   ok('Plaktabel: onherkenbare tekst geeft een fout met sleutel', (() => {
      try { parseBoulderTable('appel\tpeer\n', cats3); return false; }
      catch (e){ return e.i18n && e.i18n.key === 'error.paste.noCategories'; } })());
