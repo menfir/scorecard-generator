@@ -158,6 +158,8 @@
     "ui.print.colour": "Kleurband op de kaart",
     "ui.print.button": "Afdrukken (Ctrl+P → Opslaan als PDF)",
     "ui.print.blankButton": "Blanco kaart afdrukken",
+    "ui.print.noNumbers": "Zonder bouldernummers",
+    "ui.print.noNumbersHint": "“Zonder bouldernummers” drukt de deelnemerskaarten met “Boulders per categorie” lege rijen en laat de nummers open, handig bij last-minute wijzigingen. De indeling en het controleblad doen dan niet mee.",
     "ui.print.blankHint": "Vul “Boulders per categorie” in om een blanco kaart af te drukken: titel en ondertitel staan erop, naam, startnummer, categorie en boulders vult de deelnemer zelf in.",
     "ui.print.hint": "Druk af op 100% zonder schaling. Kies in het printvenster hetzelfde papierformaat. Het voorbeeld hieronder is exact wat er uit de printer komt. Let op: in het verkleinde voorbeeld van het printvenster kunnen dunne tabellijnen wegvallen — de afdruk en de PDF zijn wel correct.",
     "ui.print.stat.one": "{cards} kaart op {sheets} bladen {paper}, {ms} ms.",
@@ -320,6 +322,8 @@
     "ui.print.colour": "Bande de couleur sur la feuille",
     "ui.print.button": "Imprimer (Ctrl+P → Enregistrer en PDF)",
     "ui.print.blankButton": "Imprimer une carte vierge",
+    "ui.print.noNumbers": "Sans numéros de bloc",
+    "ui.print.noNumbersHint": "« Sans numéros de bloc » imprime les feuilles des participants avec « Blocs par catégorie » lignes vides et laisse les numéros ouverts, pratique en cas de changements de dernière minute. La répartition et la feuille de contrôle ne sont alors pas utilisées.",
     "ui.print.blankHint": "Renseignez « Blocs par catégorie » pour imprimer une carte vierge : titre et sous-titre y figurent, le participant remplit lui-même son nom, dossard, catégorie et blocs.",
     "ui.print.hint": "Imprimez à 100 % sans mise à l’échelle. Choisissez le même format de papier dans la boîte d’impression. L’aperçu ci-dessous correspond exactement à la sortie. Attention : dans l’aperçu réduit de la boîte d’impression, des lignes fines du tableau peuvent disparaître — l’impression et le PDF restent corrects.",
     "ui.print.stat.one": "{cards} feuille sur {sheets} pages {paper}, {ms} ms.",
@@ -482,6 +486,8 @@
     "ui.print.colour": "Colour band on the card",
     "ui.print.button": "Print (Ctrl+P → Save as PDF)",
     "ui.print.blankButton": "Print blank card",
+    "ui.print.noNumbers": "Without boulder numbers",
+    "ui.print.noNumbersHint": "“Without boulder numbers” prints the participant cards with “Boulders per category” empty rows and leaves the numbers open, handy for last-minute changes. The boulder mapping and the control sheet are then not used.",
     "ui.print.blankHint": "Fill in “Boulders per category” to print a blank card: title and subtitle are printed, the participant fills in their own name, start number, category and boulders.",
     "ui.print.hint": "Print at 100% with no scaling. Choose the same paper size in the print dialog. The preview below is exactly what comes out of the printer. Note: the scaled-down preview in the print dialog may drop thin table lines — the print and the PDF are correct.",
     "ui.print.stat.one": "{cards} card on {sheets} {paper} sheets, {ms} ms.",
@@ -885,11 +891,13 @@ table.score.timed td.cell-mark{
       <label style="margin:0"><input type="checkbox" id="o-qr"> <span data-i18n="ui.print.qr"></span></label>
       <label style="margin:0"><input type="checkbox" id="o-ctl" checked> <span data-i18n="ui.print.controlSheet"></span></label>
       <label style="margin:0"><input type="checkbox" id="o-colour" checked> <span data-i18n="ui.print.colour"></span></label>
+      <label style="margin:0"><input type="checkbox" id="o-nonums"> <span data-i18n="ui.print.noNumbers"></span></label>
       <button id="btn-print" type="button" disabled data-i18n="ui.print.button"></button>
       <button id="btn-print-blank" type="button" disabled data-i18n="ui.print.blankButton"></button>
       <span class="hint" id="print-stat"></span>
     </div>
     <p class="hint" style="margin:10px 0 0" data-i18n="ui.print.hint"></p>
+    <p class="hint" style="margin:4px 0 0" data-i18n="ui.print.noNumbersHint"></p>
     <p class="hint" style="margin:4px 0 0" data-i18n="ui.print.blankHint"></p>
   </section>
 
@@ -3914,7 +3922,9 @@ function attemptsToTable(cfg){
 
 function cardHTML(p, ctx){
   const lang = ctx.cardLang;
-  const nums = (ctx.mapping[p.category] || []).slice().sort((a, b) => a - b);
+  const sorted = (ctx.mapping[p.category] || []).slice().sort((a, b) => a - b);
+  // Zonder bouldernummers: zelfde aantal rijen, nummervak leeg om in te vullen.
+  const nums = ctx.noNumbers ? sorted.map(() => '') : sorted;
   const i = ctx.catOrder.indexOf(p.category);
   const span = L.card - 2 * L.pad - 14;
   const top = L.pad + (ctx.catOrder.length > 1 ? i * span / (ctx.catOrder.length - 1) : span / 2);
@@ -4024,7 +4034,9 @@ function controlSheetHTML(ctx, participants){
 function buildSheets(participants, ctx){
   const paper = PAPER[ctx.paper] || PAPER.A4;
   const cards = sortCards(participants, ctx.catOrder, ctx.sortBy).map(p => cardHTML(p, ctx));
-  let html = ctx.controlSheet ? controlSheetHTML(ctx, participants) : '';
+  // Het controleblad toont welke boulders bij welke categorie horen; zonder
+  // nummers is er niets te controleren.
+  let html = ctx.controlSheet && !ctx.noNumbers ? controlSheetHTML(ctx, participants) : '';
   for (let i = 0; i < cards.length; i += paper.perSheet){
     const on = cards.slice(i, i + paper.perSheet).join('');
     html += '<div class="sheet cards' + (paper.cut ? '' : ' a5') + '">' + on + '</div>';
@@ -4097,7 +4109,8 @@ function options(){
     sortBy: ['name', 'number', 'cat-name'].includes($('o-sort').value) ? $('o-sort').value : 'cat-number',
     showQr: $('o-qr').checked,
     controlSheet: $('o-ctl').checked,
-    colour: $('o-colour').checked
+    colour: $('o-colour').checked,
+    noNumbers: $('o-nonums').checked
   };
 }
 
@@ -4132,6 +4145,7 @@ function applyState(st){
   if (o.showQr !== undefined)   $('o-qr').checked = !!o.showQr;
   if (o.controlSheet !== undefined) $('o-ctl').checked = !!o.controlSheet;
   if (o.colour !== undefined)   $('o-colour').checked = !!o.colour;
+  if (o.noNumbers !== undefined) $('o-nonums').checked = !!o.noNumbers;
   if (st.gridMax)               S.gridMax = st.gridMax, $('f-gridmax').value = st.gridMax;
   if (st.mapping && typeof st.mapping === 'object'){
     S.mapping = {};
@@ -4443,15 +4457,23 @@ function refresh(){
   renderSaved();
   renderDiag();
 
-  const cats = orderedCategories();
   const set = settings();
   // Het formaat bepaalt hoeveel boulders er op een kaart passen, dus de controle
   // moet het kennen (timed-spec §5).
   const opts = Object.assign(options(), { format: set.format, bouldersPerCat: set.bouldersPerCat });
+  // Zonder bouldernummers telt de indeling niet: elke categorie met deelnemers
+  // krijgt "boulders per categorie" rijen. Zo blijven controle en kaartbouw
+  // ongewijzigd en verdwijnen alleen de nummers van de kaart.
+  const noNums = opts.noNumbers;
+  const csvCats = categories();
+  const cats = noNums ? orderedCategories().filter(c => csvCats.includes(c)) : orderedCategories();
+  const mapping = noNums
+    ? Object.fromEntries(cats.map(c => [c, Array.from({ length: set.bouldersPerCat }, (_, i) => i + 1)]))
+    : S.mapping;
   // Een tijdslotformaat kent geen vast aantal pogingen; het veld hoort dan uit.
   $('f-att').disabled = !fmtDef(set.format).usesAttempts;
   const v = (S.participants.length && cats.length)
-    ? validate(S.participants, S.mapping, cats, opts)
+    ? validate(S.participants, mapping, cats, opts)
     : { errors: [], warnings: [] };
   renderReport(v);
   applyPaper(opts.paper);
@@ -4460,6 +4482,7 @@ function refresh(){
   document.title = t('ui.print.documentTitle', { title: set.title });
 
   const blocked = !!v.errors.length || !S.participants.length || !cats.length ||
+                  (noNums && !set.bouldersPerCat) ||
                   (v.warnings.length > 0 && !S.ack);
   $('btn-print').disabled = blocked;
   // De blanco kaart heeft geen deelnemers of indeling nodig, alleen het aantal
@@ -4472,7 +4495,7 @@ function refresh(){
   if (blocked){ out.innerHTML = ''; $('print-stat').textContent = ''; return; }
 
   const t0 = performance.now();
-  const ctx = Object.assign(set, opts, { mapping: S.mapping, catOrder: cats, cardLang: cardLang() });
+  const ctx = Object.assign(set, opts, { mapping, catOrder: cats, cardLang: cardLang() });
   out.innerHTML = buildSheets(S.participants, ctx);
   const sheets = out.querySelectorAll('.sheet.cards').length;
   $('print-stat').textContent = tn('ui.print.stat', S.participants.length, {
@@ -4496,7 +4519,7 @@ function wire(){
 
   ['f-title','f-sub','f-att','f-bpc'].forEach(id => $(id).addEventListener('input', refresh));
   $('f-format').addEventListener('change', refresh);
-  ['o-ctl','o-colour','o-qr','o-paper','o-sort'].forEach(id => $(id).addEventListener('change', refresh));
+  ['o-ctl','o-colour','o-qr','o-paper','o-sort','o-nonums'].forEach(id => $(id).addEventListener('change', refresh));
 
   // een bestaand wedstrijd-ID haalt zijn eigen instellingen en indeling terug
   $('f-id').addEventListener('input', () => {
@@ -4695,6 +4718,15 @@ function selfTest(){
   eq('Opbouw: boulternummer voorgedrukt', d.querySelector('.score tbody td.bnum').textContent, '1');
   ok('Opbouw: laatste blad heeft één kaart, geen halve',
      d.querySelectorAll('.sheet')[1].querySelectorAll('.card').length === 1);
+
+  const dn = document.createElement('div');
+  dn.innerHTML = buildSheets(base, Object.assign({}, ctx, { noNumbers: true, controlSheet: true }));
+  eq('Zonder nummers: zelfde aantal rijen als de indeling',
+     dn.querySelector('.score tbody').querySelectorAll('tr').length, 4);
+  ok('Zonder nummers: geen boulder vooringevuld, naam wel',
+     [...dn.querySelectorAll('.score tbody td.bnum')].every(td => td.textContent === '') &&
+     dn.querySelector('.cname .val').textContent === base[0].name);
+  ok('Zonder nummers: geen controleblad', !dn.querySelector('.ctl'));
 
   // --- blanco kaart ---
   const blankCtx = { title:'Titel', subtitle:'Sub', maxAttempts:5, paper:'A4',
