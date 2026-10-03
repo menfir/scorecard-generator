@@ -34,7 +34,16 @@
     "ui.result.boulder": "Boulder",
     "ui.result.top": "Top",
     "ui.result.zone": "Zone",
-    "ui.result.totals": "Totaal: {tops} tops in {topAttempts} pogingen, {zones} zones in {zoneAttempts} pogingen",
+    "ui.result.total": "Totaal",
+    "ui.result.topsTotal": "{tops} tops / {topAttempts} pog.",
+    "ui.result.zonesTotal": "{zones} zones / {zoneAttempts} pog.",
+    "ui.result.corrected": "aangepast",
+    "ui.result.thumb": "Gelezen vakken, tik om te vergroten",
+    "ui.result.rescan": "Opnieuw scannen",
+    "ui.result.approve": "Goedkeuren",
+    "ui.result.approveAnyway": "Toch goedkeuren",
+    "ui.result.flaggedConfirm": "Deze kaart heeft meldingen en is niet aangepast. Klopt ze toch met de kaart? Tik dan op Toch goedkeuren.",
+    "ui.result.added": "{nr} toegevoegd",
     "flag.zoneAfterTop": "zone na de top aangeduid",
     "flag.multipleTops": "meer dan één top aangeduid",
     "flag.multipleZones": "meer dan één zone aangeduid",
@@ -69,7 +78,16 @@
     "ui.result.boulder": "Bloc",
     "ui.result.top": "Top",
     "ui.result.zone": "Zone",
-    "ui.result.totals": "Total : {tops} tops en {topAttempts} essais, {zones} zones en {zoneAttempts} essais",
+    "ui.result.total": "Total",
+    "ui.result.topsTotal": "{tops} tops / {topAttempts} ess.",
+    "ui.result.zonesTotal": "{zones} zones / {zoneAttempts} ess.",
+    "ui.result.corrected": "corrigé",
+    "ui.result.thumb": "Cases lues, touchez pour agrandir",
+    "ui.result.rescan": "Scanner à nouveau",
+    "ui.result.approve": "Valider",
+    "ui.result.approveAnyway": "Valider quand même",
+    "ui.result.flaggedConfirm": "Cette feuille a des avertissements et n’a pas été corrigée. Correspond-elle quand même à la feuille ? Touchez alors Valider quand même.",
+    "ui.result.added": "{nr} ajouté",
     "flag.zoneAfterTop": "zone marquée après le top",
     "flag.multipleTops": "plus d’un top marqué",
     "flag.multipleZones": "plus d’une zone marquée",
@@ -104,7 +122,16 @@
     "ui.result.boulder": "Boulder",
     "ui.result.top": "Top",
     "ui.result.zone": "Zone",
-    "ui.result.totals": "Total: {tops} tops in {topAttempts} attempts, {zones} zones in {zoneAttempts} attempts",
+    "ui.result.total": "Total",
+    "ui.result.topsTotal": "{tops} tops / {topAttempts} att.",
+    "ui.result.zonesTotal": "{zones} zones / {zoneAttempts} att.",
+    "ui.result.corrected": "corrected",
+    "ui.result.thumb": "Cells read, tap to enlarge",
+    "ui.result.rescan": "Scan again",
+    "ui.result.approve": "Approve",
+    "ui.result.approveAnyway": "Approve anyway",
+    "ui.result.flaggedConfirm": "This card has warnings and was not edited. Does it match the card anyway? Then tap Approve anyway.",
+    "ui.result.added": "{nr} added",
     "flag.zoneAfterTop": "zone marked after the top",
     "flag.multipleTops": "more than one top marked",
     "flag.multipleZones": "more than one zone marked",
@@ -149,11 +176,17 @@ select{padding:9px;border:1px solid var(--line);border-radius:6px;font:inherit;w
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tag{background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:13px}
 .field{margin:12px 0}
-#grid{display:block;width:100%;height:auto;margin-top:12px;border:1px solid var(--line)}
-.rhead{margin:12px 0 6px}.rhead strong{font-size:22px;margin-right:8px}
+#grid{display:block;width:160px;height:auto;margin-top:12px;border:1px solid var(--line);cursor:zoom-in}
+#grid.big{width:100%;cursor:zoom-out}
+.rhead{margin:12px 0 6px}.rhead strong{font-size:30px;margin-right:10px}
 table.res{border-collapse:collapse;width:100%}
 table.res th,table.res td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left}
 table.res tr.flag td{background:#fff7ed}
+table.res tfoot td{font-weight:700;border-bottom:0;border-top:2px solid var(--ink)}
+table.res select{width:auto;min-width:3.2em;padding:6px 4px;font-weight:600}
+table.res select.corr{background:#eff6ff;border-color:#2563eb}
+.corr-mark{color:#2563eb;margin-left:4px;font-size:13px}
+.actions{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap}
 #selftest{padding:20px;font-family:ui-monospace,Menlo,Consolas,monospace}
 #selftest .t{padding:2px 0;font-size:13px}#selftest .t.p{color:var(--ok)}#selftest .t.f{color:var(--err);font-weight:700}
 </style>
@@ -187,10 +220,15 @@ table.res tr.flag td{background:#fff7ed}
       <table class="res">
         <thead><tr><th data-i18n="ui.result.boulder"></th><th data-i18n="ui.result.top"></th><th data-i18n="ui.result.zone"></th><th></th></tr></thead>
         <tbody id="r-rows"></tbody>
+        <tfoot><tr><td data-i18n="ui.result.total"></td><td id="r-tops"></td><td id="r-zones"></td><td></td></tr></tfoot>
       </table>
-      <p id="r-totals"></p>
+      <canvas id="grid" role="button" tabindex="0" data-i18n-aria="ui.result.thumb"></canvas>
+      <div id="approve-msg"></div>
+      <div class="actions">
+        <button type="button" class="btn sec" id="rescan" data-i18n="ui.result.rescan"></button>
+        <button type="button" id="approve"></button>
+      </div>
     </div>
-    <canvas id="grid" hidden></canvas>
   </section>
 </main>
 
@@ -11951,31 +11989,92 @@ function readCard(photo, p){
   if (hasGlare(img, cat.rows, p.maxAttempts)) throw new UserError('err.scan.glare');
   const cov = coverage(img, cat.rows, p.maxAttempts, whiteBalance(img));
   // Opvulrijen zonder bouldernummer worden niet gelezen (R1).
-  const rows = cat.boulders.map((b, r) => Object.assign({ boulder: b },
-    decideRow(cov[r].map(c => ({ top: cellState(c.top), zone: cellState(c.zone) })))));
-  return { startNumber, cat, rows, totals: totals(rows), cov, img };
+  // scan = wat de scanner las, zodat een aanpassing zichtbaar blijft (fase 4).
+  const rows = cat.boulders.map((b, r) => {
+    const d = decideRow(cov[r].map(c => ({ top: cellState(c.top), zone: cellState(c.zone) })));
+    return Object.assign({ boulder: b, scan: { top: d.top, zone: d.zone } }, d);
+  });
+  return { startNumber, cat, rows, cov, img };
 }
 
-/* ---------- tonen (voorlopig; fase 4 maakt het resultaatscherm) ---------- */
+/* ---------- resultaatscherm (fase 4) ---------- */
 let result = null;
+const approved = [];   // goedgekeurde kaarten; fase 5 bewaart ze in localStorage
+
+/* Aanpassing door de scoreteller: een top zonder zone krijgt zone = top, en een
+   zone na de top kan niet (wordt de top). Puur, zie zelftest. */
+function editRow(row, key, value){
+  const r = Object.assign({}, row, { [key]: value });
+  if (r.top !== null && (r.zone === null || r.zone > r.top)) r.zone = r.top;
+  return r;
+}
+
+const isEdited = r => r.rows.some(row => row.top !== row.scan.top || row.zone !== row.scan.zone);
 
 function flagText(code){
   return (FLAG_ERROR[code] ? '✖ ' : '⚠ ') + t('flag.' + code);
 }
 
+/* Tik op een waarde: kies leeg of 1 .. maxAttempts. Geblokkeerde keuzes (een
+   zone na de top, geen zone bij een top) staan uitgeschakeld. */
+function valuePicker(r, i, key){
+  const row = r.rows[i], s = document.createElement('select');
+  s.setAttribute('aria-label', t('ui.result.boulder') + ' ' + row.boulder + ', ' + t('ui.result.' + key));
+  for (let v = 0; v <= profile.maxAttempts; v++){
+    const o = new Option(v ? String(v) : '–', String(v));
+    o.disabled = key === 'zone' && row.top !== null && (v === 0 || v > row.top);
+    s.add(o);
+  }
+  s.value = String(row[key] || 0);
+  s.addEventListener('change', () => {
+    r.rows[i] = editRow(row, key, Number(s.value) || null);
+    r.confirming = false;
+    showMsg($('approve-msg'));
+    showResult(r);
+  });
+  if (row[key] === row.scan[key]) return [s];
+  s.classList.add('corr');
+  const m = document.createElement('span');
+  m.className = 'corr-mark';
+  m.textContent = '✎ ' + t('ui.result.corrected');
+  return [s, m];
+}
+
+/* Startnummer, categorie, tabel en totalen. Nooit een naam: het profiel heeft er geen. */
 function showResult(r){
   $('r-nr').textContent = t('ui.result.startNumber', { nr: r.startNumber });
   $('r-cat').textContent = r.cat.category;
   const tb = $('r-rows');
   tb.innerHTML = '';
-  for (const row of r.rows){
+  r.rows.forEach((row, i) => {
     const tr = tb.insertRow();
-    for (const v of [row.boulder, row.top, row.zone, row.flags.map(flagText).join(' · ')])
-      tr.insertCell().textContent = v === null ? '' : v;
+    tr.insertCell().textContent = row.boulder;
+    for (const k of ['top', 'zone']) tr.insertCell().append(...valuePicker(r, i, k));
+    tr.insertCell().textContent = row.flags.map(flagText).join(' · ');
     if (row.flags.length) tr.className = 'flag';
-  }
-  $('r-totals').textContent = t('ui.result.totals', r.totals);
+  });
+  const tot = totals(r.rows);
+  $('r-tops').textContent = t('ui.result.topsTotal', tot);
+  $('r-zones').textContent = t('ui.result.zonesTotal', tot);
+  $('approve').textContent = t(r.confirming ? 'ui.result.approveAnyway' : 'ui.result.approve');
+  $('take').hidden = true;
   $('result').hidden = false;
+}
+
+/* Een kaart met meldingen die niet aangepast is, vraagt één extra tik (S7). */
+function onApprove(){
+  const r = result;
+  if (!r.confirming && !isEdited(r) && r.rows.some(row => row.flags.length)){
+    r.confirming = true;
+    showMsg($('approve-msg'), 'err', 'ui.result.flaggedConfirm');
+    showResult(r);
+    return;
+  }
+  approved.push({ startNumber: r.startNumber, category: r.cat.category, manualCorrections: isEdited(r),
+                  rows: r.rows.map(({ boulder, top, zone }) => ({ boulder, top, zone })) });
+  resetScan();
+  showMsg($('scan-msg'), 'ok', 'ui.result.added', { nr: r.startNumber });
+  $('f-photo').click();   // meteen terug naar de camera
 }
 
 /* Rechtgetrokken vakken met het raster en per vak wat de scanner zag: groen =
@@ -12008,13 +12107,15 @@ function drawGrid(r, cols){
     ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
   });
   ctx.setLineDash([]);
-  c.hidden = false;
 }
 
 function resetScan(){
   showMsg($('scan-msg'));
-  $('grid').hidden = $('result').hidden = true;
-  result = null;
+  showMsg($('approve-msg'));
+  $('result').hidden = true;
+  $('take').hidden = false;
+  $('grid').classList.remove('big');
+  result = null;   // laat de rechtgetrokken vakken los (S3)
 }
 
 /* Foto -> resultaat. Elke vorige foto verdwijnt (S3): niets houdt hem vast
@@ -12075,6 +12176,19 @@ function selfTest(){
      { tops: 2, zones: 3, topAttempts: 4, zoneAttempts: 4 });
   eq('R4: lege kaart is nul, niet NaN', totals([{ top: null, zone: null }]), { tops: 0, zones: 0, topAttempts: 0, zoneAttempts: 0 });
 
+  // --- fase 4: aanpassen ---
+  const E = { top: null, zone: null };
+  eq('Aanpassen: top zonder zone zet zone = top', editRow(E, 'top', 3), { top: 3, zone: 3 });
+  eq('Aanpassen: zone vóór de top blijft', editRow({ top: 3, zone: 3 }, 'zone', 1), { top: 3, zone: 1 });
+  eq('Aanpassen: zone na de top wordt de top', editRow({ top: 2, zone: 1 }, 'zone', 4), { top: 2, zone: 2 });
+  eq('Aanpassen: top lager dan zone trekt zone mee', editRow({ top: 4, zone: 3 }, 'top', 2), { top: 2, zone: 2 });
+  eq('Aanpassen: zone leegmaken bij een top kan niet', editRow({ top: 2, zone: 1 }, 'zone', null), { top: 2, zone: 2 });
+  eq('Aanpassen: top leegmaken houdt de zone', editRow({ top: 2, zone: 1 }, 'top', null), { top: null, zone: 1 });
+  const rr = { rows: [{ top: 2, zone: 1, scan: { top: 2, zone: 1 } }] };
+  ok('Aanpassen: ongewijzigd is niet aangepast', !isEdited(rr));
+  rr.rows[0] = editRow(rr.rows[0], 'top', 3);
+  ok('Aanpassen: gewijzigd is aangepast', isEdited(rr));
+
   // --- R3: drempels ---
   eq('R3: dekking 20% = gemarkeerd', cellState(.20), 'marked');
   eq('R3: dekking 8% tot 20% = onzeker', [cellState(.08), cellState(.199)], ['uncertain', 'uncertain']);
@@ -12128,6 +12242,10 @@ for (const l of LANGS){
   $('langsel').appendChild(b);
 }
 $('f-profile').addEventListener('change', e => { if (e.target.files[0]) onProfile(e.target.files[0]); e.target.value = ''; });
+$('approve').addEventListener('click', onApprove);
+$('rescan').addEventListener('click', () => { resetScan(); $('f-photo').click(); });
+$('grid').addEventListener('click', () => $('grid').classList.toggle('big'));
+$('grid').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('grid').click(); } });
 $('f-photo').addEventListener('change', e => { if (e.target.files[0]) onPhoto(e.target.files[0]); e.target.value = ''; });
 let saved = null;
 try { saved = localStorage.getItem(UILANG_KEY); } catch (e) { /* geen opslag: standaardtaal */ }

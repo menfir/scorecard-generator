@@ -1,7 +1,7 @@
 # Score Card Scanning - Feature Spec
 
-**Status:** Phase 3 built (branch `feat/scannable-card`). Phase 3 of 6.
-**Next action:** "Implement scan-feature-spec.md, Phase 4 only."
+**Status:** Phase 4 built (branch `feat/scannable-card`). Phase 4 of 6.
+**Next action:** "Implement scan-feature-spec.md, Phase 5 only."
 
 Addendum to `scorecard-generator-spec.md` and `i18n-feature-spec.md`.
 Where this spec conflicts with the base spec, this spec wins.
@@ -226,11 +226,22 @@ Tasks:
 5. **Thumbnail** of the warped grid with detected cells outlined, tap to enlarge.
    Optional for the scorecounter to look at.
 
+- **Decided in Phase 4:** each top and zone value is a native `<select>` (empty, 1 ..
+  `maxAttempts`). Zone options after the top, and "empty" while there is a top, are
+  disabled; lowering the top below the zone pulls the zone down with it. A corrected
+  value gets a blue outline plus "✎ aangepast". "Edited" means a value differs from what
+  was read, so editing back to the scanned value counts as not edited. Flags stay
+  visible after an edit, so the reason is still readable.
+- Goedkeuren and Opnieuw scannen open the camera directly (`input.click()` inside the
+  tap). If the browser refuses, the "Foto nemen" button is back on screen.
+- Approved cards live in an in-memory list for now; Phase 5 stores them.
+
 Done when:
-- [ ] No name appears anywhere in the scanner UI
-- [ ] Editing a value recomputes totals and marks the value as corrected
-- [ ] Nothing reaches the results list without Approve
-- [ ] After Approve the app is back at the camera in one step
+- [x] No name appears anywhere in the scanner UI (the profile carries none)
+- [x] Editing a value recomputes totals and marks the value as corrected
+- [x] Nothing reaches the results list without Approve
+- [x] After Approve the app is back at the camera in one step (desktop Firefox; phone
+      pending Jeroen)
 
 ---
 
