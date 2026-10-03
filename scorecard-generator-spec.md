@@ -116,8 +116,13 @@ round but a final may have as few as 4. Do not hard-code any count anywhere.
 
 - `title` — e.g. `ANTWERP BOULDER YOUTH CUP 2026`
 - `subtitle` — optional, e.g. `Manche 4`
-- `competitionId` — short slug used in the QR payload, e.g. `abyc2026-m4`
-- `maxAttempts` — integer, default 5. Controls the number of attempt column pairs.
+- `competitionId` — not entered: always derived from title + subtitle (slug + 6-char
+  hash, e.g. `rcyc-oost-288cd9`). Used in the QR payload and as the storage key.
+- `maxAttempts` — integer, default 5. Controls the number of attempt columns (one cell per
+  attempt in RCYC, a Z/T pair per attempt in ABYC; see §6.2).
+- `format` — `rcyc` (default), `abyc` or `timed`. See §6.2 and §12.2.
+- `scannable` — boolean, default **on**, RCYC only. Adds four scan markers at the table's
+  outer corners and forces `showQr` on. See `scan-feature-spec.md`.
 - `paperSize` — `A4` (default) or `A5`. See §6.1.
 - `showQr` — boolean, default **on**. See §7.
 
@@ -203,21 +208,26 @@ Reproduces the existing Word template. Dutch labels, exactly as below.
 
 **Score table**
 
-Columns:
+Default format (RCYC), one cell per attempt, no Z/T subcolumns:
 
 ```
-BOULDER | POGING 1 | POGING 2 | ... | POGING n | SCORE
+ROUTES | POGING 1 | POGING 2 | ... | POGING n | SCORE TOP | SCORE ZONE
 ```
 
-Each `POGING` column and the `SCORE` column split into two subcolumns headed `Z` and
-`T` (zone / top). With the default `maxAttempts` of 5 this gives 13 columns:
-1 + (5 × 2) + 2.
+The judge marks per attempt; the score columns are grey. With the default `maxAttempts`
+of 5 this gives 8 columns. The footer has two rows, `SCORE` and `POGINGEN`. On a
+scannable card four scan markers sit at the table's outer corners and the table is 12 mm
+narrower (scan spec, Phase 1).
+
+ABYC format (optional): `BOULDER | POGING 1 .. n | SCORE`, where each `POGING` column and
+the `SCORE` column split into two subcolumns headed `Z` and `T`, giving
+1 + (5 × 2) + 2 = 13 columns at 5 attempts. Not scannable.
 
 Body: one row per boulder in that participant's category, with the boulder number
 pre-filled in the `BOULDER` column. This pre-filling is the core purpose of the tool —
 the number must be clearly legible, larger than the surrounding table text.
 
-Footer row: `TOTALE SCORE`, with `T` and `Z` totals cells.
+Footer row (ABYC): `TOTALE SCORE`, with `T` and `Z` totals cells.
 
 All tick cells must be empty and large enough to mark with a marker pen.
 
