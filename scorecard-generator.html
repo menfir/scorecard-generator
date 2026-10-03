@@ -3659,18 +3659,35 @@ function splitRecords(text){
 /* Etto zet sinds eind 2026 elke cel op een eigen regel, met regels vol witruimte
    ertussen en zonder tab die een rij afbakent. Dan per cel lezen: een cel met
    enkel een getal opent een boulder, een cel met categorieën hoort bij de
-   laatst geopende. Alleen als terugval: in de oude vorm staat het zonegetal
-   ook als losse cel en zou het hier als boulder tellen. */
+   laatst geopende. Een getal vóór de groepencel is het zonegetal, geen nieuwe
+   boulder. "All" geldt voor elke categorie, maar als de organisator een
+   selectie maakte uit een grotere set (sommige rijen met zone), tellen enkel
+   de All-rijen mét zone: de rest hoort bij een andere wedstrijd. */
 function parseBoulderCells(text, knownCats){
   const res = emptyResult(knownCats);
-  let current = null, matched = 0;
+  let current = null, grouped = true, zone = false, matched = 0;
+  const allRows = [];
   for (const cell of text.split(/[\r\n\t]+/).map(s => s.trim()).filter(Boolean)){
-    if (/^\d+$/.test(cell)){ current = Number(cell); continue; }
+    if (/^\d+$/.test(cell)){
+      if (grouped){ current = Number(cell); grouped = false; zone = false; }
+      else zone = true;
+      continue;
+    }
+    if (current === null || grouped) continue;
+    if (/^all$/i.test(cell)){ allRows.push({ n: current, zone }); grouped = true; continue; }
     const { cats } = extractCats(cell, knownCats);
-    if (current === null || !cats.length) continue;
+    if (!cats.length) continue;
     cats.forEach(c => addBoulder(res, c, current));
-    matched++;
+    grouped = true; matched++;
   }
+  // ponytail: zone als selectiesignaal is afgeleid uit één etto-export; als
+  // etto een expliciete selectiekolom krijgt, die gebruiken.
+  const anyZone = allRows.some(r => r.zone);
+  allRows.filter(r => r.zone || !anyZone).forEach(r => {
+    knownCats.forEach(c => addBoulder(res, c, r.n));
+    matched++;
+  });
+  Object.values(res.mapping).forEach(a => a.sort((x, y) => x - y));
   res.info = { key: 'ui.paste.rowsMatched', count: matched };
   return matched ? res : null;
 }
@@ -4976,6 +4993,19 @@ function selfTest(){
        [pc.mapping['u11 (meisjes/jongens)'], pc.mapping['u13 (jongens)'], pc.mapping['u13 (meisjes)']],
        [[1, 7], [7, 11], [7, 11]]);
   });
+  // Selectie uit een grotere set: zonegetal is geen boulder, "All" telt enkel mét zone.
+  const selPaste = ['Route number', 'Color', 'Judged', 'Has zone(s)', 'Groups', 'Tags', '',
+    '1', 'N/A', '', '', 'All', 'N/A', '',
+    '6', '', '', '1', 'u11 (meisjes/jongens)u13 (jongens)', 'N/A', '',
+    '7', '', '', '1', 'All', 'N/A', '',
+    '8', 'N/A', '', '', 'All', 'N/A', '',
+    '9', '', '', '1', 'u13 (meisjes)', 'N/A'].join('\n    \n');
+  const sp = parseBoulderTable(selPaste, cats3);
+  eq('Plaktabel selectie: zone is geen boulder, All enkel mét zone',
+     [sp.mapping['u11 (meisjes/jongens)'], sp.mapping['u13 (jongens)'], sp.mapping['u13 (meisjes)']],
+     [[6, 7], [6, 7], [7, 9]]);
+  eq('Plaktabel: All zonder enige zone geldt voor alle categorieën',
+     parseBoulderTable(['3', 'N/A', 'All', '4', 'N/A', 'All'].join('\n'), cats3).mapping['u13 (meisjes)'], [3, 4]);
   ok('Plaktabel: onherkenbare tekst geeft een fout met sleutel', (() => {
      try { parseBoulderTable('appel\tpeer\n', cats3); return false; }
      catch (e){ return e.i18n && e.i18n.key === 'error.paste.noCategories'; } })());
