@@ -24,6 +24,17 @@
     "ui.scan.heading": "Kaart scannen",
     "ui.scan.take": "Foto nemen",
     "ui.scan.busy": "Bezig…",
+    "ui.calib.take": "Kleuren kalibreren",
+    "ui.calib.none": "⚠ Kleuren: standaard. Kalibreer eerst met één gemarkeerde kaart.",
+    "ui.calib.active": "Kleuren: gekalibreerd voor deze sessie.",
+    "ui.calib.tapTop": "Tik op een vak met de topkleur.",
+    "ui.calib.tapZone": "Tik nu op een vak met de zonekleur.",
+    "ui.calib.done": "Kalibratie klaar. Elke volgende kaart gebruikt deze kleuren.",
+    "ui.calib.cancel": "Annuleren",
+    "ui.calib.grid": "Pogingvakken van de kalibratiekaart",
+    "err.calib.empty": "In dat vak staat te weinig markeerstift. Tik op een duidelijk gekleurd vak.",
+    "err.calib.overlap": "De top- en zonekleur lijken te veel op elkaar. Tik opnieuw, eerst een topvak, dan een zonevak. Lukt het niet, gebruik dan andere markeerstiften.",
+    "ui.result.defaultColours": "⚠ Standaardkleuren: kleuren niet gekalibreerd voor deze sessie.",
     "err.profile.json": "Dit bestand is geen geldige JSON.",
     "err.profile.schema": "Onbekend profielschema „{schema}”. Deze scanner leest „{expected}”.",
     "err.profile.layout": "Kaartopmaak versie {version} wordt niet ondersteund; deze scanner kent versie {expected}. Gebruik een generator en scanner van dezelfde versie.",
@@ -94,6 +105,17 @@
     "ui.scan.heading": "Scanner une feuille",
     "ui.scan.take": "Prendre une photo",
     "ui.scan.busy": "En cours…",
+    "ui.calib.take": "Calibrer les couleurs",
+    "ui.calib.none": "⚠ Couleurs : par défaut. Calibrez d’abord avec une feuille marquée.",
+    "ui.calib.active": "Couleurs : calibrées pour cette session.",
+    "ui.calib.tapTop": "Touchez une case de la couleur top.",
+    "ui.calib.tapZone": "Touchez maintenant une case de la couleur zone.",
+    "ui.calib.done": "Calibration terminée. Chaque feuille suivante utilise ces couleurs.",
+    "ui.calib.cancel": "Annuler",
+    "ui.calib.grid": "Cases d’essai de la feuille de calibration",
+    "err.calib.empty": "Trop peu de surligneur dans cette case. Touchez une case bien colorée.",
+    "err.calib.overlap": "Les couleurs top et zone se ressemblent trop. Recommencez : d’abord une case top, puis une case zone. Si cela échoue, utilisez d’autres surligneurs.",
+    "ui.result.defaultColours": "⚠ Couleurs par défaut : couleurs non calibrées pour cette session.",
     "err.profile.json": "Ce fichier n’est pas un JSON valide.",
     "err.profile.schema": "Schéma de profil inconnu « {schema} ». Ce scanner lit « {expected} ».",
     "err.profile.layout": "La mise en page version {version} n’est pas prise en charge ; ce scanner connaît la version {expected}. Utilisez un générateur et un scanner de la même version.",
@@ -164,6 +186,17 @@
     "ui.scan.heading": "Scan a card",
     "ui.scan.take": "Take photo",
     "ui.scan.busy": "Working…",
+    "ui.calib.take": "Calibrate colours",
+    "ui.calib.none": "⚠ Colours: defaults. Calibrate first with one marked card.",
+    "ui.calib.active": "Colours: calibrated for this session.",
+    "ui.calib.tapTop": "Tap a cell marked with the top colour.",
+    "ui.calib.tapZone": "Now tap a cell marked with the zone colour.",
+    "ui.calib.done": "Calibration done. Every next card uses these colours.",
+    "ui.calib.cancel": "Cancel",
+    "ui.calib.grid": "Attempt cells of the calibration card",
+    "err.calib.empty": "Too little highlighter in that cell. Tap a clearly coloured cell.",
+    "err.calib.overlap": "The top and zone colours are too alike. Tap again, first a top cell, then a zone cell. If that fails, use other highlighters.",
+    "ui.result.defaultColours": "⚠ Default colours: colours not calibrated for this session.",
     "err.profile.json": "This file is not valid JSON.",
     "err.profile.schema": "Unknown profile schema \"{schema}\". This scanner reads \"{expected}\".",
     "err.profile.layout": "Card layout version {version} is not supported; this scanner knows version {expected}. Use a generator and scanner of the same version.",
@@ -251,11 +284,14 @@ select{padding:9px;border:1px solid var(--line);border-radius:6px;font:inherit;w
 .msg{padding:9px 11px;border-radius:6px;font-size:14px;margin-top:10px}
 .msg.err{background:#fef2f2;color:var(--err);border:1px solid #fecaca}
 .msg.ok{background:#f0fdf4;color:var(--ok);border:1px solid #bbf7d0}
+.msg.warn{background:#fff7ed;color:#9a3412;border:1px solid #fed7aa}
 .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tag{background:var(--bg);border:1px solid var(--line);border-radius:99px;padding:2px 10px;font-size:13px}
 .field{margin:12px 0}
 #grid{display:block;width:160px;height:auto;margin-top:12px;border:1px solid var(--line);cursor:zoom-in}
 #grid.big{width:100%;cursor:zoom-out}
+#calib-grid{display:block;width:100%;height:auto;margin-top:10px;border:1px solid var(--line);cursor:crosshair}
+.calib{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}.calib #calib-state{flex:1}
 .rhead{margin:12px 0 6px}.rhead strong{font-size:30px;margin-right:10px}
 table.res{border-collapse:collapse;width:100%}
 table.res th,table.res td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left}
@@ -295,9 +331,19 @@ button:disabled{opacity:.4;cursor:default}
   <section id="scan" hidden>
     <h2 data-i18n="ui.scan.heading"></h2>
     <label class="btn" id="take"><input type="file" id="f-photo" accept="image/*" capture="environment"><span data-i18n="ui.scan.take"></span></label>
+    <div class="calib">
+      <div id="calib-state"></div>
+      <label class="btn sec" id="calib-take"><input type="file" id="f-calib" accept="image/*" capture="environment"><span data-i18n="ui.calib.take"></span></label>
+    </div>
     <div id="scan-msg"></div>
+    <div id="calib" hidden>
+      <div id="calib-msg"></div>
+      <canvas id="calib-grid" data-i18n-aria="ui.calib.grid"></canvas>
+      <div class="actions"><button type="button" class="btn sec" id="calib-cancel" data-i18n="ui.calib.cancel"></button></div>
+    </div>
     <div id="result" hidden>
       <p class="rhead"><strong id="r-nr"></strong> <span id="r-cat"></span></p>
+      <div id="r-cal"></div>
       <div id="r-main">
       <table class="res">
         <thead><tr><th data-i18n="ui.result.boulder"></th><th data-i18n="ui.result.top"></th><th data-i18n="ui.result.zone"></th><th></th></tr></thead>
@@ -11755,6 +11801,7 @@ function applyI18n(){
   document.querySelectorAll('.msg[data-key]').forEach(el => { el.textContent = t(el.dataset.key, JSON.parse(el.dataset.params)); });
   document.querySelectorAll('#langsel button').forEach(b => b.classList.toggle('on', b.dataset.lang === uiLang));
   if (profile) { showProfile(profile); renderResults(); }
+  renderCalib();
   if (result) showResult(result);
 }
 
@@ -11973,11 +12020,13 @@ function sharpness(img){
 
 /* Binnenste 70% van elk pogingvak (rij r, kolom c) in de rechtgetrokken uitsnede. */
 const INNER = .7;
-function eachCell(img, rows, cols, fn){
+function cellBox(img, rows, cols, r, c){
   const cw = img.width / cols, ch = img.height / rows, m = (1 - INNER) / 2;
+  return [Math.round((c + m) * cw), Math.round((r + m) * ch), Math.round((c + 1 - m) * cw), Math.round((r + 1 - m) * ch)];
+}
+function eachCell(img, rows, cols, fn){
   for (let r = 0; r < rows; r++)
-    for (let c = 0; c < cols; c++)
-      fn(r, c, Math.round((c + m) * cw), Math.round((r + m) * ch), Math.round((c + 1 - m) * cw), Math.round((r + 1 - m) * ch));
+    for (let c = 0; c < cols; c++) fn(r, c, ...cellBox(img, rows, cols, r, c));
 }
 
 /* Schittering: een vak dat grotendeels uitgebrand is, kan een markering verbergen.
@@ -12038,24 +12087,65 @@ function whiteBalance(img){
   return n ? sum.map(s => 235 / Math.max(1, s / n)) : [1, 1, 1];
 }
 
+/* Een kleurbereik = tint c +/- half (graden, rond: 350 +/- 20 loopt over 0), plus
+   vloeren voor verzadiging en helderheid. */
+const hueDiff = (a, b) => ((a - b) % 360 + 540) % 360 - 180;
+const hueRange = (a, b) => ({ c: (a + b) / 2, half: (b - a) / 2, minS: MIN_S, minV: MIN_V });
+const DEFAULT_CAL = { top: hueRange(...HUE.top), zone: hueRange(...HUE.zone) };
+const inRange = ([h, s, v], r) => s >= r.minS && v >= r.minV && Math.abs(hueDiff(h, r.c)) <= r.half;
+
+/* HSV van de binnenste pixels van één vak, na witbalans. */
+function cellPixels(img, rows, cols, gains, r, c){
+  const [x0, y0, x1, y1] = cellBox(img, rows, cols, r, c), d = img.data, out = [];
+  for (let y = y0; y < y1; y++)
+    for (let x = x0; x < x1; x++){
+      const i = (y * img.width + x) * 4;
+      out.push(hsv(Math.min(255, d[i] * gains[0]), Math.min(255, d[i + 1] * gains[1]), Math.min(255, d[i + 2] * gains[2])));
+    }
+  return out;
+}
+
 /* Dekking per vak: aandeel pixels in het top- en het zonebereik. Wat in geen van
    beide valt (geel, balpen, potlood, zwarte rasterlijnen) telt niet mee. */
-function coverage(img, rows, cols, gains){
-  const d = img.data, w = img.width, out = [];
-  eachCell(img, rows, cols, (r, c, x0, y0, x1, y1) => {
-    let n = 0, top = 0, zone = 0;
-    for (let y = y0; y < y1; y++)
-      for (let x = x0; x < x1; x++){
-        const i = (y * w + x) * 4;
-        const [h, s, v] = hsv(Math.min(255, d[i] * gains[0]), Math.min(255, d[i + 1] * gains[1]), Math.min(255, d[i + 2] * gains[2]));
-        n++;
-        if (s < MIN_S || v < MIN_V) continue;
-        if (h >= HUE.top[0] && h <= HUE.top[1]) top++;
-        else if (h >= HUE.zone[0] && h <= HUE.zone[1]) zone++;
-      }
-    (out[r] = out[r] || [])[c] = { top: top / n, zone: zone / n };
+function coverage(img, rows, cols, gains, cal){
+  const out = [];
+  eachCell(img, rows, cols, (r, c) => {
+    const px = cellPixels(img, rows, cols, gains, r, c);
+    let top = 0, zone = 0;
+    for (const p of px){
+      if (inRange(p, cal.top)) top++;
+      else if (inRange(p, cal.zone)) zone++;
+    }
+    (out[r] = out[r] || [])[c] = { top: top / px.length, zone: zone / px.length };
   });
   return out;
+}
+
+/* Sessiekalibratie (R3): uit de pixels van een getikt vak het tintbereik van die
+   markeerstift (mediaan +/- spreiding, minstens 2 x minHalf breed, hoogstens
+   2 x maxHalf zodat balpen erbuiten blijft) en vloeren voor verzadiging en
+   helderheid. Puur, zie zelftest. */
+const CAL = { inkS: .15, inkV: .3, minHalf: 15, maxHalf: 45, pad: 10, floor: .6 };
+function inkRange(px){
+  const ink = px.filter(([h, s, v]) => s >= CAL.inkS && v >= CAL.inkV);
+  if (ink.length < px.length * COVER.marked) throw new UserError('err.calib.empty');
+  // Rond gemiddelde als anker, dan mediaan en spreiding als afwijking daarvan.
+  const rad = Math.PI / 180, sum = f => ink.reduce((a, p) => a + f(p[0] * rad), 0);
+  const ref = Math.atan2(sum(Math.sin), sum(Math.cos)) / rad;
+  const q = (arr, f) => arr[Math.min(arr.length - 1, Math.floor(f * arr.length))];
+  const sorted = f => ink.map(f).sort((a, b) => a - b);
+  const d = sorted(p => hueDiff(p[0], ref)), med = q(d, .5);
+  const half = Math.min(CAL.maxHalf, Math.max(CAL.minHalf, med - q(d, .05) + CAL.pad, q(d, .95) - med + CAL.pad));
+  // Vloeren nooit strenger dan de standaard: dezelfde stift in een schaduw is
+  // donkerder dan op het getikte vak (synthetische test, schaduwband).
+  const floor = (k, lo, hi) => Math.min(hi, Math.max(lo, CAL.floor * q(sorted(p => p[k]), .1)));
+  return { c: (ref + med + 360) % 360, half, minS: floor(1, .12, MIN_S), minV: floor(2, .25, MIN_V) };
+}
+
+function calibrate(topPx, zonePx){
+  const top = inkRange(topPx), zone = inkRange(zonePx);
+  if (Math.abs(hueDiff(top.c, zone.c)) <= top.half + zone.half) throw new UserError('err.calib.overlap');
+  return { top, zone };
 }
 
 const cellState = cov => cov >= COVER.marked ? 'marked' : cov >= COVER.uncertain ? 'uncertain' : 'none';
@@ -12085,8 +12175,9 @@ function totals(rows){
 
 /* ---------- foto -> resultaat ---------- */
 
-/* Elke stap die faalt geeft een UserError met een "opnieuw nemen"-reden. */
-function readCard(photo, p){
+/* Elke stap die faalt geeft een UserError met een "opnieuw nemen"-reden.
+   cal = sessiekalibratie, of null voor de standaardbereiken (R3). */
+function readCard(photo, p, cal){
   const { refs, sidePx } = findMarkers(photo);
   if (sidePx < Q.minMarkerPx) throw new UserError('err.scan.small');
   const src = photo.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, photo.width, photo.height);
@@ -12105,14 +12196,14 @@ function readCard(photo, p){
   const f = frame(p, cat);
   const img = warp(src, refs, f, f.region);
   if (hasGlare(img, cat.rows, p.maxAttempts)) throw new UserError('err.scan.glare');
-  const cov = coverage(img, cat.rows, p.maxAttempts, whiteBalance(img));
+  const cov = coverage(img, cat.rows, p.maxAttempts, whiteBalance(img), cal || DEFAULT_CAL);
   // Opvulrijen zonder bouldernummer worden niet gelezen (R1).
   // scan = wat de scanner las, zodat een aanpassing zichtbaar blijft (fase 4).
   const rows = cat.boulders.map((b, r) => {
     const d = decideRow(cov[r].map(c => ({ top: cellState(c.top), zone: cellState(c.zone) })));
     return Object.assign({ boulder: b, scan: { top: d.top, zone: d.zone } }, d);
   });
-  return { startNumber, cat, rows, cov, img };
+  return { startNumber, cat, rows, cov, img, calibration: cal ? 'session' : 'default' };
 }
 
 /* ---------- resultaatscherm (fase 4) ---------- */
@@ -12162,6 +12253,8 @@ function valuePicker(r, i, key){
 function showResult(r){
   $('r-nr').textContent = t('ui.result.startNumber', { nr: r.startNumber });
   $('r-cat').textContent = r.cat.category;
+  if (r.calibration === 'default') showMsg($('r-cal'), 'warn', 'ui.result.defaultColours');
+  else showMsg($('r-cal'));
   const tb = $('r-rows');
   tb.innerHTML = '';
   r.rows.forEach((row, i) => {
@@ -12193,7 +12286,7 @@ function onApprove(){
   }
   // Alleen deze velden worden bewaard: geen naam, geen beeld (S4).
   const rec = { startNumber: r.startNumber, category: r.cat.category, manualCorrections: isEdited(r),
-                calibration: 'default', rows: r.rows.map(({ boulder, top, zone }) => ({ boulder, top, zone })) };
+                calibration: r.calibration, rows: r.rows.map(({ boulder, top, zone }) => ({ boulder, top, zone })) };
   const old = approved.find(a => a.startNumber === rec.startNumber);
   if (old) { r.dup = { old, rec }; showResult(r); return; }   // nooit stil overschrijven
   approved.push(rec);
@@ -12356,8 +12449,8 @@ function exportJson(){
 
 /* Rechtgetrokken vakken met het raster en per vak wat de scanner zag: groen =
    top, roze = zone, oranje stippel = onzeker. */
-function drawGrid(r, cols){
-  const img = r.img, rows = r.cat.rows, c = $('grid'), ctx = c.getContext('2d');
+function drawGrid(c, r, cols){
+  const img = r.img, rows = r.cat.rows, ctx = c.getContext('2d');
   c.width = img.width;
   c.height = img.height;
   ctx.putImageData(img, 0, 0);
@@ -12394,26 +12487,86 @@ function resetScan(){
   $('grid').classList.remove('big');
   $('grid').width = 0;   // wist de pixels van de miniatuur (S3)
   result = null;   // laat de rechtgetrokken vakken los (S3)
+  $('calib').hidden = true;
+  $('calib-grid').width = 0;
+  calib = null;
 }
 
-/* Foto -> resultaat. Elke vorige foto verdwijnt (S3): niets houdt hem vast
+/* Foto -> gelezen kaart. Elke vorige foto verdwijnt (S3): niets houdt hem vast
    behalve de rechtgetrokken vakken in het resultaat. */
-async function onPhoto(file){
+async function readPhoto(file, then){
   resetScan();
   $('take').classList.add('off');
+  $('calib-take').classList.add('off');
   showMsg($('scan-msg'), 'ok', 'ui.scan.busy');
   await new Promise(r => setTimeout(r, 30));   // laat "Bezig" eerst tekenen
   try {
-    result = readCard(await loadPhoto(file), profile);
+    const r = readCard(await loadPhoto(file), profile, sessionCal);
     showMsg($('scan-msg'));
-    showResult(result);
-    drawGrid(result, profile.maxAttempts);
+    then(r);
   } catch (e) {
     if (!(e instanceof UserError)) { showMsg($('scan-msg')); throw e; }
     showMsg($('scan-msg'), 'err', e.key, e.params);
   } finally {
     $('take').classList.remove('off');
+    $('calib-take').classList.remove('off');
   }
+}
+
+function onPhoto(file){
+  return readPhoto(file, r => {
+    result = r;
+    showResult(r);
+    drawGrid($('grid'), r, profile.maxAttempts);
+  });
+}
+
+/* ---------- sessiekalibratie (fase 6, R3) ---------- */
+let sessionCal = null;   // alleen in geheugen: nooit bewaard, weg bij herladen
+let calib = null;        // lopende kalibratie: gelezen kaart, witbalans, getikt topvak
+
+function renderCalib(){
+  showMsg($('calib-state'), sessionCal ? 'ok' : 'warn', sessionCal ? 'ui.calib.active' : 'ui.calib.none');
+}
+
+/* Eén gemarkeerde kaart van deze wedstrijd; de scoreteller tikt een top- en een zonevak. */
+function onCalibPhoto(file){
+  return readPhoto(file, r => {
+    calib = { r, gains: whiteBalance(r.img), top: null };
+    drawGrid($('calib-grid'), r, profile.maxAttempts);
+    showMsg($('calib-msg'), 'ok', 'ui.calib.tapTop');
+    $('take').hidden = true;
+    $('calib').hidden = false;
+  });
+}
+
+function onCalibTap(e){
+  const c = $('calib-grid'), b = c.getBoundingClientRect(), r = calib.r, cols = profile.maxAttempts;
+  const col = Math.min(cols - 1, Math.floor((e.clientX - b.left) / b.width * cols));
+  const row = Math.min(r.cat.rows - 1, Math.floor((e.clientY - b.top) / b.height * r.cat.rows));
+  const px = cellPixels(r.img, r.cat.rows, cols, calib.gains, row, col);
+  try {
+    if (!calib.top){
+      inkRange(px);   // leeg vak: meteen zeggen, niet pas na het zonevak
+      calib.top = px;
+      drawGrid(c, r, cols);
+      const ctx = c.getContext('2d'), w = c.width / cols, h = c.height / r.cat.rows;
+      ctx.strokeStyle = '#2563eb';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(col * w, row * h, w, h);
+      showMsg($('calib-msg'), 'ok', 'ui.calib.tapZone');
+      return;
+    }
+    sessionCal = calibrate(calib.top, px);
+  } catch (err) {
+    if (!(err instanceof UserError)) throw err;
+    if (err.key === 'err.calib.overlap') { calib.top = null; drawGrid(c, r, cols); }   // opnieuw vanaf de topkleur
+    showMsg($('calib-msg'), 'err', err.key);
+    return;
+  }
+  resetScan();   // laat de kalibratiekaart los (S3)
+  renderCalib();
+  showMsg($('scan-msg'), 'ok', 'ui.calib.done');
 }
 
 /* ==========================================================================
@@ -12492,7 +12645,7 @@ function selfTest(){
       const c = (y % 100) < 50 ? ink : [245, 245, 245];   // bovenste helft van elk vak
       img.data.set([...c, 255], o);
     }
-  const cov = coverage(img, 1, names.length, [1, 1, 1])[0];
+  const cov = coverage(img, 1, names.length, [1, 1, 1], DEFAULT_CAL)[0];
   const st = cov.map(c => [cellState(c.top), cellState(c.zone)].join('/'));
   eq('R3: groene markeerstift = top', st[0], 'marked/none');
   eq('R3: roze markeerstift = zone', st[1], 'none/marked');
@@ -12503,6 +12656,26 @@ function selfTest(){
   cast.data.set([255, 230, 190, 255, 255, 230, 190, 255, 250, 225, 185, 255, 100, 90, 70, 255]);
   const g = whiteBalance(cast);
   ok('Witbalans: warm papier wordt neutraal', Math.abs(255 * g[0] - 190 * g[2]) < 3, JSON.stringify(g));
+
+  // --- R3: sessiekalibratie. Een "vak" = pixels [h, s, v]: inkt + papier ---
+  const cell = (h, inkShare, s) => Array.from({ length: 100 }, (_, i) =>
+    i < inkShare * 100 ? [(h + (i % 7) - 3 + 360) % 360, s || .5, .85] : [40, .03, .93]);
+  const teal = cell(171, .6), purple = cell(295, .6, .3);
+  const sc = calibrate(teal, purple), has = (r, h) => inRange([h, .5, .8], r);
+  ok('Kalibratie: teal top en paarse zone', has(sc.top, 171) && has(sc.zone, 295), JSON.stringify(sc));
+  ok('Kalibratie: balpen (228) en geel (55) blijven erbuiten',
+     ![228, 55].some(h => has(sc.top, h) || has(sc.zone, h)), JSON.stringify(sc));
+  ok('Kalibratie: bereik minstens 30 graden breed', sc.top.half >= 15 && sc.zone.half >= 15);
+  const wrap = calibrate(teal, cell(358, .6));
+  ok('Kalibratie: zone rond 0 graden loopt over 360', has(wrap.zone, 352) && has(wrap.zone, 4), JSON.stringify(wrap.zone));
+  eq('Kalibratie: overlappende tinten geweigerd', err(() => calibrate(teal, cell(190, .6))), 'err.calib.overlap');
+  eq('Kalibratie: leeg vak geweigerd', err(() => calibrate(cell(171, .05), purple)), 'err.calib.empty');
+  eq('Kalibratie: potlood is geen kleur', err(() => calibrate(cell(171, .6, .05), purple)), 'err.calib.empty');
+  // Omgewisselde stiften (roze top, groene zone): met kalibratie juist gelezen.
+  const swapped = calibrate(cell(hsv(...inks.pink)[0], .6), cell(hsv(...inks.green)[0], .6));
+  const sw = coverage(img, 1, names.length, [1, 1, 1], swapped)[0].map(c => [cellState(c.top), cellState(c.zone)].join('/'));
+  eq('Kalibratie: omgewisselde kleuren (roze top, groene zone)', sw.slice(0, 2), ['none/marked', 'marked/none']);
+  eq('Kalibratie: geel, balpen, potlood blijven genegeerd', sw.slice(2), ['none/none', 'none/none', 'none/none']);
 
   // --- R5: CSV ---
   const CP = { categories: [{ category: 'u13 (filles; garçons)', boulders: [3, 1] }, { category: 'u11', boulders: [2] }] };
@@ -12516,6 +12689,22 @@ function selfTest(){
   const txt = toCsv(csv);
   ok('R5: begint met BOM', txt.charCodeAt(0) === 0xFEFF);
   ok('R5: categorie met ; staat tussen aanhalingstekens, accenten intact', txt.includes('7;"u13 (filles; garçons)";1;1;2;1;;;;;2;1\r\n'), txt);
+  // Heen en terug: wat Excel of het platform terugleest, is byte-gelijk aan wat erin ging.
+  const fields = line => {
+    const out = [''];
+    let q = false;
+    for (let i = 0; i < line.length; i++){
+      const ch = line[i];
+      if (ch === '"' && q && line[i + 1] === '"') { out[out.length - 1] += '"'; i++; }
+      else if (ch === '"') q = !q;
+      else if (ch === ';' && !q) out.push('');
+      else out[out.length - 1] += ch;
+    }
+    return out;
+  };
+  const parsed = txt.slice(1).split('\r\n').slice(0, -1).map(fields);
+  eq('R5: CSV heen en terug, accenten en ; in categorie intact', parsed,
+     csv.map(r => r.map(v => v === null ? '' : String(v))));
 
   const fails = out.filter(r => !r.pass).length;
   document.body.innerHTML = '<div id="selftest"><h1>' + (fails ? fails + ' van ' + out.length + ' mislukt' : out.length + ' geslaagd') + '</h1>' +
@@ -12543,6 +12732,9 @@ $('rescan').addEventListener('click', () => { resetScan(); $('f-photo').click();
 $('grid').addEventListener('click', () => $('grid').classList.toggle('big'));
 $('grid').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('grid').click(); } });
 $('f-photo').addEventListener('change', e => { if (e.target.files[0]) onPhoto(e.target.files[0]); e.target.value = ''; });
+$('f-calib').addEventListener('change', e => { if (e.target.files[0]) onCalibPhoto(e.target.files[0]); e.target.value = ''; });
+$('calib-grid').addEventListener('click', onCalibTap);
+$('calib-cancel').addEventListener('click', resetScan);
 let saved = null;
 try { saved = localStorage.getItem(UILANG_KEY); } catch (e) { /* geen opslag: standaardtaal */ }
 setLang(saved || FALLBACK);

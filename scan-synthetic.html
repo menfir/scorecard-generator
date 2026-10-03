@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Scanner: synthetische test</title>
+<!--
+  Synthetische test voor scan.html (scan-feature-spec.md, fase 6, taak 2).
+  Ontwikkelhulp, wordt niet gepubliceerd (zie deploy-pages.yml).
+
+  Tekent scanbare kaarten met de functies van de generator zelf (scanProfile,
+  arucoSvg, qrSvg), zet er markeerstiftstreken op (halfdoorzichtig, schuin,
+  over de randen), maakt er een "foto" van (draaiing incl. 90/180/270,
+  perspectief, kleurzweem, lichtverloop, schaduwband) en leest die met
+  readCard uit scan.html. Elke rij moet juist zijn of een melding hebben.
+
+  Draaien: beide iframes moeten van dezelfde oorsprong komen, dus via http:
+      python3 -m http.server 8000
+      open http://localhost:8000/scan-synthetic.html
+-->
+<style>
+body{font:14px/1.4 system-ui,sans-serif;margin:20px;color:#111}
+table{border-collapse:collapse;margin-top:12px}td,th{border-bottom:1px solid #ddd;padding:3px 8px;text-align:left}
+.f{color:#b91c1c;font-weight:700}.p{color:#15803d}.i{color:#666}
+#thumbs canvas{width:220px;margin:4px;border:1px solid #ccc}
+</style>
+</head>
+<body>
+<h1 id="sum">Bezig…</h1>
+<div id="info" class="i"></div>
+<table><thead><tr><th>Foto</th><th>Kleuren</th><th>Kalibratie</th><th>Uitkomst</th><th>Juist</th><th>Juist + melding</th><th>Fout + melding</th><th>Stil fout</th><th>ms</th></tr></thead>
+<tbody id="out"></tbody></table>
+<div id="thumbs"></div>
+<iframe id="gen" src="scorecard-generator.html" style="display:none"></iframe>
+<iframe id="scan" src="scan.html" style="display:none"></iframe>
+<script>
+const K = 12;                                  // kaart: pixels per mm
+const CARD = { w: 210, h: 148.5 };             // mm, = L.width x L.card in de generator
+const ORIGIN = { x: 13, y: 38 };               // referentiehoek marker 0 op de kaart: pad + marker, pad + kop + tussenruimte
+const ATT = 5;
+const CATS = { 'u13 (filles; garçons)': [3, 5, 8, 11, 12, 15, 19, 22, 26, 30], 'u11': [1, 2, 4, 6, 7, 9] };
+
+// Markeerstift op wit papier (vermenigvuldigen). Paars bewust flets, zoals de echte testkaart.
+const INKS = {
+  'teal / paars':  { top: [70, 215, 195], zone: [200, 150, 235] },
+  'groen / roze':  { top: [120, 230, 100], zone: [250, 120, 195] },
+  'omgewisseld (roze top, teal zone)': { top: [250, 120, 195], zone: [70, 215, 195] }
+};
+const SHOTS = [
+  { name: 'recht, neutraal', rot: 0 },
+  { name: '90°', rot: 90 },
+  { name: '180°', rot: 180 },
+  { name: '270°', rot: 270 },
+  { name: 'perspectief', rot: 4, ks: .22 },
+  { name: 'warme zweem', rot: -3, cast: [1, .9, .72] },
+  { name: 'koele zweem', rot: 2, cast: [.85, .95, 1.05] },
+  { name: 'lichtverloop', rot: 0, grad: .45 },
+  { name: 'schaduwband', rot: 0, shadow: true },
+  { name: 'alles samen', rot: 197, ks: .15, cast: [1, .92, .8], grad: .35, shadow: true }
+];
+
+/* Herhaalbaar toeval: elke run tekent dezelfde kaarten. */
+function rng(seed){
+  return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+
+/* Waarheid per boulder: 30% niets, 20% alleen zone, 50% top (soms flash, soms zone eerder). */
+function truth(rand, n){
+  const pick = () => 1 + Math.floor(rand() * ATT);
+  return Array.from({ length: n }, () => {
+    const x = rand();
+    if (x < .3) return { top: null, zone: null };
+    if (x < .5) return { top: null, zone: pick() };
+    const top = pick();
+    return { top, zone: top > 1 && rand() < .6 ? 1 + Math.floor(rand() * (top - 1)) : top };
+  });
+}
+
+const svgImage = svg => new Promise((ok, fail) => {
+  const im = new Image();
+  im.onload = () => ok(im);
+  im.onerror = fail;
+  // Firefox tekent een SVG-afbeelding alleen met namespace en eigen afmetingen.
+  if (!svg.includes('xmlns=')) svg = svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ');
+  if (!/<svg[^>]* width=/.test(svg)) svg = svg.replace('<svg ', '<svg width="240" height="240" ');
+  im.src = 'data:image/svg+xml,' + encodeURIComponent(svg);
+});
+
+/* De kaart, vlak, met streken. Coördinaten in mm t.o.v. de referentiehoek van marker 0. */
+async function drawCard(G, p, cat, nr, marks, ink, rand){
+  const c = document.createElement('canvas');
+  c.width = Math.round(CARD.w * K); c.height = Math.round(CARD.h * K);
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#fafaf6'; ctx.fillRect(0, 0, c.width, c.height);
+  ctx.setTransform(K, 0, 0, K, ORIGIN.x * K, ORIGIN.y * K);
+  const g = p.geometry, W = g.referenceWidthMm, rowsH = cat.rows * cat.rowHeightMm;
+  const H = g.regionTopMm + rowsH + g.regionBottomGapMm, col = g.regionWidthMm / ATT;
+  const x0 = g.regionLeftMm, y0 = g.regionTopMm, right = x0 + (ATT + 2) * col;
+
+  // kop: tekst plus QR rechtsboven (binnen QR_AREA van de scanner)
+  ctx.fillStyle = '#111';
+  ctx.font = 'bold 6px sans-serif'; ctx.fillText(p.title, -5, -22);
+  ctx.font = '4px sans-serif'; ctx.fillText('Naam: Testpersoon', -5, -14); ctx.fillText(nr + '   ' + cat.category, -5, -6);
+  ctx.drawImage(await svgImage(G.qrSvg(p.competitionId + ':' + nr)), W - 15, -26, 20, 20);
+  for (const [id, x, y] of [[0, -5, 0], [1, W, 0], [2, W, H - 5], [3, -5, H - 5]])
+    ctx.drawImage(await svgImage(G.arucoSvg(id)), x, y, 5, 5);
+
+  // tabel: grijze scorekolommen, raster, dikke buitenrand
+  ctx.fillStyle = '#bfbfbf';
+  ctx.fillRect(x0 + ATT * col, y0, 2 * col, rowsH);
+  ctx.fillRect(1.3, y0 + rowsH, W - 2.6, H - y0 - rowsH - .3);
+  ctx.strokeStyle = '#000'; ctx.lineWidth = .25;
+  ctx.beginPath();
+  for (let i = 0; i <= ATT + 2; i++) { ctx.moveTo(x0 + i * col, .3); ctx.lineTo(x0 + i * col, y0 + rowsH); }
+  for (let j = 0; j <= cat.rows; j++) { ctx.moveTo(1.3, y0 + j * cat.rowHeightMm); ctx.lineTo(right, y0 + j * cat.rowHeightMm); }
+  ctx.moveTo(1.3, y0 + rowsH + 8); ctx.lineTo(right, y0 + rowsH + 8);
+  ctx.stroke();
+  ctx.lineWidth = .6; ctx.strokeRect(1.3, .3, W - 2.6, H - .6);
+  ctx.fillStyle = '#000'; ctx.font = 'bold 3px sans-serif';
+  ['BOULDER', '1', '2', '3', '4', '5', 'TOP', 'ZONE'].forEach((s, i) => ctx.fillText(s, i ? x0 + (i - 1) * col + 2 : 3, 4.5));
+  ctx.font = 'bold 4px sans-serif';
+  cat.boulders.forEach((b, r) => ctx.fillText(String(b), 8, y0 + (r + .7) * cat.rowHeightMm));
+
+  // balpen: streepjes per poging en de score in de scorekolommen (wordt niet gelezen)
+  ctx.strokeStyle = ctx.fillStyle = 'rgb(30,40,140)'; ctx.lineWidth = .35;
+  marks.forEach((m, r) => {
+    const last = m.top || m.zone || ATT;
+    for (let a = 0; a < last; a++) {
+      const cx = x0 + (a + .5) * col, cy = y0 + (r + .5) * cat.rowHeightMm;
+      ctx.beginPath(); ctx.moveTo(cx - 2, cy + 2); ctx.lineTo(cx + 2, cy - 2); ctx.stroke();
+    }
+    ctx.font = '4px sans-serif';
+    if (m.top) ctx.fillText(String(m.top), x0 + (ATT + .4) * col, y0 + (r + .7) * cat.rowHeightMm);
+    if (m.zone) ctx.fillText(String(m.zone), x0 + (ATT + 1.4) * col, y0 + (r + .7) * cat.rowHeightMm);
+  });
+
+  // markeerstift: zone eerst (als die vóór de top valt), dan top; flash = alleen top
+  ctx.globalCompositeOperation = 'multiply';
+  ctx.lineCap = 'round';
+  const stroke = (r, a, rgb) => {
+    const cy = y0 + (r + .5) * cat.rowHeightMm, xa = x0 + (a - 1) * col, bleed = () => rand() * 1.5;
+    const tilt = (rand() - .5) * .35 * col;
+    ctx.globalAlpha = .7 + rand() * .25;
+    ctx.strokeStyle = 'rgb(' + rgb + ')';
+    ctx.lineWidth = cat.rowHeightMm * (.45 + rand() * .3);
+    ctx.beginPath(); ctx.moveTo(xa + 1.5 - bleed(), cy + tilt); ctx.lineTo(xa + col - 1.5 + bleed(), cy - tilt); ctx.stroke();
+  };
+  marks.forEach((m, r) => {
+    if (m.zone && m.zone !== m.top) stroke(r, m.zone, ink.zone);
+    if (m.top) stroke(r, m.top, ink.top);
+  });
+  return c;
+}
+
+/* 3x3-inverse van de homografie [h0..h7, 1]. */
+function invert(h){
+  const [a, b, c, d, e, f, g, k] = h, i = 1;
+  const A = e * i - f * k, B = -(d * i - f * g), C = d * k - e * g, det = a * A + b * B + c * C;
+  return [A, -(b * i - c * k), b * f - c * e, B, a * i - c * g, -(a * f - c * d), C, -(a * k - b * g), a * e - b * d].map(v => v / det);
+}
+
+/* De kaart als telefoonfoto: op een houten tafel, gedraaid, scheef, met licht en kleur. */
+function photograph(S, card, shot, rand){
+  const rad = (shot.rot || 0) * Math.PI / 180, portrait = Math.abs(Math.sin(rad)) > .7;
+  const PW = portrait ? 2250 : 3000, PH = portrait ? 3000 : 2250;
+  const bw = Math.abs(CARD.w * Math.cos(rad)) + Math.abs(CARD.h * Math.sin(rad));
+  const bh = Math.abs(CARD.w * Math.sin(rad)) + Math.abs(CARD.h * Math.cos(rad));
+  const s = .85 * Math.min(PW / bw, PH / bh), ks = shot.ks || 0;
+  const quad = [[0, 0], [1, 0], [1, 1], [0, 1]].map(([u, v]) => {
+    const x = (u - .5) * CARD.w * s * (1 - ks * (1 - v)), y = (v - .5) * CARD.h * s * (1 - ks / 3);
+    return { x: PW / 2 + x * Math.cos(rad) - y * Math.sin(rad), y: PH / 2 + x * Math.sin(rad) + y * Math.cos(rad) };
+  });
+  const inv = invert(S.CV.square2quad(quad));
+  const src = card.getContext('2d').getImageData(0, 0, card.width, card.height);
+  const out = new ImageData(PW, PH), d = out.data, px = new Uint8ClampedArray(4);
+  const cast = shot.cast || [1, 1, 1], grad = shot.grad || 0;
+  const sh = { a: .35, b: -1, c: PH * .55 };   // schaduwband: rechte y = .35x + c, 120 px breed
+  for (let y = 0; y < PH; y++)
+    for (let x = 0; x < PW; x++) {
+      const o = (y * PW + x) * 4, w = inv[6] * x + inv[7] * y + inv[8];
+      const u = (inv[0] * x + inv[1] * y + inv[2]) / w, v = (inv[3] * x + inv[4] * y + inv[5]) / w;
+      let rgb;
+      if (u >= 0 && u <= 1 && v >= 0 && v <= 1) { S.sample(src, u * card.width, v * card.height, px, 0); rgb = [px[0], px[1], px[2]]; }
+      else rgb = [150, 125, 95];
+      let light = 1 - grad * x / PW;
+      if (shot.shadow) {
+        const dist = Math.abs(sh.a * x + sh.b * y + sh.c) / Math.hypot(sh.a, sh.b);
+        light *= 1 - .45 * Math.max(0, Math.min(1, (90 - dist) / 30));
+      }
+      for (let k = 0; k < 3; k++) d[o + k] = rgb[k] * light * cast[k] + (rand() - .5) * 8;
+      d[o + 3] = 255;
+    }
+  const c = document.createElement('canvas');
+  c.width = PW; c.height = PH;
+  c.getContext('2d').putImageData(out, 0, 0);
+  return c;
+}
+
+/* Lees een foto; tel per rij juist / gemeld / stil fout. */
+function score(S, photo, p, cal, marks){
+  const t0 = performance.now();
+  let r;
+  try { r = S.readCard(photo, p, cal); }
+  catch (e) { if (!e.key) throw e; return { retake: e.key, ms: Math.round(performance.now() - t0) }; }
+  const n = { ok: 0, okFlag: 0, wrongFlag: 0, silent: 0, ms: Math.round(performance.now() - t0), calibration: r.calibration, r };
+  r.rows.forEach((row, i) => {
+    const right = row.top === marks[i].top && row.zone === marks[i].zone, flagged = row.flags.length > 0;
+    n[right ? (flagged ? 'okFlag' : 'ok') : (flagged ? 'wrongFlag' : 'silent')]++;
+  });
+  return n;
+}
+
+/* Kalibratie zoals de scoreteller: één kaart, tik een topvak en een zonevak. */
+function sessionCalibration(S, photo, p, marks){
+  const r = S.readCard(photo, p, null), gains = S.whiteBalance(r.img);
+  const t = marks.findIndex(m => m.top), z = marks.findIndex(m => m.zone && m.zone !== m.top);
+  const px = (row, a) => S.cellPixels(r.img, r.cat.rows, ATT, gains, row, a - 1);
+  return S.calibrate(px(t, marks[t].top), px(z, marks[z].zone));
+}
+
+function report(cells, cls){
+  const tr = document.getElementById('out').insertRow();
+  cells.forEach((v, i) => { const td = tr.insertCell(); td.textContent = v; if (cls[i]) td.className = cls[i]; });
+}
+
+async function run(){
+  const G = document.getElementById('gen').contentWindow, S = document.getElementById('scan').contentWindow;
+  const catOrder = Object.keys(CATS);
+  const participants = [];
+  for (let nr = 1; nr <= 60; nr++) participants.push({ number: nr, category: catOrder[nr % 2] });
+  const ctx = { catOrder, mapping: CATS, bouldersPerCat: 0, format: 'rcyc', maxAttempts: ATT,
+                competitionId: 'synth-test-000001', title: 'SYNTHETISCHE TEST', subtitle: '' };
+  const p = S.parseProfile(JSON.stringify(G.scanProfile(ctx, participants, new Date().toISOString())));
+  document.getElementById('info').textContent = 'Profiel: ' + p.categories.map(c => c.category + ' ' + c.rows + ' rijen à ' + c.rowHeightMm + ' mm').join(', ');
+
+  let fails = 0, total = 0, nr = 1;
+  const rand = rng(20261003);
+  for (const [inkName, ink] of Object.entries(INKS)) {
+    const swapped = inkName.startsWith('omgewisseld');
+    // kalibratiekaart: recht, neutraal licht
+    const cm = truth(rand, CATS[p.cards[0].category].length);
+    cm[0] = { top: 3, zone: 3 }; cm[1] = { top: 4, zone: 2 };   // zeker een top- en een zonevak
+    const calCat = p.categories.find(c => c.category === p.cards[0].category);
+    const calPhoto = photograph(S, await drawCard(G, p, calCat, p.cards[0].startNumber, cm, ink, rand), SHOTS[0], rand);
+    const cal = sessionCalibration(S, calPhoto, p, cm);
+    for (const shot of SHOTS) {
+      const card = p.cards[nr++], cat = p.categories.find(c => c.category === card.category);
+      const marks = truth(rand, cat.boulders.length);
+      const photo = photograph(S, await drawCard(G, p, cat, card.startNumber, marks, ink, rand), shot, rand);
+      for (const mode of ['sessie', 'standaard']) {
+        const n = score(S, photo, p, mode === 'sessie' ? cal : null, marks);
+        total++;
+        // Met sessiekalibratie: nul stille fouten, geen opnieuw-nemen. Standaard: de kaart
+        // moet als "standaardkleuren" gemarkeerd zijn; stille rijfouten zijn dan ter info
+        // (bij omgewisselde stiften zijn ze verwacht: daarom bestaat de kalibratie).
+        const bad = n.retake ? mode === 'sessie' || !swapped
+          : mode === 'sessie' ? n.silent > 0 || n.calibration !== 'session' : n.calibration !== 'default';
+        if (bad) fails++;
+        const outcome = n.retake ? 'opnieuw: ' + n.retake : (mode === 'standaard' ? 'gemarkeerd: standaardkleuren' : 'gelezen');
+        report([shot.name + ' (#' + card.startNumber + ')', inkName, mode, outcome, n.ok, n.okFlag, n.wrongFlag, n.silent, n.ms],
+               [, , , bad ? 'f' : 'p', , , , n.silent ? (mode === 'sessie' ? 'f' : 'i') : '', ]);
+      }
+      if (inkName === Object.keys(INKS)[0]) {
+        const th = document.createElement('canvas');
+        th.width = photo.width / 6; th.height = photo.height / 6;
+        th.getContext('2d').drawImage(photo, 0, 0, th.width, th.height);
+        th.title = shot.name;
+        document.getElementById('thumbs').appendChild(th);
+      }
+    }
+  }
+  document.getElementById('sum').textContent = fails ? fails + ' van ' + total + ' mislukt' : total + ' geslaagd';
+  document.getElementById('sum').className = fails ? 'f' : 'p';
+}
+
+let loaded = 0;
+for (const f of document.querySelectorAll('iframe')) f.addEventListener('load', () => { if (++loaded === 2) run().catch(e => {
+  document.getElementById('sum').textContent = 'Fout: ' + e.message;
+  document.getElementById('sum').className = 'f';
+  throw e;
+}); });
+</script>
+</body>
+</html>

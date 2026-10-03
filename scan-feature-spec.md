@@ -1,7 +1,7 @@
 # Score Card Scanning - Feature Spec
 
-**Status:** Phase 5 built (branch `feat/scannable-card`). Phase 5 of 6.
-**Next action:** "Implement scan-feature-spec.md, Phase 6 only."
+**Status:** Phase 6 coding done (branch `feat/scannable-card`); the pilot (task 5) is pending.
+**Next action:** Jeroen runs the pilot (Phase 6, task 5), then tune and freeze R3.
 
 Addendum to `scorecard-generator-spec.md` and `i18n-feature-spec.md`.
 Where this spec conflicts with the base spec, this spec wins.
@@ -306,9 +306,31 @@ Tasks:
    light, one Android and one iPhone. Measure cell error rate, flag rate, retake rate and
    time per card. Tune R3 thresholds from this data, then freeze them as defaults.
 
+- **Decided in Phase 6:** "Kleuren kalibreren" sits next to "Foto nemen". The calibration
+  photo must be a card of the loaded competition (it goes through the normal read, QR
+  included). The tap screen shows the warped cells; an empty cell is refused at once,
+  overlapping ranges restart at the top tap. The calibration is a plain variable: never in
+  `localStorage`, gone on reload, replaced by the next calibration.
+- Without session calibration the result screen shows "⚠ Standaardkleuren" on every card,
+  and the scan section says the colours are not calibrated. This warning does **not** need
+  the extra "Toch goedkeuren" tap: on an uncalibrated afternoon every card would need it,
+  which trains the scorecounter to tap through the row flags that matter.
+- Calibrated hue range: median +/- the 5-95% spread plus 10 degrees, at least 15 and at
+  most 45 degrees each side (so blue ballpoint at ~228 stays outside a teal range).
+  Saturation and value floors: 0.6 x the 10th percentile of the tapped ink, but never
+  stricter than the defaults. The synthetic shadow band showed why: the same marker in a
+  shadow is darker than on the tapped cell, and a stricter floor dropped it silently.
+- Synthetic test: `scan-synthetic.html` (not deployed), over a local web server. It builds
+  the profile and draws markers and QR with the generator's own functions, so a geometry
+  change in the generator shows up here. 10 photo conditions x 3 ink sets (teal/purple,
+  green/pink, swapped), each read with session calibration (must be zero silent errors)
+  and with defaults (must carry the default-colours warning). The other extra tests
+  (overlap, swapped, empty cell, hue wrap-around, CSV round-trip) are in `?selftest`.
+
 Done when:
-- [ ] Synthetic fixtures: every cell correct or flagged, zero silent errors
-- [ ] Without session calibration, cards use the defaults and are flagged
+- [x] Synthetic fixtures: every cell correct or flagged, zero silent errors (60/60, desktop
+      Firefox; swapped colours read wrong with defaults, as expected, and carry the warning)
+- [x] Without session calibration, cards use the defaults and are flagged
 - [ ] Pilot: zero cells wrong and unflagged
 - [ ] Pilot: average under 20 seconds per card from photo to Approve
 
@@ -397,6 +419,7 @@ The card has no calibration boxes (dropped in Phase 1).
 1. **Session calibration** (Phase 6): from the tapped top and zone cells, take the
    saturated pixels and derive a hue range (median +/- spread, minimum width) plus
    saturation/value floors. Ranges must not overlap, otherwise reject it and ask again.
+   Built values: see "Decided in Phase 6".
 2. **Defaults** (flagged once session calibration exists): top (green/teal) hue 75-190
    degrees, zone (pink/purple) 270-345 degrees, saturation >= 0.20, value >= 0.45.
    - **Decided in Phase 3 (first real test card):** the original 75-165 and >= 0.35
