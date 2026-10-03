@@ -108,6 +108,7 @@ carries a "longest translation" pseudo-locale for eyeballing the worst case.
 python3 check_locales.py                      # translations
 python3 check_locales.py scan.html            # scanner translations
 open scorecard-generator.html?selftest        # 98 assertions, in the browser
+open scan.html?selftest                       # scanner rules (R2, R3, R4, QR)
 ```
 
 The self-test covers the CSV parser, both paste parsers, validation, layout maths,

@@ -2,3 +2,4 @@
 *.pdf
 etto-login/node_modules/
 etto-login/etto_state.json
+test-photos/

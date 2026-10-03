@@ -1,7 +1,7 @@
 # Score Card Scanning - Feature Spec
 
-**Status:** Phase 2 built (branch `feat/scannable-card`). Phase 2 of 6.
-**Next action:** Phase 2 STOP: print 3 cards, photograph them, check the overlay. Then: "Implement scan-feature-spec.md, Phase 3 only."
+**Status:** Phase 3 built (branch `feat/scannable-card`). Phase 3 of 6.
+**Next action:** "Implement scan-feature-spec.md, Phase 4 only."
 
 Addendum to `scorecard-generator-spec.md` and `i18n-feature-spec.md`.
 Where this spec conflicts with the base spec, this spec wins.
@@ -166,12 +166,25 @@ Tasks:
 Write the decision rules and totals as pure functions with table-driven unit tests
 covering every row of R2.
 
+- **Decided in Phase 3:** the QR is read from a fixed crop above marker 1 (30 mm left
+  of it to 8 mm right, 60 mm up), warped like the grid. The category is unknown at
+  that point, so the crop uses the shortest category's frame; that only stretches it
+  vertically. The Phase 2 category dropdown is gone.
+- Glare = cells more than 40% "burnt out", where burnt out means at least 250 **and**
+  20 levels brighter than the paper's median. A photo that is white everywhere
+  (overexposed paper) is not glare: the highlighter keeps its colour there.
+- Blur = Laplacian variance of the QR crop below 30 (real photo 53, synthetic sharp
+  200+, synthetic blurred about 20). Heavy blur or a far-away card often fails at marker detection
+  first; that is also a retake message, never a result.
+- Unit tests: open `scan.html?selftest` (R2, R4, R3 thresholds, QR checks, inks).
+
 Done when:
-- [ ] Photo to result in under 3 seconds on a mid-range phone
-- [ ] Every row of R2 has a passing test
-- [ ] Wrong competition ID and unknown start number are blocked with specific messages
-- [ ] A blurry or glare photo gets a retake message instead of a result
-- [ ] Yellow highlighter, ballpoint and pencil are ignored
+- [x] Photo to result in under 3 seconds on a mid-range phone (Jeroen's phone: "very
+      fast"; desktop Firefox 0.35-0.5 s for a 12 MP photo)
+- [x] Every row of R2 has a passing test
+- [x] Wrong competition ID and unknown start number are blocked with specific messages
+- [x] A blurry or glare photo gets a retake message instead of a result (synthetic)
+- [x] Yellow highlighter, ballpoint and pencil are ignored (synthetic: coverage 0.000)
 
 ---
 
@@ -360,8 +373,11 @@ The card has no calibration boxes (dropped in Phase 1).
 1. **Session calibration** (Phase 6): from the tapped top and zone cells, take the
    saturated pixels and derive a hue range (median +/- spread, minimum width) plus
    saturation/value floors. Ranges must not overlap, otherwise reject it and ask again.
-2. **Defaults** (flagged once session calibration exists): top (green) hue 75-165
-   degrees, zone (pink/purple) 270-345 degrees, saturation >= 0.35, value >= 0.45.
+2. **Defaults** (flagged once session calibration exists): top (green/teal) hue 75-190
+   degrees, zone (pink/purple) 270-345 degrees, saturation >= 0.20, value >= 0.45.
+   - **Decided in Phase 3 (first real test card):** the original 75-165 and >= 0.35
+     missed Jeroen's teal (hue ~171) and purple (saturation ~0.30) markers. Blue
+     ballpoint (~228), yellow (~55) and pencil/paper (saturation < 0.1) stay outside.
 
 Pixels outside both hue ranges are ignored. One zone colour per competition.
 
