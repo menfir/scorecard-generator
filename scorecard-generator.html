@@ -67,6 +67,7 @@
     "control.total": "Totaal",
     "control.bouldersInGym.one": "{count} boulder in de zaal",
     "control.bouldersInGym.other": "{count} boulders in de zaal",
+    "control.scanProfile": "Scanprofiel {stamp}",
 
     "ui.app.title": "Scorekaarten generator",
     "ui.app.intro": "Deelnemersgegevens worden alleen lokaal in uw browser verwerkt en niet naar een server verstuurd.",
@@ -77,7 +78,6 @@
     "ui.settings.heading": "Wedstrijdgegevens",
     "ui.settings.title": "Titel",
     "ui.settings.subtitle": "Ondertitel",
-    "ui.settings.id": "Wedstrijd-ID",
     "ui.settings.maxAttempts": "Max. pogingen",
     "ui.settings.bouldersPerCat": "Boulders per categorie",
     "ui.settings.bouldersPerCatHint": "Aantal rijen op elke kaart: ontbrekende boulders worden lege rijen zonder nummer. Ook voor de blanco kaart en om afwijkende categorieën te melden.",
@@ -85,7 +85,10 @@
     "ui.settings.format.abyc": "Vaste pogingen (ABYC)",
     "ui.settings.format.rcyc": "Vaste pogingen (RCYC)",
     "ui.settings.format.timed": "Tijdslot, onbeperkte pogingen",
-    "ui.settings.hint": "Het wedstrijd-ID staat in de QR-code, bv. `abyc2026-m4:69`. Instellingen en boulderindeling worden per wedstrijd-ID op dit toestel bewaard; deelnemers nooit.",
+    "ui.settings.hint": "Het wedstrijd-ID wordt afgeleid uit titel en ondertitel en staat in de QR-code, bv. `rcyc-oost-288cd9:69`. Een andere manche krijgt een andere ondertitel en dus een ander ID, zodat de scanner kaarten van een andere wedstrijd weigert. Instellingen en boulderindeling worden per wedstrijd-ID op dit toestel bewaard; deelnemers nooit.",
+    "ui.settings.scannable": "Scanbare kaart",
+    "ui.settings.scannableHint": "Zet vier scanmarkeringen naast de tabel, zodat de scanner ze kan inlezen. Vereist de QR-code.",
+    "ui.settings.scannableUnsupported": "Alleen beschikbaar bij Vaste pogingen (RCYC).",
 
     "ui.saved.here": "Bewaard: {id} · {datetime}",
     "ui.saved.forget": "Vergeet deze wedstrijd",
@@ -156,6 +159,8 @@
     "ui.print.qr": "QR-code op de kaart",
     "ui.print.controlSheet": "Controleblad vooraan",
     "ui.print.colour": "Kleurband op de kaart",
+    "ui.print.qrForced": "Staat vast aan: de scanner leest het startnummer uit de QR-code.",
+    "ui.print.scanProfile": "Export scanprofiel",
     "ui.print.button": "Afdrukken (Ctrl+P → Opslaan als PDF)",
     "ui.print.blankButton": "Blanco kaart afdrukken",
     "ui.print.blankHint": "Vul “Boulders per categorie” in om een blanco kaart af te drukken: titel en ondertitel staan erop, naam, startnummer, categorie en boulders vult de deelnemer zelf in.",
@@ -191,6 +196,8 @@
     "validation.error.categoryWithoutParticipants": "Categorie “{category}” heeft boulders toegekend maar geen deelnemers.",
     "validation.error.categoryZeroBoulders": "Categorie “{category}” heeft nul boulders.",
     "validation.error.duplicateBoulder": "Boulder {number} komt meer dan één keer voor in categorie “{category}”.",
+    "validation.error.scanNeedsQr": "Een scanbare kaart heeft de QR-code nodig. Zet de QR-code aan of de scanbare kaart uit.",
+    "validation.warning.scanNoId": "Geen titel of ondertitel: alle wedstrijden krijgen hetzelfde ID, en de scanner kan kaarten van een andere wedstrijd niet weigeren.",
     "validation.warning.nameTooLong": "Rij {row}: de naam “{name}” is te lang voor het naamveld en wordt afgekapt.",
     "validation.warning.categoryTooLong": "Categorie “{category}” is te lang voor het categorieveld, ook op de kleinste maat, en wordt afgekapt.",
     "validation.warning.differingBoulderCounts": "Niet alle categorieën hebben evenveel boulders ({summary}). Klopt voor een finale, meestal een vergissing in een kwalificatie.",
@@ -230,6 +237,7 @@
     "control.total": "Total",
     "control.bouldersInGym.one": "{count} bloc dans la salle",
     "control.bouldersInGym.other": "{count} blocs dans la salle",
+    "control.scanProfile": "Profil de scan {stamp}",
 
     "ui.app.title": "Générateur de feuilles de score",
     "ui.app.intro": "Les données des participants sont traitées uniquement localement dans votre navigateur et ne sont envoyées à aucun serveur.",
@@ -240,7 +248,6 @@
     "ui.settings.heading": "Données de la compétition",
     "ui.settings.title": "Titre",
     "ui.settings.subtitle": "Sous-titre",
-    "ui.settings.id": "ID de compétition",
     "ui.settings.maxAttempts": "Essais max.",
     "ui.settings.bouldersPerCat": "Blocs par cat\u00e9gorie",
     "ui.settings.bouldersPerCatHint": "Nombre de lignes sur chaque feuille : les blocs manquants deviennent des lignes vides sans numéro. Sert aussi pour la carte vierge et pour signaler les catégories qui s'écartent.",
@@ -248,7 +255,10 @@
     "ui.settings.format.abyc": "Essais fixes (ABYC)",
     "ui.settings.format.rcyc": "Essais fixes (RCYC)",
     "ui.settings.format.timed": "Temps imparti, essais illimit\u00e9s",
-    "ui.settings.hint": "L’ID de compétition figure dans le code QR, p. ex. `abyc2026-m4:69`. Les réglages et la répartition des blocs sont conservés par ID sur cet appareil ; jamais les participants.",
+    "ui.settings.hint": "L’ID de compétition est dérivé du titre et du sous-titre et figure dans le code QR, p. ex. `rcyc-oost-288cd9:69`. Une autre manche a un autre sous-titre et donc un autre ID, pour que le scanner refuse les feuilles d’une autre compétition. Les réglages et la répartition des blocs sont conservés par ID sur cet appareil ; jamais les participants.",
+    "ui.settings.scannable": "Feuille scannable",
+    "ui.settings.scannableHint": "Ajoute quatre repères de scan à côté du tableau, pour que le scanner puisse lire la feuille. Nécessite le code QR.",
+    "ui.settings.scannableUnsupported": "Disponible uniquement avec Essais fixes (RCYC).",
 
     "ui.saved.here": "Enregistré : {id} · {datetime}",
     "ui.saved.forget": "Oublier cette compétition",
@@ -319,6 +329,8 @@
     "ui.print.qr": "Code QR sur la feuille",
     "ui.print.controlSheet": "Feuille de contrôle en tête",
     "ui.print.colour": "Bande de couleur sur la feuille",
+    "ui.print.qrForced": "Toujours activé : le scanner lit le dossard dans le code QR.",
+    "ui.print.scanProfile": "Exporter le profil de scan",
     "ui.print.button": "Imprimer (Ctrl+P → Enregistrer en PDF)",
     "ui.print.blankButton": "Imprimer une carte vierge",
     "ui.print.blankHint": "Renseignez « Blocs par catégorie » pour imprimer une carte vierge : titre et sous-titre y figurent, le participant remplit lui-même son nom, dossard, catégorie et blocs.",
@@ -354,6 +366,8 @@
     "validation.error.categoryWithoutParticipants": "La catégorie « {category} » a des blocs attribués mais aucun participant.",
     "validation.error.categoryZeroBoulders": "La catégorie « {category} » n’a aucun bloc.",
     "validation.error.duplicateBoulder": "Le bloc {number} apparaît plus d’une fois dans la catégorie « {category} ».",
+    "validation.error.scanNeedsQr": "Une feuille scannable nécessite le code QR. Activez le code QR ou désactivez la feuille scannable.",
+    "validation.warning.scanNoId": "Ni titre ni sous-titre : toutes les compétitions reçoivent le même ID, et le scanner ne peut pas refuser les feuilles d’une autre compétition.",
     "validation.warning.nameTooLong": "Ligne {row} : le nom « {name} » est trop long pour le champ et sera tronqué.",
     "validation.warning.categoryTooLong": "La catégorie « {category} » est trop longue pour le champ, même à la plus petite taille, et sera tronquée.",
     "validation.warning.differingBoulderCounts": "Les catégories n’ont pas toutes le même nombre de blocs ({summary}). Normal pour une finale, généralement une erreur en qualification.",
@@ -393,6 +407,7 @@
     "control.total": "Total",
     "control.bouldersInGym.one": "{count} boulder in the gym",
     "control.bouldersInGym.other": "{count} boulders in the gym",
+    "control.scanProfile": "Scan profile {stamp}",
 
     "ui.app.title": "Score card generator",
     "ui.app.intro": "Participant data is processed locally in your browser only and is not sent to any server.",
@@ -403,7 +418,6 @@
     "ui.settings.heading": "Competition details",
     "ui.settings.title": "Title",
     "ui.settings.subtitle": "Subtitle",
-    "ui.settings.id": "Competition ID",
     "ui.settings.maxAttempts": "Max. attempts",
     "ui.settings.bouldersPerCat": "Boulders per category",
     "ui.settings.bouldersPerCatHint": "Number of rows on every card: missing boulders become empty rows without a number. Also used for the blank card and to flag categories that differ.",
@@ -411,7 +425,10 @@
     "ui.settings.format.abyc": "Fixed attempts (ABYC)",
     "ui.settings.format.rcyc": "Fixed attempts (RCYC)",
     "ui.settings.format.timed": "Timed, unlimited attempts",
-    "ui.settings.hint": "The competition ID appears in the QR code, e.g. `abyc2026-m4:69`. Settings and the boulder mapping are kept per competition ID on this device; participants never are.",
+    "ui.settings.hint": "The competition ID is derived from the title and subtitle and appears in the QR code, e.g. `rcyc-oost-288cd9:69`. Another round has another subtitle and so another ID, so the scanner rejects cards from another competition. Settings and the boulder mapping are kept per competition ID on this device; participants never are.",
+    "ui.settings.scannable": "Scannable card",
+    "ui.settings.scannableHint": "Adds four scan markers beside the table so the scanner can read the card. Requires the QR code.",
+    "ui.settings.scannableUnsupported": "Only available with Fixed attempts (RCYC).",
 
     "ui.saved.here": "Saved: {id} · {datetime}",
     "ui.saved.forget": "Forget this competition",
@@ -482,6 +499,8 @@
     "ui.print.qr": "QR code on the card",
     "ui.print.controlSheet": "Control sheet in front",
     "ui.print.colour": "Colour band on the card",
+    "ui.print.qrForced": "Always on: the scanner reads the start number from the QR code.",
+    "ui.print.scanProfile": "Export scan profile",
     "ui.print.button": "Print (Ctrl+P → Save as PDF)",
     "ui.print.blankButton": "Print blank card",
     "ui.print.blankHint": "Fill in “Boulders per category” to print a blank card: title and subtitle are printed, the participant fills in their own name, start number, category and boulders.",
@@ -517,6 +536,8 @@
     "validation.error.categoryWithoutParticipants": "Category “{category}” has boulders assigned but no participants.",
     "validation.error.categoryZeroBoulders": "Category “{category}” has zero boulders.",
     "validation.error.duplicateBoulder": "Boulder {number} appears more than once in category “{category}”.",
+    "validation.error.scanNeedsQr": "A scannable card needs the QR code. Turn the QR code on or the scannable card off.",
+    "validation.warning.scanNoId": "No title or subtitle: every competition gets the same ID, and the scanner cannot reject cards from another competition.",
     "validation.warning.nameTooLong": "Row {row}: the name “{name}” is too long for the name field and will be cut off.",
     "validation.warning.categoryTooLong": "Category “{category}” is too long for the category field, even at the smallest size, and will be cut off.",
     "validation.warning.differingBoulderCounts": "Not all categories have the same number of boulders ({summary}). Correct for a final, usually a mistake in a qualification.",
@@ -687,6 +708,14 @@ table.score.plain tfoot td.spacer{background:#bfbfbf;border:0;
 table.score.plain tfoot td.lab{text-align:center;padding:0;background:#bfbfbf;
   -webkit-print-color-adjust:exact;print-color-adjust:exact}
 
+/* scanbare kaart: de markers hangen aan de hoeken van de gerenderde tabel, dus ze
+   volgen de echte tabelhoogte. Links en rechts houdt .scan er plaats voor vrij
+   (padding = marker + witrand, gezet vanuit SCAN). */
+.scan{position:relative;width:100%;box-sizing:border-box}
+.scan .aruco{position:absolute;display:block;width:5mm;height:5mm;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact}
+.scan .m0{left:0;top:0}.scan .m1{right:0;top:0}.scan .m2{right:0;bottom:0}.scan .m3{left:0;bottom:0}
+
 /* tijdslotformaat: turfstrook, twee registratievakjes, samenvatting */
 .tbl-stack{width:100%;display:flex;flex-direction:column;gap:3mm}
 table.score.timed thead tr.h1{height:9mm;line-height:1.05}
@@ -797,11 +826,12 @@ table.score.timed td.cell-mark{
           <option value="" data-i18n="ui.lang.card.same"></option>
         </select>
       </div>
-      <!-- Wedstrijd-ID: nog niet in gebruik, dus verborgen; de opslag en de QR
-           gebruiken het veld nog wel, dus het blijft in de DOM. -->
-      <div hidden><label for="f-id" data-i18n="ui.settings.id"></label><input id="f-id" type="text" placeholder="abyc2026-m4"></div>
+      <div><label style="margin:0"><input type="checkbox" id="f-scan" checked> <span data-i18n="ui.settings.scannable"></span></label>
+        <span class="hint" id="scan-hint" data-i18n="ui.settings.scannableHint"></span>
+        <span class="hint" id="scan-unsupported" hidden data-i18n="ui.settings.scannableUnsupported"></span>
+      </div>
     </div>
-    <p class="hint" style="margin:10px 0 0" hidden data-i18n="ui.settings.hint"></p>
+    <p class="hint" style="margin:10px 0 0" data-i18n="ui.settings.hint"></p>
     <div id="saved"></div>
   </section>
 
@@ -890,8 +920,10 @@ table.score.timed td.cell-mark{
       <label style="margin:0"><input type="checkbox" id="o-colour" checked> <span data-i18n="ui.print.colour"></span></label>
       <button id="btn-print" type="button" disabled data-i18n="ui.print.button"></button>
       <button id="btn-print-blank" type="button" disabled data-i18n="ui.print.blankButton"></button>
+      <button class="sec" id="btn-scanprofile" type="button" disabled data-i18n="ui.print.scanProfile"></button>
       <span class="hint" id="print-stat"></span>
     </div>
+    <p class="hint" style="margin:10px 0 0" id="qr-forced" hidden data-i18n="ui.print.qrForced"></p>
     <p class="hint" style="margin:10px 0 0" data-i18n="ui.print.hint"></p>
     <p class="hint" style="margin:4px 0 0" data-i18n="ui.print.blankHint"></p>
   </section>
@@ -3283,7 +3315,7 @@ const emsg = e => e && e.i18n ? t(e.i18n.key, e.i18n.params) : String((e && e.me
    ingespoten, en de controle "past het aantal boulders op de kaart" rekent
    met exact dezelfde getallen.
    ========================================================================== */
-const L = { card:148.5, pad:8, hdr:28, gap:2, thead:11, tfoot:9, minRow:8, maxRow:14 };
+const L = { card:148.5, width:210, pad:8, hdr:28, gap:2, thead:11, tfoot:9, minRow:8, maxRow:14, itemCol:20 };
 const MM = 96/25.4;          // mm -> px bij 96dpi
 
 /* Wedstrijdformaten (§12.2). Dit is de instellingenlaag: de enige plek die een
@@ -3306,6 +3338,9 @@ const FORMATS = {
   rcyc: {
     capture: 'fixed-columns', zones: 0, rowScoreColumn: true, totalsRow: true,
     itemLabel: 'card.header.route',
+    // Eén vakje per poging, gelijke breedtes: de enige tabel die de scanner kan
+    // lezen (scan-spec). ABYC splitst elke poging in Z/T, tijdslot heeft er geen.
+    scan: true,
     scoreLabels:  ['card.header.scoreTop', 'card.header.scoreZone'],
     footerLabels: ['card.header.score', 'card.header.attempts'],
     usesAttempts: true, minRow: L.minRow, maxRow: L.maxRow, thead: 6, below: 16 // 2 telregels van 8mm (CSS .plain tfoot)
@@ -3326,6 +3361,32 @@ function bodyMm(format){
 }
 function maxRowsFor(format){
   return Math.floor(bodyMm(format) / fmtDef(format).minRow);
+}
+
+/* Scanbare kaart (scan-spec fase 1). Vier ArUco-markers links en rechts naast de
+   tabel, gelijk met de boven- en onderrand. De tabel wordt er smaller voor, niet
+   lager: het aantal rijen dat past blijft gelijk. Waar de pogingvakken liggen
+   ten opzichte van de markers staat in het scanprofiel, zodat de scanner de
+   kaart nooit zelf hoeft na te rekenen. */
+const CARD_LAYOUT_VERSION = 1;   // ophogen bij elke wijziging aan tabelgeometrie of markers
+// edge: de helft van de .6mm buitenrand van de RCYC-tabel valt binnen de tabelmaat
+// (border-collapse) en schuift elke kolom en rij op.
+const SCAN = { marker: 5, quiet: 1, edge: 0.3 };
+// ArUco 4x4 id 0-3 (OpenCV DICT_4X4_50 = js-aruco2 ARUCO_4X4_1000), 16 bits
+// rij per rij, hoogste bit eerst, 1 = wit.
+const ARUCO_4X4 = [0xb532, 0x0f9a, 0x332d, 0x9946];
+const scanOn = s => !!s.scannable && !!fmtDef(s.format).scan;
+
+/* In mm. Referentiepunten: de markerhoek die naar de tabelhoek wijst (0
+   rechtsboven, 1 linksboven, 2 linksonder, 3 rechtsonder). Oorsprong = die hoek
+   van marker 0. Zelfde getallen als de CSS: rijhoogte = min(max, ruimte / rijen). */
+function scanGeometry(format, rows, attempts){
+  const f = fmtDef(format);
+  const side = SCAN.marker + SCAN.quiet;
+  const col = (L.width - 2 * L.pad - 2 * side - 2 * SCAN.edge - L.itemCol) / (attempts + f.scoreLabels.length);
+  const rowH = Math.min(f.maxRow, bodyMm(format) / rows);
+  return { left: SCAN.quiet + SCAN.edge + L.itemCol, width: attempts * col, top: SCAN.edge + f.thead, rowH,
+           height: rows * rowH, bottomGap: f.below + SCAN.edge, side };
 }
 
 /* De CSS-variabelen en de oude controle rekenen met het standaardformaat. */
@@ -3578,6 +3639,12 @@ function validate(participants, mapping, catOrder, opts){
       warn('validation.warning.tooManyBoulders', {
         category: c, count: rows, max: maxRows, rowHeight: minRow });
   });
+  // Zonder QR weet de scanner niet wiens kaart het is; zonder ID (ook geen
+  // afgeleid) lopen de resultaten van twee wedstrijden door elkaar.
+  if (opts && opts.scan){
+    if (opts.showQr === false) err('validation.error.scanNeedsQr');
+    if (!opts.competitionId) warn('validation.warning.scanNoId');
+  }
 
   return { errors, warnings };
 }
@@ -3853,7 +3920,7 @@ function plainColumnsTable(cfg){
   const budget = cfg.bodyHeight || L.body;
   const maxRow = (cfg.rowHeight && cfg.rowHeight.max) || L.maxRow;
   return '<table class="score plain" style="--body-h:' + budget.toFixed(1) + 'mm;' +
-         '--max-row:' + maxRow + 'mm"><colgroup><col style="width:20mm">' +
+         '--max-row:' + maxRow + 'mm"><colgroup><col style="width:' + L.itemCol + 'mm">' +
          '<col span="' + cells + '"></colgroup><thead>' + h1 + '</thead><tbody>' +
          body + '</tbody>' + foot + '</table>';
 }
@@ -3898,7 +3965,7 @@ function fixedColumnsTable(cfg){
   const maxRow = (cfg.rowHeight && cfg.rowHeight.max) || L.maxRow;
 
   return '<table class="score" style="--body-h:' + budget.toFixed(1) + 'mm;' +
-         '--max-row:' + maxRow + 'mm"><colgroup><col style="width:20mm">' +
+         '--max-row:' + maxRow + 'mm"><colgroup><col style="width:' + L.itemCol + 'mm">' +
          '<col span="' + cells + '"></colgroup><thead>' + h1 + h2 + '</thead><tbody>' +
          body + '</tbody>' + foot + '</table>';
 }
@@ -4004,9 +4071,65 @@ function cardHTML(p, ctx){
     // niets komt uit de deelnemer. Een ander formaat wijzigt deze waarden (§12.2).
     // De kaartbouwer weet niet welk formaat gedrukt wordt: seamOptions vertaalt
     // de instelling naar parameters (§12.2). Een derde formaat raakt deze regel niet.
-    '<div class="tblwrap">' +
-      renderScoreTable(seamOptions(ctx.format, nums, lang, ctx.maxAttempts)) + '</div>' +
+    '<div class="tblwrap">' + (ctx.scan
+      ? scanBlock(renderScoreTable(seamOptions(ctx.format, nums, lang, ctx.maxAttempts)))
+      : renderScoreTable(seamOptions(ctx.format, nums, lang, ctx.maxAttempts))) + '</div>' +
   '</div>';
+}
+
+/* 6x6 modules: zwarte rand plus 4x4 bits. Puur zwart, geen anti-aliasing. */
+function arucoSvg(id){
+  const code = ARUCO_4X4[id];
+  let bits = '';
+  for (let i = 0; i < 16; i++)
+    if ((code >> (15 - i)) & 1) bits += '<rect x="' + (i % 4 + 1) + '" y="' + (Math.floor(i / 4) + 1) + '" width="1" height="1" fill="#fff"/>';
+  return '<svg class="aruco m' + id + '" data-id="' + id + '" viewBox="0 0 6 6" shape-rendering="crispEdges">' +
+    '<rect width="6" height="6" fill="#000"/>' + bits + '</svg>';
+}
+
+/* De tabel met links en rechts een strook voor de markers: 0 linksboven, dan met
+   de klok mee, elk gelijk met de boven- of onderrand van de tabel. */
+function scanBlock(table){
+  const side = SCAN.marker + SCAN.quiet;
+  return '<div class="scan" style="padding:0 ' + side + 'mm">' + [0, 1, 2, 3].map(arucoSvg).join('') + table + '</div>';
+}
+
+/* Scanprofiel (scan-spec R1): wat de scanner nodig heeft, en niets meer. Geen
+   namen: het platform koppelt resultaten via het startnummer. */
+function scanProfile(ctx, participants, generatedAt){
+  const live = ctx.catOrder.filter(c => participants.some(p => p.category === c));
+  const rowsOf = c => Math.max((ctx.mapping[c] || []).length, ctx.bouldersPerCat || 0);
+  const g = scanGeometry(ctx.format, 1, ctx.maxAttempts);
+  const r2 = v => Math.round(v * 100) / 100;
+  return {
+    schema: 'scorecard-scanprofile/1',
+    layoutVersion: CARD_LAYOUT_VERSION,
+    competitionId: ctx.competitionId,
+    title: ctx.title,
+    subtitle: ctx.subtitle,
+    maxAttempts: ctx.maxAttempts,
+    generatedAt,
+    // mm, zie scan-spec R1. Referentiepunten = de markerhoeken naast de
+    // tabelhoeken; oorsprong = die van marker 0, x naar rechts, y naar beneden.
+    geometry: {
+      markers: { dictionary: 'ARUCO_4X4_1000', ids: [0, 1, 2, 3], sizeMm: SCAN.marker, quietZoneMm: SCAN.quiet,
+                 referenceCorner: ['top-right', 'top-left', 'bottom-left', 'bottom-right'] },
+      regionLeftMm: r2(g.left),
+      regionWidthMm: r2(g.width),
+      regionTopMm: r2(g.top),
+      regionBottomGapMm: r2(g.bottomGap),
+      referenceWidthMm: r2(L.width - 2 * L.pad - 2 * SCAN.marker)
+    },
+    categories: live.map(c => ({
+      category: c,
+      boulders: (ctx.mapping[c] || []).slice().sort((a, b) => a - b),
+      rows: rowsOf(c),
+      rowHeightMm: r2(scanGeometry(ctx.format, rowsOf(c), ctx.maxAttempts).rowH)
+    })),
+    cards: participants.filter(p => live.includes(p.category))
+      .map(p => ({ startNumber: p.number, category: p.category }))
+      .sort((a, b) => a.startNumber - b.startNumber)
+  };
 }
 
 /* Blanco kaart: alleen titel en ondertitel staan vast, de rest vult de
@@ -4068,7 +4191,8 @@ function controlSheetHTML(ctx, participants){
   // A5 zet ze onder elkaar (past tot ~30). Daarboven loopt de matrix van het blad.
   return '<div class="sheet' + (ctx.paper === 'A5' ? ' a5' : '') + '"><div class="ctl">' +
     '<h2>' + esc(ctx.title) + (ctx.subtitle ? ' &ndash; ' + esc(ctx.subtitle) : '') + '</h2>' +
-    '<div class="meta">' + et('control.meta', { id: ctx.competitionId, datetime: dtf(new Date()) }) + '</div>' +
+    '<div class="meta">' + et('control.meta', { id: ctx.competitionId, datetime: dtf(new Date()) }) +
+      (ctx.scanStamp ? ' &middot; ' + et('control.scanProfile', { stamp: ctx.scanStamp }) : '') + '</div>' +
     '<div class="ctl-cols' + (ctx.paper === 'A5' ? ' stacked' : '') + '">' + matrix +
       '<table class="counts"><tbody>' + counts +
         '<tr><td>' + et('control.total') + '</td><td>' +
@@ -4114,7 +4238,8 @@ const S = {
   ack: false,
   tab: 'grid',
   pasteMsg: null,        // {type, parts:[{key,count,params}]} onder het actieve tabblad
-  jsonKeys: null         // veldkeuze tonen als de JSON-vorm onbekend is
+  jsonKeys: null,        // veldkeuze tonen als de JSON-vorm onbekend is
+  scanStamp: null        // {sig, at}: generatedAt van het scanprofiel, wijzigt alleen met de inhoud
 };
 
 /* Eén zin uit een {key, count, params}-blokje. Zonder count geen meervoud. */
@@ -4138,8 +4263,20 @@ function orderedCategories(){
   const known = S.catOrder.filter(c => all.includes(c));
   return known.concat(all.filter(c => !known.includes(c)).sort(alpha));
 }
+/* Wedstrijd-ID: altijd afgeleid uit titel en ondertitel, zodat niemand het hoeft
+   te verzinnen. Zelfde titel en ondertitel geven altijd hetzelfde ID (stabiel
+   over herladen heen); een andere manche heeft een andere ondertitel en dus een
+   ander ID. Kort leesbaar voorvoegsel plus 6 tekens hash. */
+function autoId(title, subtitle){
+  if (!title && !subtitle) return '';
+  const slug = (title || subtitle).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-').slice(0, 10).replace(/^-+|-+$/g, '');
+  return (slug ? slug + '-' : '') + hashStr(title + '\n' + subtitle).padStart(8, '0').slice(-6);
+}
+const effectiveId = () => autoId($('f-title').value.trim(), $('f-sub').value.trim());
+
 function settings(){
-  const id = $('f-id').value.trim();
+  const id = effectiveId();
   return {
     // Geen vertaalde standaardwaarde: een lege titel valt terug op het ID, want
     // de titel is ingetypte tekst en hoort in geen enkele taal thuis (§1).
@@ -4150,6 +4287,7 @@ function settings(){
     // 0 = niet ingesteld: geen blanco kaart, geen controle op het aantal.
     bouldersPerCat: Math.max(0, Math.min(60, Number($('f-bpc').value) || 0)),
     format: FORMATS[$('f-format').value] ? $('f-format').value : DEFAULT_FORMAT,
+    scannable: $('f-scan').checked,
     cardLanguage: cardLangSetting
   };
 }
@@ -4172,7 +4310,7 @@ const STORE = 'scorecard:';
 
 function collectState(){
   return { version: 1, saved: Date.now(), settings: settings(), options: options(),
-           mapping: S.mapping, catOrder: S.catOrder, gridMax: S.gridMax };
+           mapping: S.mapping, catOrder: S.catOrder, gridMax: S.gridMax, scanStamp: S.scanStamp };
 }
 
 /* Onbekende sleutels worden genegeerd en ontbrekende blijven staan, zodat een
@@ -4185,6 +4323,7 @@ function applyState(st){
   if (s.maxAttempts)            $('f-att').value = s.maxAttempts;
   if (s.bouldersPerCat)         $('f-bpc').value = s.bouldersPerCat;
   if (s.format && FORMATS[s.format]) $('f-format').value = s.format;
+  if (s.scannable !== undefined) $('f-scan').checked = !!s.scannable;
   if (s.cardLanguage !== undefined){
     cardLangSetting = LANGS.includes(s.cardLanguage) ? s.cardLanguage : '';
     $('f-cardlang').value = cardLangSetting;
@@ -4200,18 +4339,26 @@ function applyState(st){
     for (const c in st.mapping) if (Array.isArray(st.mapping[c])) S.mapping[c] = st.mapping[c].map(Number);
   }
   if (Array.isArray(st.catOrder)) S.catOrder = st.catOrder;
+  if (st.scanStamp && st.scanStamp.at) S.scanStamp = st.scanStamp;
   return true;
 }
 
 let saveTimer = null;
+/* Het ID verandert terwijl je de titel of ondertitel typt. Een sleutel die deze
+   sessie zelf aanmaakte, verhuist mee met het ID in plaats van als rommel achter
+   te blijven; een sleutel die al bestond (bv. de vorige manche) blijft staan. */
+let sessionKey = null;
 function saveState(){
-  const id = $('f-id').value.trim();
+  const id = effectiveId();
   if (!id) return;
-  // ponytail: 800ms debounce, anders krijgt elke aanslag in het ID zijn eigen
-  // sleutel. Ruim op via "Vergeet deze wedstrijd" als er toch rommel ontstaat.
   clearTimeout(saveTimer);
   saveTimer = setTimeout(() => {
-    try { localStorage.setItem(STORE + id, JSON.stringify(collectState())); }
+    try {
+      const fresh = localStorage.getItem(STORE + id) === null;
+      localStorage.setItem(STORE + id, JSON.stringify(collectState()));
+      if (sessionKey && sessionKey !== id) localStorage.removeItem(STORE + sessionKey);
+      sessionKey = fresh || sessionKey === id ? id : null;
+    }
     catch (e){ /* volle of geblokkeerde opslag mag het afdrukken niet breken */ }
     renderSaved();
   }, 800);
@@ -4232,19 +4379,40 @@ function loadSaved(id){
   try {
     const st = JSON.parse(localStorage.getItem(STORE + id));
     if (!applyState(st)) return false;
-    $('f-id').value = id;
+    sessionKey = null;
     return true;
   } catch (e){ return false; }
 }
 
-function exportMapping(){
-  const st = collectState();
-  const blob = new Blob([JSON.stringify(st, null, 2)], { type: 'application/json' });
+function downloadJSON(name, data){
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = st.settings.competitionId + '-boulders.json';
+  a.download = name;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function exportMapping(){
+  const st = collectState();
+  downloadJSON(st.settings.competitionId + '-boulders.json', st);
+}
+
+/* generatedAt verandert alleen als de inhoud van het profiel verandert, ook na
+   een herlaad: zo blijft de tijd op het gedrukte controleblad gelijk aan die in
+   het profiel dat later geëxporteerd wordt. Opgeslagen wordt alleen een hash,
+   geen startnummers (§4.4). */
+const hashStr = str => { let h = 5381; for (let i = 0; i < str.length; i++) h = (h * 33 ^ str.charCodeAt(i)) >>> 0; return h.toString(16); };
+function isoLocal(d){
+  const off = -d.getTimezoneOffset(), two = n => String(Math.floor(Math.abs(n))).padStart(2, '0');
+  return new Date(d.getTime() + off * 60000).toISOString().slice(0, 19) +
+    (off < 0 ? '-' : '+') + two(off / 60) + ':' + two(off % 60);
+}
+function stampedProfile(ctx, participants){
+  const prof = scanProfile(ctx, participants, '');
+  const sig = hashStr(JSON.stringify(prof));
+  if (!S.scanStamp || S.scanStamp.sig !== sig) S.scanStamp = { sig, at: isoLocal(new Date()) };
+  prof.generatedAt = S.scanStamp.at;
+  return prof;
 }
 
 /* Accepteert zowel een volledig geëxporteerd bestand als een kale
@@ -4388,7 +4556,7 @@ function renderTabs(){
 }
 
 function renderSaved(){
-  const list = listSaved(), id = $('f-id').value.trim();
+  const list = listSaved(), id = effectiveId();
   const here = list.find(x => x.id === id);
   const others = list.filter(x => x.id !== id).slice(0, 4);
   $('saved').innerHTML =
@@ -4506,14 +4674,24 @@ function refresh(){
   renderDiag();
 
   const set = settings();
+  // Scanbaar kan alleen bij een formaat met één vakje per poging; dan ligt de
+  // QR-code vast, want de scanner leest het startnummer daaruit.
+  const scan = scanOn(set), scanFmt = !!fmtDef(set.format).scan;
+  $('f-scan').disabled = !scanFmt;
+  $('scan-hint').hidden = !scanFmt;
+  $('scan-unsupported').hidden = scanFmt;
+  if (scan) $('o-qr').checked = true;
+  $('o-qr').disabled = scan;
+  $('qr-forced').hidden = !scan;
   // Het formaat bepaalt hoeveel boulders er op een kaart passen, dus de controle
   // moet het kennen (timed-spec §5).
-  const opts = Object.assign(options(), { format: set.format, bouldersPerCat: set.bouldersPerCat });
+  const opts = Object.assign(options(), { format: set.format, bouldersPerCat: set.bouldersPerCat, scan });
   const cats = orderedCategories();
   // Een tijdslotformaat kent geen vast aantal pogingen; het veld hoort dan uit.
   $('f-att').disabled = !fmtDef(set.format).usesAttempts;
   const v = (S.participants.length && cats.length)
-    ? validate(S.participants, S.mapping, cats, opts)
+    ? validate(S.participants, S.mapping, cats, Object.assign({}, opts,
+        { competitionId: effectiveId(), maxAttempts: set.maxAttempts }))
     : { errors: [], warnings: [] };
   renderReport(v, S.participants.length && (Object.keys(S.mapping).length || set.bouldersPerCat));
   applyPaper(opts.paper);
@@ -4530,11 +4708,18 @@ function refresh(){
   // blokkeren in plaats van die crash laten gebeuren.
   $('btn-print-blank').disabled = !set.bouldersPerCat || set.bouldersPerCat > maxRowsFor(set.format);
 
+  $('btn-scanprofile').disabled = blocked || !scan;
+
   const out = $('print');
+  S.profile = null;
   if (blocked){ out.innerHTML = ''; $('print-stat').textContent = ''; return; }
 
   const t0 = performance.now();
   const ctx = Object.assign(set, opts, { mapping: S.mapping, catOrder: cats, cardLang: cardLang() });
+  if (scan){
+    S.profile = stampedProfile(ctx, S.participants);
+    ctx.scanStamp = S.profile.generatedAt;
+  }
   out.innerHTML = buildSheets(S.participants, ctx);
   const sheets = out.querySelectorAll('.sheet.cards').length;
   $('print-stat').textContent = tn('ui.print.stat', S.participants.length, {
@@ -4558,14 +4743,7 @@ function wire(){
 
   ['f-title','f-sub','f-att','f-bpc'].forEach(id => $(id).addEventListener('input', refresh));
   $('f-format').addEventListener('change', refresh);
-  ['o-ctl','o-colour','o-qr','o-paper','o-sort'].forEach(id => $(id).addEventListener('change', refresh));
-
-  // een bestaand wedstrijd-ID haalt zijn eigen instellingen en indeling terug
-  $('f-id').addEventListener('input', () => {
-    const id = $('f-id').value.trim();
-    if (id && listSaved().some(x => x.id === id)) loadSaved(id);
-    refresh();
-  });
+  ['o-ctl','o-colour','o-qr','o-paper','o-sort','f-scan'].forEach(id => $(id).addEventListener('change', refresh));
 
   $('f-csv').addEventListener('change', e => {
     const f = e.target.files[0];
@@ -4580,6 +4758,9 @@ function wire(){
     parseBoulderJSON($('f-json').value, categories())));
 
   $('btn-export').addEventListener('click', exportMapping);
+  $('btn-scanprofile').addEventListener('click', () => {
+    if (S.profile) downloadJSON('scanprofile-' + S.profile.competitionId + '.json', S.profile);
+  });
   $('f-import').addEventListener('change', e => {
     const f = e.target.files[0];
     if (!f) return;
@@ -5182,6 +5363,91 @@ function selfTest(){
   ok('§9: accenten uit het localesblok komen heel aan',
      LOCALES.fr['card.label.category'] === 'CATÉGORIE' &&
      t('ui.participants.categoryCount.other', { count: 2 }, 'nl').includes('categorieën'));
+
+  // --- scanbare kaart (scan-spec fase 1) ---
+  const sctx = { title:'T', subtitle:'', competitionId:'abyc2026-m4', maxAttempts:5, paper:'A4', showQr:true,
+                 format:'rcyc', mapping: { A:[1,2,3,4,5,6], B:[7,8] }, catOrder: cats, controlSheet:true,
+                 colour:false, cardLang:'nl', scan:true, scanStamp:'2026-10-03T17:30:00+02:00' };
+  const dsc = document.createElement('div'); dsc.innerHTML = buildSheets(base, sctx);
+  const card0 = dsc.querySelector('.card');
+  eq('Scan: 4 markers met id 0-3', [...card0.querySelectorAll('.aruco')].map(m => m.dataset.id), ['0','1','2','3']);
+  ok('Scan: QR blijft op de kaart', card0.querySelector('.qr svg'));
+  ok('Scan: tijdstempel van het profiel op het controleblad',
+     dsc.querySelector('.ctl .meta').textContent.includes('2026-10-03T17:30:00+02:00'));
+  ok('Scan: markers in NL, FR en EN', LANGS.every(l => {
+       const x = document.createElement('div');
+       x.innerHTML = buildSheets(base, Object.assign({}, sctx, { cardLang: l }));
+       return x.querySelector('.card').querySelectorAll('.aruco').length === 4; }));
+  const doff = document.createElement('div');
+  doff.innerHTML = buildSheets(base, Object.assign({}, sctx, { scan: false, scanStamp: null }));
+  ok('Scan uit: geen markers', !doff.querySelector('.aruco, .scan'));
+  eq('Scan: marker 0 is ArUco 4x4 id 0 (wit = 1)',
+     [...card0.querySelector('.aruco[data-id="0"]').querySelectorAll('rect[fill="#fff"]')]
+       .map(r => (Number(r.getAttribute('y')) - 1) * 4 + Number(r.getAttribute('x')) - 1),
+     [0, 2, 3, 5, 7, 10, 11, 14]);   // 0xb532 = 1011 0101 0011 0010
+
+  // De geometrie gemeten op de echte opmaak, niet nagerekend: de referentiehoeken
+  // van de markers moeten op de tabelranden liggen en de afstanden uit het
+  // profiel moeten kloppen. Ook boven het maximum aantal rijen (gewaarschuwd,
+  // maar wel afdrukbaar).
+  const prof = scanProfile(sctx, base, 'x');
+  const measure = bouldersA => {
+    const c2 = Object.assign({}, sctx, { controlSheet:false, mapping: { A: bouldersA, B:[7] } });
+    const pr = scanProfile(c2, base, 'x');
+    const host = document.createElement('div');
+    host.style.cssText = 'position:absolute;left:0;top:0;width:210mm';
+    host.innerHTML = buildSheets(base, c2);
+    document.body.appendChild(host);
+    const c = host.querySelector('.card'), r = el => el.getBoundingClientRect();
+    const near = (a, b) => Math.abs(a / MM - b) < 0.15;
+    const m = id => r(c.querySelector('.aruco[data-id="' + id + '"]'));
+    const tb = r(c.querySelector('table.score'));
+    const rows = c.querySelectorAll('.score tbody tr');
+    const first = r(rows[0].children[1]), last = r(rows[rows.length - 1].children[sctx.maxAttempts]);
+    const g = pr.geometry, cat = pr.categories[0], o = { x: m(0).right, y: m(0).top };
+    const res = [near(m(0).top - tb.top, 0), near(m(1).top - tb.top, 0),
+      near(tb.bottom - m(2).bottom, 0), near(tb.bottom - m(3).bottom, 0),
+      near(tb.left - m(0).right, SCAN.quiet), near(m(1).left - tb.right, SCAN.quiet),
+      near(m(1).left - o.x, g.referenceWidthMm),
+      near(first.left - o.x, g.regionLeftMm), near(last.right - first.left, g.regionWidthMm),
+      near(first.top - o.y, g.regionTopMm), near(m(3).bottom - last.bottom, g.regionBottomGapMm),
+      near(last.bottom - first.top, cat.rows * cat.rowHeightMm)];
+    host.remove();
+    return res.every(Boolean) || (console.log('scan geometry', JSON.stringify(res)), false);
+  };
+  ok('Scan: geometrie klopt met de gerenderde kaart, 6 rijen (±0.15mm)', measure([1,2,3,4,5,6]));
+  ok('Scan: geometrie klopt ook boven het maximum, 11 rijen (±0.15mm)', measure([1,2,3,4,5,6,7,8,9,10,11]));
+
+  ok('Scan: markers kosten geen rijen; 16 boulders melden hetzelfde maximum (10)',
+     wHas(validate([P(1,'A')], { A: zestien }, ['A'], { format:'rcyc', scan:true, competitionId:'x' }),
+          'validation.warning.tooManyBoulders', p => p.max === 10));
+  const sv = o => validate([P(1,'A')], { A:[1] }, ['A'], Object.assign({ format:'rcyc', scan:true, showQr:true,
+                                                                         competitionId:'x' }, o));
+  ok('Scan: schone invoer geeft geen scanfout', !sv({}).errors.length);
+  ok('Scan: zonder QR een harde fout', has(sv({ showQr:false }), 'validation.error.scanNeedsQr'));
+  ok('Scan: zonder enig ID een waarschuwing, geen fout',
+     !sv({ competitionId:'' }).errors.length && wHas(sv({ competitionId:'' }), 'validation.warning.scanNoId'));
+  const a1 = autoId('RCYC - Oost-Vlaanderen', 'Rhino Boulder Gyme - Gent');
+  ok('ID: afgeleid, kort en leesbaar', /^rcyc-oost-[0-9a-f]{6}$/.test(a1), a1);
+  eq('ID: zelfde titel en ondertitel geven hetzelfde ID', autoId('RCYC - Oost-Vlaanderen', 'Rhino Boulder Gyme - Gent'), a1);
+  ok('ID: andere ondertitel (andere manche) geeft een ander ID', autoId('RCYC - Oost-Vlaanderen', 'Manche 2') !== a1);
+  ok('ID: accenten en vreemde tekens vallen weg', /^eleve-[0-9a-f]{6}$/.test(autoId('Élève', '')), autoId('Élève', ''));
+  eq('ID: zonder titel en ondertitel geen afgeleid ID', autoId('', ''), '');
+  ok('ID: alleen tekens die veilig in de QR en een bestandsnaam passen',
+     /^[a-z0-9-]+$/.test(autoId('ABYC 2026 / Manche #4: “Finale”', 'x')));
+  ok('Scan: alleen RCYC is scanbaar', scanOn({ scannable:true, format:'rcyc' }) &&
+     !scanOn({ scannable:true, format:'abyc' }) && !scanOn({ scannable:true, format:'timed' }) &&
+     !scanOn({ scannable:false, format:'rcyc' }));
+
+  const exotic = [P(5, 'u11 (meisjes/jongens) – “Élite”', 'Zoë Ğül Naam'), P(2, 'B', 'Ander Persoon')];
+  const pj = JSON.stringify(scanProfile(Object.assign({}, sctx, { catOrder: [exotic[0].category, 'B'],
+    mapping: { [exotic[0].category]: [3, 1], B: [2] } }), exotic, 'x'));
+  ok('Profiel: geen namen', !exotic.some(p => pj.includes(p.name)));
+  ok('Profiel: categorie byte-identiek', JSON.parse(pj).categories[0].category === exotic[0].category &&
+     JSON.parse(pj).cards.find(c => c.startNumber === 5).category === exotic[0].category);
+  eq('Profiel: vorm', [prof.schema, prof.layoutVersion, prof.competitionId, prof.maxAttempts,
+     prof.categories.map(c => c.category + ':' + c.boulders.join(',')), prof.cards.map(c => c.startNumber)],
+     ['scorecard-scanprofile/1', CARD_LAYOUT_VERSION, 'abyc2026-m4', 5, ['A:1,2,3,4,5,6', 'B:7,8'], [1, 2, 3]]);
 
   const fails = out.filter(t2 => !t2.pass).length;
   document.body.innerHTML = '<div id="selftest"><h1>Zelftest &mdash; ' +
