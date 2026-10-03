@@ -54,7 +54,33 @@
     "err.scan.qr": "De QR-code is niet gelezen. Zorg dat ze volledig en scherp in beeld is en neem opnieuw.",
     "err.scan.qrFormat": "Deze QR-code komt niet van een scorekaart uit de generator.",
     "err.scan.otherCompetition": "Deze kaart hoort bij wedstrijd „{id}”, niet bij het geladen profiel „{expected}”.",
-    "err.scan.unknownNumber": "Startnummer {nr} staat niet in het scanprofiel."
+    "err.scan.unknownNumber": "Startnummer {nr} staat niet in het scanprofiel.",
+    "ui.results.heading": "Resultaten",
+    "ui.results.category": "{category}: {done} van {total} gescand",
+    "ui.results.todo": "Nog niet: {numbers}",
+    "ui.results.allDone": "Alle kaarten gescand.",
+    "ui.results.exportCsv": "CSV exporteren",
+    "ui.results.exportJson": "JSON exporteren",
+    "ui.results.clear": "Resultaten wissen",
+    "ui.results.clearConfirm": "Alle goedgekeurde resultaten ({count}) van „{id}” wissen op dit toestel? Dit kan niet ongedaan gemaakt worden.",
+    "ui.results.other": "Resultaten van een andere wedstrijd, „{id}”, nog op dit toestel: {count}.",
+    "ui.results.clearOther": "„{id}” wissen",
+    "err.results.save": "Opslaan op dit toestel is mislukt. Goedgekeurde resultaten gaan verloren bij herladen: exporteer nu de CSV.",
+    "ui.dup.question": "Startnummer {nr} is al goedgekeurd. Welke uitslag klopt met de kaart?",
+    "ui.dup.old": "Eerder goedgekeurd",
+    "ui.dup.new": "Nieuwe scan",
+    "ui.dup.keepOld": "Oude houden",
+    "ui.dup.useNew": "Nieuwe gebruiken",
+    "ui.dup.kept": "{nr}: eerdere uitslag behouden",
+    "ui.dup.replaced": "{nr} vervangen",
+    "csv.startNumber": "Startnummer",
+    "csv.category": "Categorie",
+    "csv.tops": "Tops",
+    "csv.zones": "Zones",
+    "csv.topAttempts": "Pogingen top",
+    "csv.zoneAttempts": "Pogingen zone",
+    "csv.boulderTop": "B{n} top",
+    "csv.boulderZone": "B{n} zone"
   },
   "fr": {
     "ui.app.title": "Scanner une feuille de score",
@@ -98,7 +124,33 @@
     "err.scan.qr": "Le code QR n’a pas été lu. Cadrez-le entièrement et net, puis reprenez la photo.",
     "err.scan.qrFormat": "Ce code QR ne provient pas d’une feuille de score du générateur.",
     "err.scan.otherCompetition": "Cette feuille appartient à la compétition « {id} », pas au profil chargé « {expected} ».",
-    "err.scan.unknownNumber": "Le dossard {nr} ne figure pas dans le profil de scan."
+    "err.scan.unknownNumber": "Le dossard {nr} ne figure pas dans le profil de scan.",
+    "ui.results.heading": "Résultats",
+    "ui.results.category": "{category} : {done} sur {total} scannées",
+    "ui.results.todo": "Pas encore : {numbers}",
+    "ui.results.allDone": "Toutes les feuilles sont scannées.",
+    "ui.results.exportCsv": "Exporter en CSV",
+    "ui.results.exportJson": "Exporter en JSON",
+    "ui.results.clear": "Effacer les résultats",
+    "ui.results.clearConfirm": "Effacer tous les résultats validés ({count}) de « {id} » sur cet appareil ? Cette action est irréversible.",
+    "ui.results.other": "Résultats d’une autre compétition, « {id} », encore sur cet appareil : {count}.",
+    "ui.results.clearOther": "Effacer « {id} »",
+    "err.results.save": "L’enregistrement sur cet appareil a échoué. Les résultats validés seront perdus au rechargement : exportez le CSV maintenant.",
+    "ui.dup.question": "Le dossard {nr} est déjà validé. Quel résultat correspond à la feuille ?",
+    "ui.dup.old": "Validé précédemment",
+    "ui.dup.new": "Nouveau scan",
+    "ui.dup.keepOld": "Garder l’ancien",
+    "ui.dup.useNew": "Utiliser le nouveau",
+    "ui.dup.kept": "{nr} : résultat précédent conservé",
+    "ui.dup.replaced": "{nr} remplacé",
+    "csv.startNumber": "Dossard",
+    "csv.category": "Catégorie",
+    "csv.tops": "Tops",
+    "csv.zones": "Zones",
+    "csv.topAttempts": "Essais top",
+    "csv.zoneAttempts": "Essais zone",
+    "csv.boulderTop": "B{n} top",
+    "csv.boulderZone": "B{n} zone"
   },
   "en": {
     "ui.app.title": "Scan score card",
@@ -142,7 +194,33 @@
     "err.scan.qr": "The QR code was not read. Get it fully and sharply in frame and retake.",
     "err.scan.qrFormat": "This QR code is not from a score card made by the generator.",
     "err.scan.otherCompetition": "This card belongs to competition \"{id}\", not to the loaded profile \"{expected}\".",
-    "err.scan.unknownNumber": "Start number {nr} is not in the scan profile."
+    "err.scan.unknownNumber": "Start number {nr} is not in the scan profile.",
+    "ui.results.heading": "Results",
+    "ui.results.category": "{category}: {done} of {total} scanned",
+    "ui.results.todo": "Not yet: {numbers}",
+    "ui.results.allDone": "All cards scanned.",
+    "ui.results.exportCsv": "Export CSV",
+    "ui.results.exportJson": "Export JSON",
+    "ui.results.clear": "Clear results",
+    "ui.results.clearConfirm": "Clear all approved results ({count}) of \"{id}\" on this device? This cannot be undone.",
+    "ui.results.other": "Results of another competition, \"{id}\", still on this device: {count}.",
+    "ui.results.clearOther": "Clear \"{id}\"",
+    "err.results.save": "Saving on this device failed. Approved results will be lost on reload: export the CSV now.",
+    "ui.dup.question": "Start number {nr} is already approved. Which result matches the card?",
+    "ui.dup.old": "Approved earlier",
+    "ui.dup.new": "New scan",
+    "ui.dup.keepOld": "Keep old",
+    "ui.dup.useNew": "Use new",
+    "ui.dup.kept": "{nr}: earlier result kept",
+    "ui.dup.replaced": "{nr} replaced",
+    "csv.startNumber": "Start number",
+    "csv.category": "Category",
+    "csv.tops": "Tops",
+    "csv.zones": "Zones",
+    "csv.topAttempts": "Top attempts",
+    "csv.zoneAttempts": "Zone attempts",
+    "csv.boulderTop": "B{n} top",
+    "csv.boulderZone": "B{n} zone"
   }
 }
 </script>
@@ -187,6 +265,9 @@ table.res select{width:auto;min-width:3.2em;padding:6px 4px;font-weight:600}
 table.res select.corr{background:#eff6ff;border-color:#2563eb}
 .corr-mark{color:#2563eb;margin-left:4px;font-size:13px}
 .actions{display:flex;justify-content:space-between;gap:10px;margin-top:14px;flex-wrap:wrap}
+table.res td.sep,table.res th.sep{border-left:2px solid var(--line)}
+.prog{margin:6px 0}.prog .hint{display:block}
+button:disabled{opacity:.4;cursor:default}
 #selftest{padding:20px;font-family:ui-monospace,Menlo,Consolas,monospace}
 #selftest .t{padding:2px 0;font-size:13px}#selftest .t.p{color:var(--ok)}#selftest .t.f{color:var(--err);font-weight:700}
 </style>
@@ -217,6 +298,7 @@ table.res select.corr{background:#eff6ff;border-color:#2563eb}
     <div id="scan-msg"></div>
     <div id="result" hidden>
       <p class="rhead"><strong id="r-nr"></strong> <span id="r-cat"></span></p>
+      <div id="r-main">
       <table class="res">
         <thead><tr><th data-i18n="ui.result.boulder"></th><th data-i18n="ui.result.top"></th><th data-i18n="ui.result.zone"></th><th></th></tr></thead>
         <tbody id="r-rows"></tbody>
@@ -228,7 +310,33 @@ table.res select.corr{background:#eff6ff;border-color:#2563eb}
         <button type="button" class="btn sec" id="rescan" data-i18n="ui.result.rescan"></button>
         <button type="button" id="approve"></button>
       </div>
+      </div>
+      <div id="dup" hidden>
+        <div id="dup-msg"></div>
+        <table class="res">
+          <thead><tr><th data-i18n="ui.result.boulder"></th><th colspan="2" class="sep" data-i18n="ui.dup.old"></th><th colspan="2" class="sep" data-i18n="ui.dup.new"></th></tr>
+            <tr><th></th><th class="sep" data-i18n="ui.result.top"></th><th data-i18n="ui.result.zone"></th><th class="sep" data-i18n="ui.result.top"></th><th data-i18n="ui.result.zone"></th></tr></thead>
+          <tbody id="dup-rows"></tbody>
+          <tfoot id="dup-foot"></tfoot>
+        </table>
+        <div class="actions">
+          <button type="button" class="btn sec" id="dup-old" data-i18n="ui.dup.keepOld"></button>
+          <button type="button" id="dup-new" data-i18n="ui.dup.useNew"></button>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <section id="results" hidden>
+    <h2 data-i18n="ui.results.heading"></h2>
+    <div id="results-msg"></div>
+    <div id="progress"></div>
+    <div class="actions">
+      <button type="button" class="btn sec" id="export-csv" data-i18n="ui.results.exportCsv"></button>
+      <button type="button" class="btn sec" id="export-json" data-i18n="ui.results.exportJson"></button>
+      <button type="button" class="btn sec" id="clear" data-i18n="ui.results.clear"></button>
+    </div>
+    <div id="others"></div>
   </section>
 </main>
 
@@ -11612,6 +11720,8 @@ const MAX_SIDE = 3000;       // foto verkleinen tot deze lange zijde (fase 2, ta
 const DETECT_SIDE = 1500;    // markers zoeken op een kleinere kopie: js-aruco is gemaakt voor video
 const PX_PER_MM = 10;        // canonieke rechthoek
 const UILANG_KEY = 'scorecard-uilang';   // gedeeld met de generator
+const RESULTS_KEY = 'scorecard-results:';     // + competitionId: goedgekeurde resultaten (S4)
+const PROFILE_KEY = 'scorecard-scanprofile';  // laatst geladen profiel, zodat herladen meteen verder kan
 
 const LOCALES = JSON.parse(document.getElementById('locales').textContent);
 const LANGS = Object.keys(LOCALES);
@@ -11644,7 +11754,7 @@ function applyI18n(){
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
   document.querySelectorAll('.msg[data-key]').forEach(el => { el.textContent = t(el.dataset.key, JSON.parse(el.dataset.params)); });
   document.querySelectorAll('#langsel button').forEach(b => b.classList.toggle('on', b.dataset.lang === uiLang));
-  if (profile) showProfile(profile);
+  if (profile) { showProfile(profile); renderResults(); }
   if (result) showResult(result);
 }
 
@@ -11696,16 +11806,24 @@ function showProfile(p){
   $('profile-info').hidden = false;
 }
 
+/* Profiel actief maken, met de bewaarde resultaten van die wedstrijd (fase 5). */
+function useProfile(p){
+  profile = p;
+  approved = storedResults(p.competitionId);
+  showProfile(p);
+  renderResults();
+  $('scan').hidden = $('results').hidden = false;
+}
+
 async function onProfile(file){
   profile = null;
-  $('profile-info').hidden = $('scan').hidden = true;
+  $('profile-info').hidden = $('scan').hidden = $('results').hidden = true;
   resetScan();
   try {
-    const p = parseProfile(await file.text());
-    profile = p;
+    const text = await file.text();
+    useProfile(parseProfile(text));
     showMsg($('profile-msg'));
-    showProfile(p);
-    $('scan').hidden = false;
+    try { localStorage.setItem(PROFILE_KEY, text); } catch (e) { /* alleen gemak: dan opnieuw laden na herladen */ }
   } catch (e) {
     if (!(e instanceof UserError)) throw e;
     showMsg($('profile-msg'), 'err', e.key, e.params);
@@ -11999,7 +12117,7 @@ function readCard(photo, p){
 
 /* ---------- resultaatscherm (fase 4) ---------- */
 let result = null;
-const approved = [];   // goedgekeurde kaarten; fase 5 bewaart ze in localStorage
+let approved = [];   // goedgekeurde kaarten van het geladen profiel, ook in localStorage (S4)
 
 /* Aanpassing door de scoreteller: een top zonder zone krijgt zone = top, en een
    zone na de top kan niet (wordt de top). Puur, zie zelftest. */
@@ -12059,6 +12177,9 @@ function showResult(r){
   $('approve').textContent = t(r.confirming ? 'ui.result.approveAnyway' : 'ui.result.approve');
   $('take').hidden = true;
   $('result').hidden = false;
+  $('r-main').hidden = !!r.dup;
+  $('dup').hidden = !r.dup;
+  if (r.dup) showDuplicate(r.dup.old, r.dup.rec);
 }
 
 /* Een kaart met meldingen die niet aangepast is, vraagt één extra tik (S7). */
@@ -12070,11 +12191,167 @@ function onApprove(){
     showResult(r);
     return;
   }
-  approved.push({ startNumber: r.startNumber, category: r.cat.category, manualCorrections: isEdited(r),
-                  rows: r.rows.map(({ boulder, top, zone }) => ({ boulder, top, zone })) });
+  // Alleen deze velden worden bewaard: geen naam, geen beeld (S4).
+  const rec = { startNumber: r.startNumber, category: r.cat.category, manualCorrections: isEdited(r),
+                calibration: 'default', rows: r.rows.map(({ boulder, top, zone }) => ({ boulder, top, zone })) };
+  const old = approved.find(a => a.startNumber === rec.startNumber);
+  if (old) { r.dup = { old, rec }; showResult(r); return; }   // nooit stil overschrijven
+  approved.push(rec);
+  finishApprove('ui.result.added', rec.startNumber);
+}
+
+/* Bewaren, terug naar de camera. */
+function finishApprove(key, nr){
+  saveResults();
+  renderResults();
   resetScan();
-  showMsg($('scan-msg'), 'ok', 'ui.result.added', { nr: r.startNumber });
+  showMsg($('scan-msg'), 'ok', key, { nr });
   $('f-photo').click();   // meteen terug naar de camera
+}
+
+/* Oude en nieuwe uitslag naast elkaar; verschillende rijen vallen op. */
+function showDuplicate(old, rec){
+  showMsg($('dup-msg'), 'err', 'ui.dup.question', { nr: rec.startNumber });
+  const tb = $('dup-rows'), byBoulder = new Map(old.rows.map(x => [x.boulder, x]));
+  const v = x => x === null || x === undefined ? '–' : String(x);
+  tb.innerHTML = '';
+  for (const n of rec.rows){
+    const o = byBoulder.get(n.boulder) || { top: null, zone: null }, tr = tb.insertRow();
+    [n.boulder, o.top, o.zone, n.top, n.zone].forEach((x, i) => {
+      const td = tr.insertCell();
+      td.textContent = i ? v(x) : x;
+      if (i === 1 || i === 3) td.className = 'sep';
+    });
+    if (o.top !== n.top || o.zone !== n.zone) tr.className = 'flag';
+  }
+  const to = totals(old.rows), tn = totals(rec.rows);
+  $('dup-foot').innerHTML = '';
+  const tr = $('dup-foot').insertRow();
+  tr.insertCell().textContent = t('ui.result.total');
+  for (const tt of [to, tn]){
+    const td = tr.insertCell();
+    td.colSpan = 2;
+    td.className = 'sep';
+    td.textContent = t('ui.result.topsTotal', tt) + ', ' + t('ui.result.zonesTotal', tt);
+  }
+}
+
+function onDuplicate(useNew){
+  const { old, rec } = result.dup;
+  if (useNew) approved[approved.indexOf(old)] = rec;
+  finishApprove(useNew ? 'ui.dup.replaced' : 'ui.dup.kept', rec.startNumber);
+}
+
+/* ---------- resultatenlijst en export (fase 5) ---------- */
+
+function storedResults(id){
+  let s = null;
+  try { s = localStorage.getItem(RESULTS_KEY + id); } catch (e) { /* geen opslag: saveResults meldt dat */ }
+  return s ? JSON.parse(s) : [];
+}
+
+/* Mislukt opslaan is luid: zonder opslag gaat een middag scoren verloren bij herladen. */
+function saveResults(){
+  try {
+    if (approved.length) localStorage.setItem(RESULTS_KEY + profile.competitionId, JSON.stringify(approved));
+    else localStorage.removeItem(RESULTS_KEY + profile.competitionId);
+    showMsg($('results-msg'));
+  } catch (e) {
+    showMsg($('results-msg'), 'err', 'err.results.save');
+  }
+}
+
+/* competitionId's met bewaarde resultaten, behalve de geladen wedstrijd. */
+function otherCompetitions(){
+  const out = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if (k.startsWith(RESULTS_KEY) && k !== RESULTS_KEY + profile.competitionId) out.push(k.slice(RESULTS_KEY.length));
+    }
+  } catch (e) { /* geen opslag: niets te wissen */ }
+  return out;
+}
+
+/* Gescand / totaal per categorie, de ontbrekende startnummers, en andere wedstrijden. */
+function renderResults(){
+  const box = $('progress');
+  box.innerHTML = '';
+  for (const c of profile.categories){
+    const nrs = profile.cards.filter(k => k.category === c.category).map(k => k.startNumber);
+    const done = new Set(approved.filter(a => a.category === c.category).map(a => a.startNumber));
+    const todo = nrs.filter(n => !done.has(n)).sort((a, b) => a - b);
+    const d = document.createElement('div'), h = document.createElement('span');
+    d.className = 'prog';
+    d.textContent = t('ui.results.category', { category: c.category, done: done.size, total: nrs.length });
+    h.className = 'hint';
+    h.textContent = todo.length ? t('ui.results.todo', { numbers: todo.join(', ') }) : t('ui.results.allDone');
+    d.appendChild(h);
+    box.appendChild(d);
+  }
+  $('clear').disabled = !approved.length;
+  $('others').innerHTML = '';
+  for (const id of otherCompetitions()){
+    const d = document.createElement('div'), b = document.createElement('button');
+    showMsg(d, 'err', 'ui.results.other', { id, count: storedResults(id).length });
+    b.type = 'button';
+    b.className = 'btn sec';
+    b.textContent = t('ui.results.clearOther', { id });
+    b.addEventListener('click', () => clearResults(id, storedResults(id).length));
+    d.appendChild(b);
+    $('others').appendChild(d);
+  }
+}
+
+function clearResults(id, count){
+  if (!confirm(t('ui.results.clearConfirm', { id, count }))) return;
+  if (id === profile.competitionId) { approved = []; saveResults(); }
+  else localStorage.removeItem(RESULTS_KEY + id);
+  renderResults();
+}
+
+/* R5: op categorie (profielvolgorde), dan startnummer. */
+function sortedResults(p, list){
+  const order = p.categories.map(c => c.category);
+  return [...list].sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category) || a.startNumber - b.startNumber);
+}
+
+/* R5: kopregel plus één rij per starter, kolommen voor elke boulder van de
+   wedstrijd oplopend; leeg waar niet geklommen of niet gehaald. Puur, zie zelftest. */
+function csvRows(p, list){
+  const nums = [...new Set(p.categories.flatMap(c => c.boulders))].sort((a, b) => a - b);
+  const head = ['startNumber', 'category', 'tops', 'zones', 'topAttempts', 'zoneAttempts'].map(k => t('csv.' + k))
+    .concat(nums.flatMap(n => [t('csv.boulderTop', { n }), t('csv.boulderZone', { n })]));
+  return [head].concat(sortedResults(p, list).map(a => {
+    const tot = totals(a.rows), by = new Map(a.rows.map(r => [r.boulder, r]));
+    return [a.startNumber, a.category, tot.tops, tot.zones, tot.topAttempts, tot.zoneAttempts]
+      .concat(nums.flatMap(n => by.has(n) ? [by.get(n).top, by.get(n).zone] : [null, null]));
+  }));
+}
+
+const csvCell = v => v === null ? '' : /[;"\r\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : String(v);
+// BOM: anders toont Excel de accenten in categorieën verkeerd.
+const toCsv = rows => '\uFEFF' + rows.map(r => r.map(csvCell).join(';')).join('\r\n') + '\r\n';
+
+function download(name, text, type){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+function exportCsv(){
+  download('results-' + profile.competitionId + '.csv', toCsv(csvRows(profile, approved)), 'text/csv;charset=utf-8');
+}
+
+function exportJson(){
+  const p = profile;
+  const data = { competitionId: p.competitionId, title: p.title, subtitle: p.subtitle,
+    profileGeneratedAt: p.generatedAt, exportedAt: new Date().toISOString(),
+    results: sortedResults(p, approved).map(a => Object.assign({ startNumber: a.startNumber, category: a.category },
+      totals(a.rows), { manualCorrections: a.manualCorrections, calibration: a.calibration, boulders: a.rows })) };
+  download('results-' + p.competitionId + '.json', JSON.stringify(data, null, 2), 'application/json');
 }
 
 /* Rechtgetrokken vakken met het raster en per vak wat de scanner zag: groen =
@@ -12226,6 +12503,19 @@ function selfTest(){
   const g = whiteBalance(cast);
   ok('Witbalans: warm papier wordt neutraal', Math.abs(255 * g[0] - 190 * g[2]) < 3, JSON.stringify(g));
 
+  // --- R5: CSV ---
+  const CP = { categories: [{ category: 'u13 (filles; garçons)', boulders: [3, 1] }, { category: 'u11', boulders: [2] }] };
+  const list = [{ startNumber: 9, category: 'u11', rows: [{ boulder: 2, top: null, zone: 2 }] },
+                { startNumber: 7, category: 'u13 (filles; garçons)', rows: [{ boulder: 3, top: 2, zone: 1 }, { boulder: 1, top: null, zone: null }] },
+                { startNumber: 5, category: 'u11', rows: [{ boulder: 2, top: 1, zone: 1 }] }];
+  const csv = csvRows(CP, list);
+  eq('R5: kopregel met boulders oplopend', csv[0].slice(6), ['B1 top', 'B1 zone', 'B2 top', 'B2 zone', 'B3 top', 'B3 zone']);
+  eq('R5: volgorde categorie (profiel), dan startnummer', csv.slice(1).map(r => r[0]), [7, 5, 9]);
+  eq('R5: totalen en lege vakken', csv[1], [7, 'u13 (filles; garçons)', 1, 1, 2, 1, null, null, null, null, 2, 1]);
+  const txt = toCsv(csv);
+  ok('R5: begint met BOM', txt.charCodeAt(0) === 0xFEFF);
+  ok('R5: categorie met ; staat tussen aanhalingstekens, accenten intact', txt.includes('7;"u13 (filles; garçons)";1;1;2;1;;;;;2;1\r\n'), txt);
+
   const fails = out.filter(r => !r.pass).length;
   document.body.innerHTML = '<div id="selftest"><h1>' + (fails ? fails + ' van ' + out.length + ' mislukt' : out.length + ' geslaagd') + '</h1>' +
     out.map(r => '<div class="t ' + (r.pass ? 'p' : 'f') + '">' + (r.pass ? '✓ ' : '✗ ') + r.name +
@@ -12243,6 +12533,11 @@ for (const l of LANGS){
 }
 $('f-profile').addEventListener('change', e => { if (e.target.files[0]) onProfile(e.target.files[0]); e.target.value = ''; });
 $('approve').addEventListener('click', onApprove);
+$('dup-old').addEventListener('click', () => onDuplicate(false));
+$('dup-new').addEventListener('click', () => onDuplicate(true));
+$('export-csv').addEventListener('click', exportCsv);
+$('export-json').addEventListener('click', exportJson);
+$('clear').addEventListener('click', () => clearResults(profile.competitionId, approved.length));
 $('rescan').addEventListener('click', () => { resetScan(); $('f-photo').click(); });
 $('grid').addEventListener('click', () => $('grid').classList.toggle('big'));
 $('grid').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('grid').click(); } });
@@ -12250,6 +12545,13 @@ $('f-photo').addEventListener('change', e => { if (e.target.files[0]) onPhoto(e.
 let saved = null;
 try { saved = localStorage.getItem(UILANG_KEY); } catch (e) { /* geen opslag: standaardtaal */ }
 setLang(saved || FALLBACK);
+// Herladen of een gecrashte telefoon: het laatste profiel en zijn resultaten staan er meteen weer.
+let savedProfile = null;
+try { savedProfile = localStorage.getItem(PROFILE_KEY); } catch (e) { /* geen opslag: profiel opnieuw laden */ }
+if (savedProfile) {
+  try { useProfile(parseProfile(savedProfile)); }
+  catch (e) { if (!(e instanceof UserError)) throw e; /* oude scannerversie: gewoon opnieuw laden */ }
+}
 if (new URLSearchParams(location.search).has('selftest')) selfTest();
 </script>
 </body>

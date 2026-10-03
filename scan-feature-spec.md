@@ -1,7 +1,7 @@
 # Score Card Scanning - Feature Spec
 
-**Status:** Phase 4 built (branch `feat/scannable-card`). Phase 4 of 6.
-**Next action:** "Implement scan-feature-spec.md, Phase 5 only."
+**Status:** Phase 5 built (branch `feat/scannable-card`). Phase 5 of 6.
+**Next action:** "Implement scan-feature-spec.md, Phase 6 only."
 
 Addendum to `scorecard-generator-spec.md` and `i18n-feature-spec.md`.
 Where this spec conflicts with the base spec, this spec wins.
@@ -234,7 +234,7 @@ Tasks:
   visible after an edit, so the reason is still readable.
 - Goedkeuren and Opnieuw scannen open the camera directly (`input.click()` inside the
   tap). If the browser refuses, the "Foto nemen" button is back on screen.
-- Approved cards live in an in-memory list for now; Phase 5 stores them.
+- Approved cards live in an in-memory list for now; Phase 5 stores them (done).
 
 Done when:
 - [x] No name appears anywhere in the scanner UI (the profile carries none)
@@ -263,11 +263,24 @@ Tasks:
 5. **Clear results** for this competition, with confirmation. Also offered when a profile
    with a different `competitionId` is loaded.
 
+- **Decided in Phase 5:** results live under `scorecard-results:{competitionId}`. The last
+  loaded profile is also kept (`scorecard-scanprofile`; it carries no names), so a reload
+  or a dead phone comes straight back with profile and results, no file picking. A stored
+  profile the scanner no longer accepts is ignored; load it again.
+- The duplicate check runs at Goedkeuren, after any corrections: old and new side by side,
+  differing rows highlighted, buttons "Oude houden" / "Nieuwe gebruiken".
+- Clearing uses the browser's own confirm dialog. Other competitions with stored results
+  are listed under the results, each with its own clear button.
+- Every record carries `calibration: "default"` until Phase 6 adds session calibration.
+- A failed `localStorage` write shows a persistent error telling the scorecounter to
+  export the CSV now.
+
 Done when:
-- [ ] Closing and reopening the page keeps all approved results
-- [ ] No photo is ever found in any browser storage
+- [x] Closing and reopening the page keeps all approved results (desktop Firefox)
+- [x] No photo is ever found in any browser storage (only results, profile, UI language)
 - [ ] CSV opens in Excel with accents intact, one row per approved starter, no names
-- [ ] Duplicate start number never overwrites silently
+      (BOM + `;` verified in the file and by selftest; Excel itself pending Jeroen)
+- [x] Duplicate start number never overwrites silently
 
 ---
 
