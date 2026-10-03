@@ -43,6 +43,49 @@ byte-identically.
 5. Read the validation report and fix anything it blocks on.
 6. Print to PDF.
 
+## Scanning cards
+
+`scan.html` reads a photographed score card: start number, category, and per boulder
+the attempt of the top and of the zone. It reads only the QR code and the highlighter
+colour per attempt cell, never handwriting and never names. Everything runs on the
+phone; photos are never stored or sent. Spec: `scan-feature-spec.md`.
+
+Setup: in the generator, turn on "Scannable card", print the cards and click "Export scan
+profile". Open `scan.html` on the phone and load that JSON file.
+
+### Marking instructions for the jury
+
+- Two highlighters per competition: **one top colour** (green or teal) and **one zone
+  colour** (pink or purple). Use the same two marker models for every card.
+- Colour the attempt cell where the zone was reached with the zone colour, and the
+  attempt cell where the top was reached with the top colour.
+- Top and zone on the same attempt: only the top colour. A top always counts as a zone.
+- No zone and no top: no highlighter in that row.
+- One mark per colour per row. Colour most of the cell; going over the cell border is
+  fine. Do not use yellow: the scanner ignores it.
+- Ballpoint or pencil tallies in the cells are fine; the scanner ignores them.
+
+### Photo instructions for the scorecounter
+
+- Card flat on a table, the whole card in frame, including the four small black
+  squares in the corners of the table and the QR code.
+- No spotlight or reflection on the card, and no phone shadow over the cells. Even,
+  diffuse light is best.
+- Let the highlighter dry before taking the photo.
+- Hold still. A blurry, too small or glaring photo gets a retake message, never a result.
+
+### Session calibration
+
+Once per session (after opening the page, or when the light changes), tap
+**Calibrate colours**, photograph one marked card, then tap a cell with the top colour
+and a cell with the zone colour. Every following card uses those colours. The
+calibration lives in memory only and is gone after a reload. Without it the scanner
+uses default colour ranges and marks every card "default colours"; that works for
+green/teal and pink/purple markers, but not if the jury swapped the colours.
+
+Check every result against the card in hand, correct it if needed, and approve. Export
+the CSV at any time; approved results survive a reload on that device.
+
 ## GitHub Pages
 
 The same local-only application can be published as a static GitHub Pages site.
@@ -72,6 +115,9 @@ persisted — it lives in memory for the session only.
 | File | What it is |
 |---|---|
 | `scorecard-generator.html` | The application. This is the whole thing. |
+| `scan.html` | Score card scanner (see "Scanning cards" and `scan-feature-spec.md`). Separate single file, vendors js-aruco2 (MIT) and jsQR (Apache-2.0). |
+| `scan-synthetic.html` | Development test for the scanner: synthetic photographed cards. Not deployed. |
+| `scan-feature-spec.md` | Spec for scannable cards and the scanner, in phases. |
 | `scorecard-generator-spec.md` | Development spec: constraints, data formats, layout, validation rules. |
 | `i18n-feature-spec.md` | Spec for the NL/FR/EN support. |
 | `check_locales.py` | Stdlib-only checker for the translation block. Run before every release. |
@@ -104,8 +150,18 @@ carries a "longest translation" pseudo-locale for eyeballing the worst case.
 
 ```
 python3 check_locales.py                      # translations
+python3 check_locales.py scan.html            # scanner translations
 open scorecard-generator.html?selftest        # 98 assertions, in the browser
+open scan.html?selftest                       # scanner rules (R2, R3, R4, QR, calibration, CSV)
+python3 -m http.server 8000                   # then open http://localhost:8000/scan-synthetic.html
 ```
+
+`scan-synthetic.html` draws scannable cards with the generator's own code, puts
+highlighter strokes on them, and turns them into "photos": rotated (incl. 90/180/270),
+in perspective, with a colour cast, a lighting gradient and a shadow band. It reads each
+photo with the scanner, with and without session calibration, and fails on any row that
+is wrong without a flag. It needs a local web server because it loads both apps in
+frames.
 
 The self-test covers the CSV parser, both paste parsers, validation, layout maths,
 storage and the i18n acceptance criteria. It needs a real browser — it measures text
