@@ -1,7 +1,7 @@
 # Score Card Scanning - Feature Spec
 
-**Status:** Phase 1 built (branch `feat/scannable-card`). Phase 1 of 6.
-**Next action:** test-print Phase 1 cards, then: "Implement scan-feature-spec.md, Phase 2 only."
+**Status:** Phase 2 built (branch `feat/scannable-card`). Phase 2 of 6.
+**Next action:** Phase 2 STOP: print 3 cards, photograph them, check the overlay. Then: "Implement scan-feature-spec.md, Phase 3 only."
 
 Addendum to `scorecard-generator-spec.md` and `i18n-feature-spec.md`.
 Where this spec conflicts with the base spec, this spec wins.
@@ -125,11 +125,17 @@ Tasks:
    (10 px per mm). Warp the attempt region. Show the warped
    grid with `maxAttempts` x `boulderCount` lines overlaid (use the first category for
    now, real lookup comes in Phase 3).
+   - **Decided in Phase 2:** a category dropdown (default: first category) stands in for
+     the QR lookup, because the row count changes the marker geometry and test cards of
+     other categories would otherwise never line up. Phase 3 replaces it with the QR.
+   - Markers are searched on a copy downscaled to 1500 px (js-aruco2 is tuned for video
+     frames); the warp samples the full-resolution photo.
 
 Done when:
-- [ ] Works from `file://` with networking off
-- [ ] Sideways (90 degrees) and upside-down photos produce the same straight grid
-- [ ] Grid overlay lines up with the printed cell borders
+- [x] Works from `file://` with networking off
+- [x] Sideways (90 degrees) and upside-down photos produce the same straight grid
+- [x] Grid overlay lines up with the printed cell borders (synthetic photos: within
+      0.4 mm; real paper pending the STOP below)
 
 **STOP.** Jeroen prints 3 cards, photographs them with a phone (one sideways, one at an
 angle), and checks the overlay. Do not start Phase 3 before that.

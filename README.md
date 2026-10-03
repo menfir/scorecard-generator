@@ -72,6 +72,8 @@ persisted — it lives in memory for the session only.
 | File | What it is |
 |---|---|
 | `scorecard-generator.html` | The application. This is the whole thing. |
+| `scan.html` | Score card scanner (in progress, see `scan-feature-spec.md`). Separate single file, vendors js-aruco2 (MIT). |
+| `scan-feature-spec.md` | Spec for scannable cards and the scanner, in phases. |
 | `scorecard-generator-spec.md` | Development spec: constraints, data formats, layout, validation rules. |
 | `i18n-feature-spec.md` | Spec for the NL/FR/EN support. |
 | `check_locales.py` | Stdlib-only checker for the translation block. Run before every release. |
@@ -104,6 +106,7 @@ carries a "longest translation" pseudo-locale for eyeballing the worst case.
 
 ```
 python3 check_locales.py                      # translations
+python3 check_locales.py scan.html            # scanner translations
 open scorecard-generator.html?selftest        # 98 assertions, in the browser
 ```
 
