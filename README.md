@@ -11,19 +11,19 @@ Replaces the manual Word template + mail merge + hand-written boulder numbers wo
   with bad wifi. No build step, no bundler, no CDN, no external fonts.
 - **Nothing leaves the device.** Participant lists contain names of minors. All parsing
   and rendering is client-side; there is no server and no network call at runtime.
-- **Prints via the browser.** `Ctrl+P` → Save as PDF. No PDF library.
+- **Prints via the browser, or downloads a PDF.** `Ctrl+P` → Save as PDF, or the
+  "Download cards (PDF)" button for phones without that option. The PDF is written
+  by a few hundred lines in the page itself; no PDF library.
 
 Target browser is Chrome/Edge.
 
 ## Languages
 
-Interface and cards are available in **NL / FR / EN**, and the two settings are
-independent: a Dutch interface can print French cards for francophone participants.
-The control sheet is an organiser document and follows the interface language.
-
-- Interface language: the NL/FR/EN buttons top right. Persists per device.
-- Card language: in the competition settings, defaults to "same as interface".
-  Persists with the competition, since it belongs to the event.
+Interface and cards are available in **NL / FR / EN**. Pick the language with the
+NL/FR/EN buttons on the Home screen; it persists per device. For now the cards follow
+the interface language, so a francophone organiser does the whole walkthrough and
+gets the cards in French. (The engine still supports a separate card language; the
+setting is hidden until it is needed.)
 
 Dutch is the default and the fallback. There is no auto-detection from the browser
 locale — a Flemish organiser on an English Windows install still gets Dutch.
@@ -34,14 +34,29 @@ byte-identically.
 
 ## Usage
 
-1. Open `scorecard-generator.html` in Chrome.
-2. Enter the competition settings (title, subtitle, competition ID, max attempts).
-3. Load the participant CSV exported from the etto-climbing platform
+Open `scorecard-generator.html` in Chrome, on a computer or a phone. Home offers
+**New competition**, **Blank card only** and the competitions saved on this device
+(newest first). A new competition walks through five screens; the step bar at the
+top jumps back and forth, and the phone's back button works too.
+
+1. **Competition**: format, title, subtitle, max attempts, boulders per category,
+   scannable card (on by default).
+2. **Participants**: the CSV exported from etto-climbing
    (`Category;Starting number;Ranking;Name`, semicolon-delimited, UTF-8).
-4. Supply the boulder-per-category mapping — paste JSON, paste the platform's boulder
-   table, or fill in the manual grid.
-5. Read the validation report and fix anything it blocks on.
-6. Print to PDF.
+3. **Boulders**: paste the platform's boulder table, or fill in the grid. With
+   boulders per category set, this step can be skipped to print cards without
+   boulder numbers.
+4. **Check**: the validation report. Each error links to the step that fixes it.
+5. **Print**: paper size, preview, print the cards or download them as PDF, download
+   a blank card as PDF,
+   and download the scan profile when the card is scannable. Cards are sorted by
+   category, then start number, with colour and a control sheet.
+
+**Blank card only** asks for step 1 and goes straight to the blank-card PDF.
+
+Opening a saved competition restores its settings and boulders and lands on
+Participants, because participants are never stored. Changing the title or subtitle
+of an opened competition saves it as a new competition; the original stays.
 
 ## Scanning cards
 
@@ -107,8 +122,8 @@ local-only property must be retained. As with any hosted site, GitHub Pages may
 process visitor technical data such as IP addresses to operate the service.
 
 Competition settings and the boulder mapping persist to `localStorage` per competition
-ID, and can be exported to JSON to seed next season. Participant data is never
-persisted — it lives in memory for the session only.
+ID and are listed on the Home screen, where they can be opened or deleted. Participant
+data is never persisted — it lives in memory for the session only.
 
 ## Files
 
