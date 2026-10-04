@@ -71,6 +71,40 @@
 
     "ui.app.title": "Scorekaarten generator",
     "ui.app.intro": "Deelnemersgegevens worden alleen lokaal in uw browser verwerkt en niet naar een server verstuurd.",
+    "ui.home.heading": "Scorekaarten voor uw boulderwedstrijd",
+    "ui.home.new": "Nieuwe wedstrijd",
+    "ui.home.newHint": "Instellingen, deelnemers, boulders, afdrukken",
+    "ui.home.blank": "Alleen een blanco kaart",
+    "ui.home.blankHint": "Een lege kaart om af te drukken of uit te delen, zonder deelnemerslijst",
+    "ui.home.saved": "Bewaard op dit toestel",
+    "ui.home.open": "Openen",
+    "ui.home.delete": "Verwijderen",
+    "ui.home.confirmDelete": "“{name}” verwijderen van dit toestel?",
+    "ui.home.unreadable": "Onleesbaar item",
+    "ui.home.categories.one": "{count} categorie",
+    "ui.home.categories.other": "{count} categorieën",
+    "ui.home.scanQuestion": "Kaarten inlezen met een foto?",
+    "ui.home.scanLink": "Scanner openen",
+    "ui.nav.home": "Home",
+    "ui.nav.back": "Terug",
+    "ui.nav.next": "Volgende",
+    "ui.nav.done": "Klaar",
+    "ui.nav.skip": "Overslaan: zonder nummers",
+    "ui.steps.aria": "Stappen",
+    "ui.step.comp": "Wedstrijd",
+    "ui.step.boulders": "Boulders",
+    "ui.step.blank": "Blanco kaart",
+    "ui.settings.sub": "Hoe de kaart eruitziet. Wordt automatisch bewaard onder de titel.",
+    "ui.settings.renamed": "U hebt de titel van een bewaarde wedstrijd gewijzigd. Dit wordt bewaard als een nieuwe wedstrijd; “{name}” blijft in de lijst staan.",
+    "ui.participants.sub": "Wordt op dit toestel gelezen en nooit bewaard.",
+    "ui.participants.load": "Deelnemerslijst laden",
+    "ui.participants.choose": "Bestand kiezen",
+    "ui.participants.drop": "of sleep het hierheen",
+    "ui.boulders.sub": "Welke bouldernummers op de kaart van elke categorie komen.",
+    "ui.validation.sub": "Los de rode punten op voor u afdrukt. Oranje punten moet u aanvinken.",
+    "ui.validation.fix": "Oplossen in {step}",
+    "ui.print.blankSub.one": "{count} rij · geen namen, geen bouldernummers.",
+    "ui.print.blankSub.other": "{count} rijen · geen namen, geen bouldernummers.",
     "ui.lang.ui": "Interfacetaal",
     "ui.lang.card": "Kaarttaal",
     "ui.lang.card.same": "Zelfde als interface",
@@ -85,14 +119,10 @@
     "ui.settings.format.abyc": "Vaste pogingen (ABYC)",
     "ui.settings.format.rcyc": "Vaste pogingen (RCYC)",
     "ui.settings.format.timed": "Tijdslot, onbeperkte pogingen",
-    "ui.settings.hint": "Het wedstrijd-ID wordt afgeleid uit titel en ondertitel en staat in de QR-code, bv. `rcyc-oost-288cd9:69`. Een andere manche krijgt een andere ondertitel en dus een ander ID, zodat de scanner kaarten van een andere wedstrijd weigert. Instellingen en boulderindeling worden per wedstrijd-ID op dit toestel bewaard; deelnemers nooit.",
     "ui.settings.scannable": "Scanbare kaart",
     "ui.settings.scannableHint": "Zet vier scanmarkeringen naast de tabel, zodat de scanner ze kan inlezen. Vereist de QR-code.",
     "ui.settings.scannableUnsupported": "Alleen beschikbaar bij Vaste pogingen (RCYC).",
 
-    "ui.saved.here": "Bewaard: {id} · {datetime}",
-    "ui.saved.forget": "Vergeet deze wedstrijd",
-    "ui.saved.others": "Ook bewaard:",
 
     "ui.participants.heading": "Deelnemers",
     "ui.participants.hint": "Herkomst van dit bestand: open de wedstrijd op etto-climbing, ga naar Jury \u2192 Export en wacht tot het Google-spreadsheet is geladen. Sla het op als CSV (Bestand \u2192 Downloaden \u2192 CSV) en selecteer dat bestand hieronder. Verwachte kolommen: `Category`, `Starting number`, `Name`; overige kolommen worden genegeerd.",
@@ -160,10 +190,12 @@
     "ui.print.controlSheet": "Controleblad vooraan",
     "ui.print.colour": "Kleurband op de kaart",
     "ui.print.qrForced": "Staat vast aan: de scanner leest het startnummer uit de QR-code.",
-    "ui.print.scanProfile": "Export scanprofiel",
-    "ui.print.button": "Afdrukken (Ctrl+P → Opslaan als PDF)",
+    "ui.print.scanProfile": "Scanprofiel downloaden",
+    "ui.print.button": "Kaarten afdrukken",
+    "ui.print.pdfButton": "Kaarten downloaden (PDF)",
+    "ui.print.pdfFile": "scorekaarten-{id}",
     "ui.print.blankButton": "Blanco kaart afdrukken",
-    "ui.print.blankPdfButton": "Blanco kaart als PDF",
+    "ui.print.blankPdfButton": "Blanco kaart downloaden (PDF)",
     "ui.print.blankPdfFile": "blanco-{id}",
     "ui.print.blankHint": "Vul “Boulders per categorie” in om een blanco kaart af te drukken: titel en ondertitel staan erop, naam, startnummer, categorie en boulders vult de deelnemer zelf in.",
     "ui.print.hint": "Druk af op 100% zonder schaling. Kies in het printvenster hetzelfde papierformaat. Het voorbeeld hieronder is exact wat er uit de printer komt. Let op: in het verkleinde voorbeeld van het printvenster kunnen dunne tabellijnen wegvallen — de afdruk en de PDF zijn wel correct.",
@@ -243,6 +275,40 @@
 
     "ui.app.title": "Générateur de feuilles de score",
     "ui.app.intro": "Les données des participants sont traitées uniquement localement dans votre navigateur et ne sont envoyées à aucun serveur.",
+    "ui.home.heading": "Cartes de score pour votre compétition de bloc",
+    "ui.home.new": "Nouvelle compétition",
+    "ui.home.newHint": "Paramètres, participants, blocs, impression",
+    "ui.home.blank": "Carte vierge uniquement",
+    "ui.home.blankHint": "Une carte vide à imprimer ou à distribuer, sans liste de participants",
+    "ui.home.saved": "Enregistré sur cet appareil",
+    "ui.home.open": "Ouvrir",
+    "ui.home.delete": "Supprimer",
+    "ui.home.confirmDelete": "Supprimer « {name} » de cet appareil ?",
+    "ui.home.unreadable": "Élément illisible",
+    "ui.home.categories.one": "{count} catégorie",
+    "ui.home.categories.other": "{count} catégories",
+    "ui.home.scanQuestion": "Lire les cartes à partir d’une photo ?",
+    "ui.home.scanLink": "Ouvrir le scanner",
+    "ui.nav.home": "Accueil",
+    "ui.nav.back": "Retour",
+    "ui.nav.next": "Suivant",
+    "ui.nav.done": "Terminé",
+    "ui.nav.skip": "Passer : sans numéros",
+    "ui.steps.aria": "Étapes",
+    "ui.step.comp": "Compétition",
+    "ui.step.boulders": "Blocs",
+    "ui.step.blank": "Carte vierge",
+    "ui.settings.sub": "L’aspect de la carte. Enregistré automatiquement sous le titre.",
+    "ui.settings.renamed": "Vous avez modifié le titre d’une compétition enregistrée. Elle sera enregistrée comme nouvelle compétition ; « {name} » reste dans la liste.",
+    "ui.participants.sub": "Lu sur cet appareil et jamais enregistré.",
+    "ui.participants.load": "Charger la liste des participants",
+    "ui.participants.choose": "Choisir un fichier",
+    "ui.participants.drop": "ou déposez-le ici",
+    "ui.boulders.sub": "Quels numéros de bloc figurent sur la carte de chaque catégorie.",
+    "ui.validation.sub": "Corrigez les points rouges avant d’imprimer. Les points orange doivent être cochés.",
+    "ui.validation.fix": "Corriger dans {step}",
+    "ui.print.blankSub.one": "{count} ligne · sans noms ni numéros de bloc.",
+    "ui.print.blankSub.other": "{count} lignes · sans noms ni numéros de bloc.",
     "ui.lang.ui": "Langue de l’interface",
     "ui.lang.card": "Langue des feuilles",
     "ui.lang.card.same": "Comme l’interface",
@@ -257,14 +323,10 @@
     "ui.settings.format.abyc": "Essais fixes (ABYC)",
     "ui.settings.format.rcyc": "Essais fixes (RCYC)",
     "ui.settings.format.timed": "Temps imparti, essais illimit\u00e9s",
-    "ui.settings.hint": "L’ID de compétition est dérivé du titre et du sous-titre et figure dans le code QR, p. ex. `rcyc-oost-288cd9:69`. Une autre manche a un autre sous-titre et donc un autre ID, pour que le scanner refuse les feuilles d’une autre compétition. Les réglages et la répartition des blocs sont conservés par ID sur cet appareil ; jamais les participants.",
     "ui.settings.scannable": "Feuille scannable",
     "ui.settings.scannableHint": "Ajoute quatre repères de scan à côté du tableau, pour que le scanner puisse lire la feuille. Nécessite le code QR.",
     "ui.settings.scannableUnsupported": "Disponible uniquement avec Essais fixes (RCYC).",
 
-    "ui.saved.here": "Enregistré : {id} · {datetime}",
-    "ui.saved.forget": "Oublier cette compétition",
-    "ui.saved.others": "Aussi enregistré :",
 
     "ui.participants.heading": "Participants",
     "ui.participants.hint": "Origine de ce fichier : ouvrez la compétition sur etto-climbing, allez dans Jury \u2192 Export et attendez le chargement de la feuille Google Sheets. Enregistrez-la au format CSV (Fichier \u2192 Télécharger \u2192 CSV) et sélectionnez ce fichier ci-dessous. Colonnes attendues : `Category`, `Starting number`, `Name` ; les colonnes supplémentaires sont ignorées.",
@@ -332,10 +394,12 @@
     "ui.print.controlSheet": "Feuille de contrôle en tête",
     "ui.print.colour": "Bande de couleur sur la feuille",
     "ui.print.qrForced": "Toujours activé : le scanner lit le dossard dans le code QR.",
-    "ui.print.scanProfile": "Exporter le profil de scan",
-    "ui.print.button": "Imprimer (Ctrl+P → Enregistrer en PDF)",
+    "ui.print.scanProfile": "Télécharger le profil de scan",
+    "ui.print.button": "Imprimer les cartes",
+    "ui.print.pdfButton": "Télécharger les cartes (PDF)",
+    "ui.print.pdfFile": "cartes-{id}",
     "ui.print.blankButton": "Imprimer une carte vierge",
-    "ui.print.blankPdfButton": "Carte vierge en PDF",
+    "ui.print.blankPdfButton": "Télécharger la carte vierge (PDF)",
     "ui.print.blankPdfFile": "carte-vierge-{id}",
     "ui.print.blankHint": "Renseignez « Blocs par catégorie » pour imprimer une carte vierge : titre et sous-titre y figurent, le participant remplit lui-même son nom, dossard, catégorie et blocs.",
     "ui.print.hint": "Imprimez à 100 % sans mise à l’échelle. Choisissez le même format de papier dans la boîte d’impression. L’aperçu ci-dessous correspond exactement à la sortie. Attention : dans l’aperçu réduit de la boîte d’impression, des lignes fines du tableau peuvent disparaître — l’impression et le PDF restent corrects.",
@@ -415,6 +479,40 @@
 
     "ui.app.title": "Score card generator",
     "ui.app.intro": "Participant data is processed locally in your browser only and is not sent to any server.",
+    "ui.home.heading": "Score cards for your boulder competition",
+    "ui.home.new": "New competition",
+    "ui.home.newHint": "Settings, participants, boulders, print",
+    "ui.home.blank": "Blank card only",
+    "ui.home.blankHint": "An empty card to print or hand out, no participant list needed",
+    "ui.home.saved": "Saved on this device",
+    "ui.home.open": "Open",
+    "ui.home.delete": "Delete",
+    "ui.home.confirmDelete": "Delete “{name}” from this device?",
+    "ui.home.unreadable": "Unreadable entry",
+    "ui.home.categories.one": "{count} category",
+    "ui.home.categories.other": "{count} categories",
+    "ui.home.scanQuestion": "Reading cards from photos?",
+    "ui.home.scanLink": "Open scanner",
+    "ui.nav.home": "Home",
+    "ui.nav.back": "Back",
+    "ui.nav.next": "Next",
+    "ui.nav.done": "Done",
+    "ui.nav.skip": "Skip: no numbers",
+    "ui.steps.aria": "Steps",
+    "ui.step.comp": "Competition",
+    "ui.step.boulders": "Boulders",
+    "ui.step.blank": "Blank card",
+    "ui.settings.sub": "What the card looks like. Saved automatically under the title.",
+    "ui.settings.renamed": "You changed the title of a saved competition. This will be saved as a new competition; “{name}” stays in the list.",
+    "ui.participants.sub": "Read on this device and never saved.",
+    "ui.participants.load": "Load participant list",
+    "ui.participants.choose": "Choose file",
+    "ui.participants.drop": "or drop it here",
+    "ui.boulders.sub": "Which boulder numbers go on each category's card.",
+    "ui.validation.sub": "Fix the red items before printing. Orange items need a tick.",
+    "ui.validation.fix": "Fix in {step}",
+    "ui.print.blankSub.one": "{count} row · no names, no boulder numbers.",
+    "ui.print.blankSub.other": "{count} rows · no names, no boulder numbers.",
     "ui.lang.ui": "Interface language",
     "ui.lang.card": "Card language",
     "ui.lang.card.same": "Same as interface",
@@ -429,14 +527,10 @@
     "ui.settings.format.abyc": "Fixed attempts (ABYC)",
     "ui.settings.format.rcyc": "Fixed attempts (RCYC)",
     "ui.settings.format.timed": "Timed, unlimited attempts",
-    "ui.settings.hint": "The competition ID is derived from the title and subtitle and appears in the QR code, e.g. `rcyc-oost-288cd9:69`. Another round has another subtitle and so another ID, so the scanner rejects cards from another competition. Settings and the boulder mapping are kept per competition ID on this device; participants never are.",
     "ui.settings.scannable": "Scannable card",
     "ui.settings.scannableHint": "Adds four scan markers beside the table so the scanner can read the card. Requires the QR code.",
     "ui.settings.scannableUnsupported": "Only available with Fixed attempts (RCYC).",
 
-    "ui.saved.here": "Saved: {id} · {datetime}",
-    "ui.saved.forget": "Forget this competition",
-    "ui.saved.others": "Also saved:",
 
     "ui.participants.heading": "Participants",
     "ui.participants.hint": "Where this file comes from: open the competition on etto-climbing, go to Jury \u2192 Export and wait for the Google Sheet to load. Save it as CSV (File \u2192 Download \u2192 CSV) and select that file below. Expected columns: `Category`, `Starting number`, `Name`; extra columns are ignored.",
@@ -504,10 +598,12 @@
     "ui.print.controlSheet": "Control sheet in front",
     "ui.print.colour": "Colour band on the card",
     "ui.print.qrForced": "Always on: the scanner reads the start number from the QR code.",
-    "ui.print.scanProfile": "Export scan profile",
-    "ui.print.button": "Print (Ctrl+P → Save as PDF)",
+    "ui.print.scanProfile": "Download scan profile",
+    "ui.print.button": "Print cards",
+    "ui.print.pdfButton": "Download cards (PDF)",
+    "ui.print.pdfFile": "scorecards-{id}",
     "ui.print.blankButton": "Print blank card",
-    "ui.print.blankPdfButton": "Blank card as PDF",
+    "ui.print.blankPdfButton": "Download blank card (PDF)",
     "ui.print.blankPdfFile": "blank-{id}",
     "ui.print.blankHint": "Fill in “Boulders per category” to print a blank card: title and subtitle are printed, the participant fills in their own name, start number, category and boulders.",
     "ui.print.hint": "Print at 100% with no scaling. Choose the same paper size in the print dialog. The preview below is exactly what comes out of the printer. Note: the scaled-down preview in the print dialog may drop thin table lines — the print and the PDF are correct.",
@@ -567,15 +663,12 @@
 }
 *{box-sizing:border-box}
 body{margin:0;font:14px/1.5 system-ui,Segoe UI,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-#ui{max-width:1100px;margin:0 auto;padding:24px 20px 0}
 h1{font-size:22px;margin:0 0 4px}
-section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 20px;margin-bottom:16px}
-section > h2{font-size:15px;margin:0 0 14px;display:flex;align-items:center;gap:8px}
-section > h2 .n{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;
-  align-items:center;justify-content:center;font-size:12px;flex:none}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px}
 label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
 input[type=text],input[type=number]{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:5px;font:inherit}
 .grid4{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.grid4 .full{grid-column:1/-1}
 .row{display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap}
 button{font:inherit;padding:8px 14px;border:1px solid var(--ink);background:var(--ink);color:#fff;
   border-radius:5px;cursor:pointer}
@@ -587,6 +680,7 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .msg{padding:8px 11px;border-radius:5px;font-size:13px;margin-top:10px}
 .msg.err{background:#fef2f2;color:var(--err);border:1px solid #fecaca}
 .msg.ok{background:#f0fdf4;color:var(--ok);border:1px solid #bbf7d0}
+.msg.warn{background:#fffbeb;color:var(--warn);border:1px solid #fde68a;margin:0 0 12px}
 ul.report{list-style:none;margin:0;padding:0}
 ul.report li{padding:6px 10px;border-left:3px solid;margin-bottom:5px;font-size:13px;background:var(--bg)}
 li.e{border-color:var(--err);color:var(--err)}
@@ -606,10 +700,6 @@ button.tab{background:#fff;color:var(--muted);border:1px solid var(--line)}
 button.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .filelabel{font:inherit;padding:8px 14px;border:1px solid var(--ink);border-radius:5px;
   background:#fff;color:var(--ink);cursor:pointer;margin:0;font-size:14px}
-#json-fields{display:flex;gap:8px;align-items:center;font-size:13px;flex-wrap:wrap}
-#json-fields select{width:auto}
-#saved{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-#saved button{padding:3px 9px;font-size:12px}
 
 /* boulder-raster */
 #gridwrap{overflow:auto;max-height:60vh;margin-top:14px;border:1px solid var(--line);border-radius:6px}
@@ -633,7 +723,7 @@ table.grid tfoot td{background:var(--bg);text-align:center;font-size:11px;color:
    Drempel: instellingen ~640px + een blad op 50% (~400px) + marge. */
 @media screen and (min-width:1180px){
   #app{display:flex;align-items:flex-start;gap:0;max-width:1700px;margin:0 auto}
-  #ui{flex:1 1 auto;min-width:0;max-width:1100px;margin:0;padding-bottom:40px}
+  #ui{flex:1 1 auto;min-width:0;margin:0;padding-bottom:40px}
   #preview{flex:0 0 clamp(440px,42vw,700px);align-self:stretch;position:sticky;top:0;
     margin-top:0;height:100vh;max-height:100vh;border-top:0;border-left:1px solid var(--line)}
 }
@@ -784,156 +874,245 @@ table.score.timed td.cell-mark{
 .credit{margin:24px 0 0;text-align:center;font-size:12px;color:var(--muted)}
 
 /* taalkeuze en diagnose */
-.apphdr{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
-.apphdr + p{margin:0 0 24px;color:var(--muted)}
-.langsel{display:flex;gap:4px;flex:none}
-.langsel button{padding:5px 10px;font-size:12px;font-weight:600;letter-spacing:.5px;
-  background:#fff;color:var(--muted);border:1px solid var(--line)}
-.langsel button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.langsel{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#fff}
+.langsel button{padding:9px 18px;min-width:56px;font-size:14px;font-weight:600;letter-spacing:.5px;border:0;
+  border-right:1px solid var(--line);border-radius:0;background:#fff;color:var(--muted)}
+.langsel button:last-child{border-right:0}
+.langsel button.on{background:var(--ink);color:#fff}
 #diag-banner:not(:empty){margin-bottom:16px}
-#diag{background:var(--panel);border:1px solid var(--line);border-radius:8px;
-  padding:12px 20px;margin-bottom:16px}
+#diag{max-width:760px;margin:0 auto 16px;background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:12px 20px}
 #diag summary{font-size:13px;color:var(--muted);cursor:pointer}
 #diag[open] summary{margin-bottom:12px}
 #diag-body ul.report{margin-bottom:10px}
 #diag-body ul.report li{word-break:break-word}
+
+/* ==========================================================================
+   Stappenflow (één scherm tegelijk) en telefoonlayout
+   ========================================================================== */
+section[data-screen]{display:none}
+body[data-screen=home] section[data-screen=home],body[data-screen=comp] section[data-screen=comp],
+body[data-screen=participants] section[data-screen=participants],body[data-screen=boulders] section[data-screen=boulders],
+body[data-screen=check] section[data-screen=check],body[data-screen=print] section[data-screen=print]{display:block}
+@media screen{ body:not([data-screen=print]) #preview{display:none} }
+body[data-screen=home] .steps,body[data-screen=home] .homebtn,body[data-screen=home] .nav{display:none}
+body:not([data-screen=home]) .credit{display:none}
+
+.top{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+.homebtn{margin-left:auto;font-size:13px;color:var(--ink);text-decoration:none;border:1px solid var(--line);
+  border-radius:5px;padding:6px 12px;background:#fff}
+.steps{display:flex;justify-content:center;gap:6px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto}
+.steps .s{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);white-space:nowrap;
+  padding:4px 10px;border-radius:99px;text-decoration:none}
+.steps a.s:hover{background:var(--bg);color:var(--ink)}
+.steps .d{width:22px;height:22px;border-radius:50%;border:1px solid var(--line);display:inline-flex;
+  align-items:center;justify-content:center;font-size:12px;background:#fff;flex:none}
+.steps .s.done .d{background:var(--ok);border-color:var(--ok);color:#fff}
+.steps .s.on{color:var(--ink);font-weight:600;background:var(--bg)}
+.steps .s.on .d{background:var(--ink);border-color:var(--ink);color:#fff}
+.steps .s.off{opacity:.45}
+
+.body{max-width:760px;margin:0 auto;padding:20px 16px 8px}
+section[data-screen] > h2{font-size:19px;margin:2px 0 4px}
+.lead{color:var(--muted);margin:0 0 14px}
+.comp-name{font-size:12px;font-weight:600;color:var(--muted)}
+.comp-name:empty{display:none}
+
+.hero{text-align:center;padding:8px 0 4px}
+.hero h1{margin-top:16px}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 24px}
+button.choice{display:flex;flex-direction:column;gap:2px;text-align:left;padding:14px;border-radius:10px;
+  background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+button.choice.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+button.choice b{font-size:15px}
+button.choice span{font-size:12px;opacity:.75}
+#saved h3{font-size:12px;margin:0 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.comp{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:8px;
+  display:flex;gap:8px 12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.comp.bad{border-style:dashed}
+.comp .t{font-weight:600;word-break:break-word}
+.comp .m{font-size:12px;color:var(--muted)}
+.comp .acts{display:flex;gap:6px}
+.comp .acts button{padding:5px 12px;font-size:13px}
+button.ghost{background:none;border-color:transparent;color:var(--muted)}
+.scanline{font-size:13px;color:var(--muted);margin:16px 0 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.scanline a{color:var(--ink);font-weight:600}
+
+label.check{display:flex;gap:8px;align-items:center;margin:0;font-size:14px;color:var(--ink);font-weight:600}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:22px 16px;text-align:center;background:var(--panel)}
+.drop.over{border-color:var(--ink)}
+.drop b{display:block;font-size:15px;margin-bottom:4px}
+.drop p.hint{margin:0 0 14px}
+label.btn{display:inline-block;font:inherit;font-weight:600;padding:9px 18px;border:1px solid var(--ink);border-radius:5px;
+  background:#fff;color:var(--ink);cursor:pointer;margin:0 0 4px}
+.stack{display:flex;flex-direction:column;gap:10px;max-width:420px}
+.stack .hint{margin:0}
+.seg{display:flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;background:#fff}
+.seg label{flex:1;margin:0;cursor:pointer}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:block;padding:9px 10px;text-align:center;font-size:13px;font-weight:600;color:var(--muted)}
+.seg label + label span{border-left:1px solid var(--line)}
+.seg input:checked + span{background:var(--ink);color:#fff}
+.seg input:focus-visible + span{outline:2px solid var(--ink);outline-offset:-4px}
+ul.report a{color:inherit;font-weight:600;white-space:nowrap;margin-left:8px}
+
+.nav{display:flex;justify-content:flex-end;gap:10px;max-width:760px;margin:0 auto;padding:8px 16px 28px}
+.nav button{min-width:130px}
+#btn-skip[hidden],#btn-back[hidden]{display:none}
+
+/* Telefoon: één kolom, grotere tikdoelen, 16px invoer (anders zoomt iOS in)
+   en de navigatie vast onderaan. */
+@media screen and (max-width:619px){
+  .grid4,.choices{grid-template-columns:1fr}
+  button.choice span{display:none}
+  .steps{justify-content:flex-start}
+  .steps .s:not(.on) .sl{display:none}
+  input[type=text],input[type=number],select,textarea{font-size:16px}
+  input[type=text],input[type=number],select,button,label.btn{min-height:44px}
+  .nav{position:fixed;left:0;right:0;bottom:0;max-width:none;padding:12px 16px;background:var(--panel);
+    border-top:1px solid var(--line);z-index:5}
+  .nav button{flex:1;min-width:0}
+  body:not([data-screen=home]){padding-bottom:72px}
+  #preview{padding:12px}
+  #print{zoom:.4}
+}
 </style>
 </head>
 <body>
 
 <div id="app">
 <div id="ui">
-  <div class="apphdr">
-    <h1 data-i18n="ui.app.title"></h1>
-    <div class="langsel" id="langsel" role="group" data-i18n-aria="ui.lang.ui"></div>
+  <div class="top">
+    <b data-i18n="ui.app.title"></b>
+    <a class="homebtn" href="#home">&#8962; <span data-i18n="ui.nav.home"></span></a>
   </div>
-  <p data-i18n="ui.app.intro"></p>
+  <nav class="steps" id="steps" data-i18n-aria="ui.steps.aria"></nav>
+
+  <div class="body">
   <div id="diag-banner"></div>
 
-  <section>
-    <h2><span class="n">1</span> <span data-i18n="ui.settings.heading"></span></h2>
-    <div class="grid4">
-      <div><label for="f-format" data-i18n="ui.settings.format"></label>
+  <!-- Elk scherm is een <section data-screen>; alleen het actieve staat zichtbaar.
+       Het scherm staat in de URL-hash, zodat de terugknop van de telefoon werkt. -->
+  <section data-screen="home">
+    <div class="hero">
+      <div class="langsel" id="langsel" role="group" data-i18n-aria="ui.lang.ui"></div>
+      <h1 data-i18n="ui.home.heading"></h1>
+      <p class="lead" data-i18n="ui.app.intro"></p>
+    </div>
+    <div class="choices">
+      <button class="choice primary" id="btn-new" type="button"><b data-i18n="ui.home.new"></b><span data-i18n="ui.home.newHint"></span></button>
+      <button class="choice" id="btn-blank" type="button"><b data-i18n="ui.home.blank"></b><span data-i18n="ui.home.blankHint"></span></button>
+    </div>
+    <div id="saved"></div>
+    <p class="scanline"><span data-i18n="ui.home.scanQuestion"></span> <a href="scan.html"><span data-i18n="ui.home.scanLink"></span> &#8599;</a></p>
+  </section>
+
+  <section data-screen="comp">
+    <h2 data-i18n="ui.step.comp"></h2>
+    <p class="lead" data-i18n="ui.settings.sub"></p>
+    <div id="renamed"></div>
+    <div class="panel grid4">
+      <div class="full"><label for="f-format" data-i18n="ui.settings.format"></label>
         <select id="f-format">
           <option value="rcyc" data-i18n="ui.settings.format.rcyc"></option>
           <option value="abyc" data-i18n="ui.settings.format.abyc"></option>
           <option value="timed" data-i18n="ui.settings.format.timed"></option>
         </select>
       </div>
-      <div><label for="f-att" data-i18n="ui.settings.maxAttempts"></label><input id="f-att" type="number" min="1" max="12" value="5"></div>
       <div><label for="f-title" data-i18n="ui.settings.title"></label><input id="f-title" type="text" placeholder="RCYC - Regio"></div>
+      <div id="att-field"><label for="f-att" data-i18n="ui.settings.maxAttempts"></label><input id="f-att" type="number" inputmode="numeric" min="1" max="12" value="5"></div>
       <div><label for="f-sub" data-i18n="ui.settings.subtitle"></label><input id="f-sub" type="text" placeholder="Zaal - Stad"></div>
       <div><label for="f-bpc" data-i18n="ui.settings.bouldersPerCat"></label>
-        <input id="f-bpc" type="number" min="1" max="60">
+        <input id="f-bpc" type="number" inputmode="numeric" min="1" max="60">
         <span class="hint" data-i18n="ui.settings.bouldersPerCatHint"></span>
       </div>
-      <div><label for="f-cardlang" data-i18n="ui.lang.card"></label>
-        <select id="f-cardlang">
-          <option value="" data-i18n="ui.lang.card.same"></option>
-        </select>
-      </div>
-      <div><label style="margin:0"><input type="checkbox" id="f-scan" checked> <span data-i18n="ui.settings.scannable"></span></label>
+      <div class="full"><label class="check"><input type="checkbox" id="f-scan" checked> <span data-i18n="ui.settings.scannable"></span></label>
         <span class="hint" id="scan-hint" data-i18n="ui.settings.scannableHint"></span>
         <span class="hint" id="scan-unsupported" hidden data-i18n="ui.settings.scannableUnsupported"></span>
       </div>
     </div>
-    <p class="hint" style="margin:10px 0 0" data-i18n="ui.settings.hint"></p>
-    <div id="saved"></div>
   </section>
 
-  <section>
-    <h2><span class="n">2</span> <span data-i18n="ui.participants.heading"></span></h2>
-    <div class="row">
-      <div><input id="f-csv" type="file" accept=".csv,text/csv"></div>
+  <section data-screen="participants">
+    <div class="comp-name"></div>
+    <h2 data-i18n="ui.participants.heading"></h2>
+    <p class="lead" data-i18n="ui.participants.sub"></p>
+    <div class="drop" id="drop">
+      <b data-i18n="ui.participants.load"></b>
+      <p class="hint" data-i18n="ui.participants.hint"></p>
+      <label class="btn sec" for="f-csv" data-i18n="ui.participants.choose"></label>
+      <input id="f-csv" type="file" accept=".csv,text/csv" hidden>
+      <div class="hint" data-i18n="ui.participants.drop"></div>
     </div>
-    <p class="hint" style="margin:10px 0 0" data-i18n="ui.participants.hint"></p>
     <div id="csv-status"></div>
     <div id="csv-cats" class="tags"></div>
   </section>
 
-  <section>
-    <h2><span class="n">3</span> <span data-i18n="ui.boulders.heading"></span></h2>
-
+  <section data-screen="boulders">
+    <div class="comp-name"></div>
+    <h2 data-i18n="ui.boulders.heading"></h2>
+    <p class="lead" data-i18n="ui.boulders.sub"></p>
     <div class="tabs">
-      <button class="tab on" data-tab="grid" type="button" data-i18n="ui.boulders.tab.grid"></button>
       <button class="tab" data-tab="table" type="button" data-i18n="ui.boulders.tab.table"></button>
-      <button class="tab" data-tab="json" type="button" data-i18n="ui.boulders.tab.json"></button>
-      <span class="spacer"></span>
-      <button class="sec" id="btn-export" type="button" data-i18n="ui.boulders.export"></button>
-      <label class="sec filelabel" for="f-import" data-i18n="ui.boulders.import"></label>
-      <input id="f-import" type="file" accept=".json,application/json" hidden>
+      <button class="tab" data-tab="grid" type="button" data-i18n="ui.boulders.tab.grid"></button>
     </div>
-
-    <div class="pane" id="pane-grid">
-      <div class="row">
-        <div style="max-width:200px">
-          <label for="f-gridmax" data-i18n="ui.boulders.gridMax"></label>
-          <input id="f-gridmax" type="number" min="1" max="200" value="30">
+    <div class="panel">
+      <div class="pane" id="pane-table">
+        <p class="hint" style="margin:0 0 8px" data-i18n="ui.boulders.tableHint"></p>
+        <textarea id="f-table" rows="8" data-i18n-ph="ui.boulders.tablePlaceholder"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="sec" id="btn-table" type="button" data-i18n="ui.boulders.tableSubmit"></button>
         </div>
-        <button class="sec" id="btn-clear" type="button" data-i18n="ui.boulders.clearGrid"></button>
-        <span class="hint" data-i18n="ui.boulders.gridHint"></span>
       </div>
-      <div id="gridwrap"></div>
-    </div>
-
-    <div class="pane" id="pane-table" hidden>
-      <p class="hint" style="margin:0 0 8px" data-i18n="ui.boulders.tableHint"></p>
-      <textarea id="f-table" rows="8" data-i18n-ph="ui.boulders.tablePlaceholder"></textarea>
-      <div class="row" style="margin-top:8px">
-        <button class="sec" id="btn-table" type="button" data-i18n="ui.boulders.tableSubmit"></button>
-      </div>
-    </div>
-
-    <div class="pane" id="pane-json" hidden>
-      <p class="hint" style="margin:0 0 8px" data-i18n="ui.boulders.jsonHint"></p>
-      <textarea id="f-json" rows="8" data-i18n-ph="ui.boulders.jsonPlaceholder"></textarea>
-      <div class="row" style="margin-top:8px">
-        <button class="sec" id="btn-json" type="button" data-i18n="ui.boulders.jsonSubmit"></button>
-        <span id="json-fields"></span>
+      <div class="pane" id="pane-grid" hidden>
+        <div class="row">
+          <div style="max-width:200px">
+            <label for="f-gridmax" data-i18n="ui.boulders.gridMax"></label>
+            <input id="f-gridmax" type="number" inputmode="numeric" min="1" max="200" value="30">
+          </div>
+          <button class="sec" id="btn-clear" type="button" data-i18n="ui.boulders.clearGrid"></button>
+          <span class="hint" data-i18n="ui.boulders.gridHint"></span>
+        </div>
+        <div id="gridwrap"></div>
       </div>
     </div>
-
     <div id="paste-msg"></div>
     <div id="map-summary" class="tags"></div>
   </section>
 
-  <section>
-    <h2><span class="n">4</span> <span data-i18n="ui.validation.heading"></span></h2>
+  <section data-screen="check">
+    <div class="comp-name"></div>
+    <h2 data-i18n="ui.validation.heading"></h2>
+    <p class="lead" data-i18n="ui.validation.sub"></p>
     <div id="report"></div>
   </section>
 
-  <section>
-    <h2><span class="n">5</span> <span data-i18n="ui.print.heading"></span></h2>
-    <div class="row">
-      <div style="max-width:190px">
-        <label for="o-paper" data-i18n="ui.print.paper"></label>
-        <select id="o-paper">
-          <option value="A4" data-i18n="ui.print.paper.a4"></option>
-          <option value="A5" data-i18n="ui.print.paper.a5"></option>
-        </select>
+  <section data-screen="print">
+    <div class="comp-name"></div>
+    <h2 id="print-heading"></h2>
+    <p class="lead" id="print-stat"></p>
+    <div class="stack">
+      <div><label data-i18n="ui.print.paper"></label>
+        <div class="seg" role="radiogroup">
+          <label><input type="radio" name="paper" value="A4" checked><span data-i18n="ui.print.paper.a4"></span></label>
+          <label><input type="radio" name="paper" value="A5"><span data-i18n="ui.print.paper.a5"></span></label>
+        </div>
       </div>
-      <div style="max-width:230px">
-        <label for="o-sort" data-i18n="ui.print.sort"></label>
-        <select id="o-sort">
-          <option value="cat-number" data-i18n="ui.print.sort.catNumber"></option>
-          <option value="cat-name" data-i18n="ui.print.sort.catName"></option>
-          <option value="number" data-i18n="ui.print.sort.number"></option>
-          <option value="name" data-i18n="ui.print.sort.name"></option>
-        </select>
-      </div>
-      <label style="margin:0"><input type="checkbox" id="o-qr"> <span data-i18n="ui.print.qr"></span></label>
-      <label style="margin:0"><input type="checkbox" id="o-ctl" checked> <span data-i18n="ui.print.controlSheet"></span></label>
-      <label style="margin:0"><input type="checkbox" id="o-colour" checked> <span data-i18n="ui.print.colour"></span></label>
       <button id="btn-print" type="button" disabled data-i18n="ui.print.button"></button>
-      <button id="btn-print-blank" type="button" disabled data-i18n="ui.print.blankButton"></button>
+      <button class="sec" id="btn-pdf" type="button" disabled data-i18n="ui.print.pdfButton"></button>
       <button class="sec" id="btn-pdf-blank" type="button" disabled data-i18n="ui.print.blankPdfButton"></button>
-      <button class="sec" id="btn-scanprofile" type="button" disabled data-i18n="ui.print.scanProfile"></button>
-      <span class="hint" id="print-stat"></span>
+      <button class="sec" id="btn-scanprofile" type="button" hidden data-i18n="ui.print.scanProfile"></button>
+      <p class="hint" id="blank-hint" data-i18n="ui.print.blankHint"></p>
+      <p class="hint" id="print-hint" data-i18n="ui.print.hint"></p>
     </div>
-    <p class="hint" style="margin:10px 0 0" id="qr-forced" hidden data-i18n="ui.print.qrForced"></p>
-    <p class="hint" style="margin:10px 0 0" data-i18n="ui.print.hint"></p>
-    <p class="hint" style="margin:4px 0 0" data-i18n="ui.print.blankHint"></p>
   </section>
+  </div>
+
+  <div class="nav" id="nav">
+    <button class="sec" id="btn-back" type="button" data-i18n="ui.nav.back"></button>
+    <button class="ghost" id="btn-skip" type="button" data-i18n="ui.nav.skip"></button>
+    <button id="btn-next" type="button"></button>
+  </div>
 
   <details id="diag" hidden>
     <summary data-i18n="ui.diag.heading"></summary>
@@ -4172,12 +4351,15 @@ function blankSheetHTML(ctx){
 }
 
 /* ==========================================================================
-   Blanco kaart als PDF, zonder printer en zonder bibliotheek (C1).
+   Kaarten als PDF, zonder printer en zonder bibliotheek (C1). Op een telefoon
+   is "Opslaan als PDF" in het printvenster er vaak niet.
    Het blad wordt buiten beeld op ware grootte gerenderd; vlakken, randen en
    tekst worden uit de gemeten DOM overgenomen. Arial en Helvetica hebben
    dezelfde letterbreedtes, dus de ingebouwde PDF-letters passen op de gemeten
-   posities. Alleen wat een blanco kaart gebruikt: effen vlakken, doorgetrokken
-   randen, tekst — geen SVG (QR, ArUco), dus niet bruikbaar voor gewone kaarten.
+   posities. Ondersteund: effen vlakken, doorgetrokken randen, tekst (ook
+   verticaal), en SVG uit eenheidsvierkantjes (QR-code, ArUco-markers).
+   ponytail: tekens buiten WinAnsi (Latin-1) worden '?'; een ingebedde letter
+   pas als namen buiten Latin-1 echt voorkomen.
    ========================================================================== */
 const PT = 72 / 96;                       // CSS-px -> PDF-punt
 const pn = v => +v.toFixed(2);
@@ -4194,6 +4376,8 @@ const winAnsi = s => [...s].map(ch => {
 }).join('');
 // ponytail: de twee achtergrondverlopen van het tijdslotformaat, als vaste
 // strepen [periode, start, breedte (mm), kleur]. Moet gelijk blijven met de CSS.
+// ✓ en ● bestaan niet in WinAnsi; in ZapfDingbats zijn het '3' en 'l'.
+const DINGBATS = { '✓': '3', '●': 'l' };
 const PDF_STRIPES = { 'cell-tally': [9.8, 9.7, 0.1, '0.733 0.733 0.733'],
                       'cell-mark':  [1e9, 9.85, 0.3, '0 0 0'] };
 
@@ -4203,7 +4387,10 @@ function pdfPage(sheet){
   const rect = (out, x, y, w, h, rgb) => out.push(rgb + ' rg ' + pn((x - o.left) * PT) + ' ' +
     pn(H - (y - o.top + h) * PT) + ' ' + pn(w * PT) + ' ' + pn(h * PT) + ' re f');
   for (const el of sheet.querySelectorAll('*')){
-    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+    if (el.ownerSVGElement) continue;                 // getekend door pdfSvg
+    const r = el.getBoundingClientRect();
+    if (el.localName === 'svg'){ if (r.width) pdfSvg(fills, rect, el, r); continue; }
+    const cs = getComputedStyle(el);
     if (!r.width || cs.visibility === 'hidden') continue;
     const bg = pdfRgb(cs.backgroundColor);
     if (bg && bg !== '1 1 1') rect(fills, r.left, r.top, r.width, r.height, bg);
@@ -4217,6 +4404,24 @@ function pdfPage(sheet){
   if (sheet.matches('.cards:not(.a5)'))
     lines.push('[2.5] 0 d 0.85 w 0 0 0 RG 0 ' + pn(H / 2) + ' m ' + pn(o.width * PT) + ' ' + pn(H / 2) + ' l S [] 0 d');
   return { w: pn(o.width * PT), h: pn(H), ops: [...fills, ...lines, ...text].join('\n') };
+}
+
+/* SVG zoals de QR-generator en arucoSvg() die maken: <rect>'s en een <path> uit
+   losse eenheidsvierkantjes ("Mx,y l1,0 0,1 -1,0 0,-1z"). In volgorde tekenen:
+   de witte bits van een marker liggen over het zwarte vlak. */
+function pdfSvg(out, rect, svg, r){
+  const vb = svg.viewBox.baseVal, k = Math.min(r.width / vb.width, r.height / vb.height);
+  const len = (v, full) => v.unitType === 2 ? v.valueInSpecifiedUnits / 100 * full : v.value;   // 2 = %
+  for (const el of svg.children){
+    const rgb = pdfRgb(getComputedStyle(el).fill);
+    if (!rgb) continue;
+    if (el.localName === 'rect')
+      rect(out, r.left + el.x.baseVal.value * k, r.top + el.y.baseVal.value * k,
+           len(el.width.baseVal, vb.width) * k, len(el.height.baseVal, vb.height) * k, rgb);
+    if (el.localName === 'path')
+      for (const m of (el.getAttribute('d') || '').matchAll(/M([\d.]+),([\d.]+)/g))
+        rect(out, r.left + m[1] * k, r.top + m[2] * k, k, k, rgb);
+  }
 }
 
 /* Randen als gevulde balkjes. In een tabel met border-collapse ligt de rand van
@@ -4246,17 +4451,20 @@ function pdfText(out, sheet, o, H){
     const fs = parseFloat(cs.fontSize) * PT, rgb = pdfRgb(cs.color) || '0 0 0';
     const font = parseInt(cs.fontWeight, 10) >= 600 ? '/F2' : '/F1';
     const tc = pn((parseFloat(cs.letterSpacing) || 0) * PT);
+    const vertical = cs.writingMode.startsWith('vertical');
     const s = node.textContent;
     for (const m of s.matchAll(/\S+/g)){
       range.setStart(node, m.index); range.setEnd(node, m.index + m[0].length);
       const b = range.getClientRects()[0];
       if (!b || !b.width) continue;
-      // basislijn: Arial heeft 0.905 em boven en 0.212 em onder de lijn
-      const y = H - (b.bottom - b.height * 0.212 / 1.117 - o.top) * PT;
-      // ✓ bestaat niet in WinAnsi; in ZapfDingbats is het teken '3'
-      const [f, str] = m[0] === '✓' ? ['/F3', '3'] : [font, winAnsi(m[0])];
-      out.push('BT ' + f + ' ' + pn(fs) + ' Tf ' + tc + ' Tc ' + rgb + ' rg ' +
-        pn((b.left - o.left) * PT) + ' ' + pn(y) + ' Td (' + str + ') Tj ET');
+      const [f, str] = DINGBATS[m[0]] ? ['/F3', DINGBATS[m[0]]] : [font, winAnsi(m[0])];
+      // basislijn: Arial heeft 0.905 em boven en 0.212 em onder de lijn. Verticale
+      // koppen (vertical-rl + 180°) lezen van onder naar boven: 90° gedraaide tekst
+      // met de basislijn rechts in het vak.
+      const at = vertical
+        ? '0 1 -1 0 ' + pn((b.right - b.width * 0.212 / 1.117 - o.left) * PT) + ' ' + pn(H - (b.bottom - o.top) * PT) + ' Tm'
+        : pn((b.left - o.left) * PT) + ' ' + pn(H - (b.bottom - b.height * 0.212 / 1.117 - o.top) * PT) + ' Td';
+      out.push('BT ' + f + ' ' + pn(fs) + ' Tf ' + tc + ' Tc ' + rgb + ' rg ' + at + ' (' + str + ') Tj ET');
     }
   }
 }
@@ -4367,7 +4575,11 @@ const S = {
   catOrder: null,        // volgorde uit een geplakte indeling; null = alfabetisch
   gridMax: 30,
   ack: false,
-  tab: 'grid',
+  tab: 'table',          // plakken is op een telefoon de realistische route
+  screen: 'home',        // actief scherm, volgt de URL-hash
+  mode: 'full',          // 'full' = vijf stappen, 'blank' = alleen een blanco kaart
+  openedId: null,        // ID van de wedstrijd die via Home geopend werd
+  openedName: '',
   pasteMsg: null,        // {type, parts:[{key,count,params}]} onder het actieve tabblad
   jsonKeys: null,        // veldkeuze tonen als de JSON-vorm onbekend is
   scanStamp: null        // {sig, at}: generatedAt van het scanprofiel, wijzigt alleen met de inhoud
@@ -4422,13 +4634,16 @@ function settings(){
     cardLanguage: cardLangSetting
   };
 }
+/* Alleen het papier is een keuze; de rest staat voorlopig vast. De QR-code volgt
+   de scanbare kaart, want de scanner leest het startnummer uit de QR-code. */
 function options(){
+  const paper = document.querySelector('input[name=paper]:checked');
   return {
-    paper: $('o-paper').value === 'A5' ? 'A5' : 'A4',
-    sortBy: ['name', 'number', 'cat-name'].includes($('o-sort').value) ? $('o-sort').value : 'cat-number',
-    showQr: $('o-qr').checked,
-    controlSheet: $('o-ctl').checked,
-    colour: $('o-colour').checked
+    paper: paper && paper.value === 'A5' ? 'A5' : 'A4',
+    sortBy: 'cat-number',
+    showQr: scanOn(settings()),
+    controlSheet: true,
+    colour: true
   };
 }
 
@@ -4455,15 +4670,9 @@ function applyState(st){
   if (s.bouldersPerCat)         $('f-bpc').value = s.bouldersPerCat;
   if (s.format && FORMATS[s.format]) $('f-format').value = s.format;
   if (s.scannable !== undefined) $('f-scan').checked = !!s.scannable;
-  if (s.cardLanguage !== undefined){
-    cardLangSetting = LANGS.includes(s.cardLanguage) ? s.cardLanguage : '';
-    $('f-cardlang').value = cardLangSetting;
-  }
-  if (o.paper)                  $('o-paper').value = o.paper;
-  if (o.sortBy)                 $('o-sort').value = o.sortBy;
-  if (o.showQr !== undefined)   $('o-qr').checked = !!o.showQr;
-  if (o.controlSheet !== undefined) $('o-ctl').checked = !!o.controlSheet;
-  if (o.colour !== undefined)   $('o-colour').checked = !!o.colour;
+  // De kaarttaal volgt voorlopig altijd de interfacetaal; een opgeslagen kaarttaal
+  // wordt genegeerd.
+  if (o.paper) document.querySelectorAll('input[name=paper]').forEach(r => r.checked = r.value === o.paper);
   if (st.gridMax)               S.gridMax = st.gridMax, $('f-gridmax').value = st.gridMax;
   if (st.mapping && typeof st.mapping === 'object'){
     S.mapping = {};
@@ -4474,7 +4683,7 @@ function applyState(st){
   return true;
 }
 
-let saveTimer = null;
+let saveTimer = null, pendingSave = null;
 /* Het ID verandert terwijl je de titel of ondertitel typt. Een sleutel die deze
    sessie zelf aanmaakte, verhuist mee met het ID in plaats van als rommel achter
    te blijven; een sleutel die al bestond (bv. de vorige manche) blijft staan. */
@@ -4482,26 +4691,44 @@ let sessionKey = null;
 function saveState(){
   const id = effectiveId();
   if (!id) return;
+  // De toestand nu vastleggen, niet pas als de timer afgaat: tegen dan kan
+  // "Nieuwe wedstrijd" de velden al leeggemaakt hebben.
+  const json = JSON.stringify(collectState());
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
+  pendingSave = () => {
+    pendingSave = null;
     try {
       const fresh = localStorage.getItem(STORE + id) === null;
-      localStorage.setItem(STORE + id, JSON.stringify(collectState()));
+      localStorage.setItem(STORE + id, json);
       if (sessionKey && sessionKey !== id) localStorage.removeItem(STORE + sessionKey);
       sessionKey = fresh || sessionKey === id ? id : null;
     }
     catch (e){ /* volle of geblokkeerde opslag mag het afdrukken niet breken */ }
-    renderSaved();
-  }, 800);
+    renderHome();
+  };
+  saveTimer = setTimeout(pendingSave, 800);
+}
+/* Een wachtende opslag nu uitvoeren, vóór de velden voor een andere wedstrijd
+   gebruikt worden; anders zet die achteraf sessionKey op de vorige wedstrijd. */
+function flushSave(){
+  clearTimeout(saveTimer);
+  if (pendingSave) pendingSave();
 }
 
+/* Alle bewaarde wedstrijden, nieuwste eerst. Een onleesbare sleutel komt mee
+   met bad: true, zodat hij op Home verwijderd kan worden in plaats van onzichtbaar
+   te blijven liggen. */
 function listSaved(){
   const out = [];
   for (let i = 0; i < localStorage.length; i++){
     const k = localStorage.key(i);
     if (!k.startsWith(STORE)) continue;
-    try { out.push({ id: k.slice(STORE.length), saved: JSON.parse(localStorage.getItem(k)).saved || 0 }); }
-    catch (e){ /* onleesbare sleutel overslaan */ }
+    const id = k.slice(STORE.length);
+    try {
+      const st = JSON.parse(localStorage.getItem(k));
+      if (!st || typeof st !== 'object') throw new Error('geen object');
+      out.push({ id, st, saved: st.saved || 0 });
+    } catch (e){ out.push({ id, bad: true, saved: 0 }); }
   }
   return out.sort((a, b) => b.saved - a.saved);
 }
@@ -4524,10 +4751,6 @@ function download(name, blob){
   a.download = name;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-}
-function exportMapping(){
-  const st = collectState();
-  downloadJSON(st.settings.competitionId + '-boulders.json', st);
 }
 
 /* generatedAt verandert alleen als de inhoud van het profiel verandert, ook na
@@ -4639,6 +4862,22 @@ function setCell(cat, b, on){
 }
 
 /* --- rapport --- */
+/* Welke stap lost een melding op: de deelnemerslijst, de indeling of de
+   wedstrijdgegevens. Gewone hashlinks, dus de terugknop werkt ook hier. */
+const FIX_STEP = {
+  nameEmpty: 'participants', categoryEmpty: 'participants', numberEmpty: 'participants',
+  numberNotPositive: 'participants', duplicateStartNumber: 'participants', nameTooLong: 'participants',
+  categoryTooLong: 'participants',
+  categoryMissingInMapping: 'boulders', categoryWithoutParticipants: 'boulders', categoryZeroBoulders: 'boulders',
+  duplicateBoulder: 'boulders', categoryBlankRows: 'boulders', differingBoulderCounts: 'boulders',
+  boulderCountMismatch: 'boulders',
+  tooManyBoulders: 'comp', scanNeedsQr: 'comp', scanNoId: 'comp'
+};
+function fixLink(key){
+  const step = FIX_STEP[key.split('.').pop()];
+  return step ? ' <a href="#' + step + '">' + et('ui.validation.fix', { step: t(STEP_LABEL[step]) }) + ' &rarr;</a>' : '';
+}
+
 function renderReport(v, ready){
   const box = $('report');
   if (!ready){
@@ -4649,11 +4888,11 @@ function renderReport(v, ready){
   if (!v.errors.length && !v.warnings.length) h = '<div class="msg ok">' + et('ui.validation.allClear') + '</div>';
   if (v.errors.length){
     h += '<div class="msg err">' + esc(tn('ui.validation.errorCount', v.errors.length)) + '</div>';
-    h += '<ul class="report">' + v.errors.map(e => '<li class="e">' + et(e.key, e.params) + '</li>').join('') + '</ul>';
+    h += '<ul class="report">' + v.errors.map(e => '<li class="e">' + et(e.key, e.params) + fixLink(e.key) + '</li>').join('') + '</ul>';
   }
   if (v.warnings.length){
     h += '<ul class="report" style="margin-top:10px">' +
-      v.warnings.map(w => '<li class="w">' + et(w.key, w.params) + '</li>').join('') + '</ul>';
+      v.warnings.map(w => '<li class="w">' + et(w.key, w.params) + fixLink(w.key) + '</li>').join('') + '</ul>';
     h += '<label class="ackbox"><input type="checkbox" id="ack"' + (S.ack ? ' checked' : '') + '>' +
          '<span>' + esc(tn('ui.validation.ack', v.warnings.length)) + '</span></label>';
   }
@@ -4665,44 +4904,37 @@ function renderReport(v, ready){
 /* --- tabbladen, plakresultaat en overzicht --- */
 function renderTabs(){
   document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
-  ['grid','table','json'].forEach(t2 => $('pane-' + t2).hidden = t2 !== S.tab);
+  ['grid','table'].forEach(t2 => $('pane-' + t2).hidden = t2 !== S.tab);
 
   const m = $('paste-msg');
   m.innerHTML = S.pasteMsg
     ? '<div class="msg ' + S.pasteMsg.type + '">' + esc(S.pasteMsg.parts.map(say).join(' ')) + '</div>' : '';
-
-  // veldkeuze als de JSON-vorm onbekend is
-  const f = $('json-fields');
-  if (S.jsonKeys){
-    const sel = (id, key) => '<label style="margin:0">' + et(key) + ' ' +
-      '<select id="' + id + '">' + S.jsonKeys.map(k => '<option>' + esc(k) + '</option>').join('') +
-      '</select></label>';
-    f.innerHTML = sel('js-cat', 'ui.boulders.jsonCatField') + sel('js-num', 'ui.boulders.jsonNumField') +
-      '<button class="sec" id="btn-json2" type="button">' + et('ui.boulders.jsonApply') + '</button>';
-    $('btn-json2').onclick = () => applyPaste(() =>
-      parseBoulderJSON($('f-json').value, categories(), { cat: $('js-cat').value, num: $('js-num').value }));
-  } else f.innerHTML = '';
 
   const cats = orderedCategories();
   $('map-summary').innerHTML = cats.length ? cats.map(c => '<span class="tag">' + esc(c) +
     ' &middot; ' + esc(tn('ui.boulders.summaryBoulders', (S.mapping[c] || []).length)) + '</span>').join('') : '';
 }
 
-function renderSaved(){
-  const list = listSaved(), id = effectiveId();
-  const here = list.find(x => x.id === id);
-  const others = list.filter(x => x.id !== id).slice(0, 4);
-  $('saved').innerHTML =
-    (here ? '<span>' + et('ui.saved.here', { id: here.id, datetime: dtf(new Date(here.saved)) }) + '</span>' +
-       ' <button class="sec" id="btn-forget" type="button">' + et('ui.saved.forget') + '</button>' : '') +
-    (others.length ? '<span>' + et('ui.saved.others') + ' ' + others.map(x =>
-       '<a href="#" data-load="' + esc(x.id) + '">' + esc(x.id) + '</a>').join(', ') + '</span>' : '');
-  const b = $('btn-forget');
-  if (b) b.onclick = () => { localStorage.removeItem(STORE + id); renderSaved(); };
-  $('saved').querySelectorAll('[data-load]').forEach(a => a.onclick = e => {
-    e.preventDefault();
-    if (loadSaved(a.dataset.load)) refresh();
-  });
+function savedName(x){
+  const st = x.st.settings || {};
+  return [st.title, st.subtitle].filter(Boolean).join(' – ') || x.id;
+}
+function renderHome(){
+  let list = [];
+  try { list = listSaved(); } catch (e){ /* geen opslag (privé venster): lege lijst */ }
+  $('saved').innerHTML = list.length ? '<h3>' + et('ui.home.saved') + '</h3>' + list.map(x => {
+    const del = '<button class="ghost" type="button" data-del="' + esc(x.id) + '">' + et('ui.home.delete') + '</button>';
+    if (x.bad) return '<div class="comp bad"><div><div class="t">' + esc(STORE + x.id) + '</div><div class="m">' +
+      et('ui.home.unreadable') + '</div></div><div class="acts">' + del + '</div></div>';
+    const fmt = (x.st.settings || {}).format;
+    const meta = [FORMATS[fmt] ? t('ui.settings.format.' + fmt) : '',
+      tn('ui.home.categories', Object.keys(x.st.mapping || {}).length), dtf(new Date(x.saved))].filter(Boolean);
+    return '<div class="comp"><div><div class="t">' + esc(savedName(x)) + '</div><div class="m">' +
+      esc(meta.join(' · ')) + '</div></div><div class="acts"><button type="button" data-open="' + esc(x.id) + '">' +
+      et('ui.home.open') + '</button>' + del + '</div></div>';
+  }).join('') : '';
+  $('saved').querySelectorAll('[data-open]').forEach(b => b.onclick = () => openSaved(list.find(x => x.id === b.dataset.open)));
+  $('saved').querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteSaved(list.find(x => x.id === b.dataset.del)));
 }
 
 /* Eén pad voor beide plakmethodes: parse, toon de uitkomst, vul de indeling. */
@@ -4803,25 +5035,21 @@ function refresh(){
   renderParticipants();
   renderGrid();
   renderTabs();
-  renderSaved();
+  renderHome();
   renderDiag();
 
   const set = settings();
-  // Scanbaar kan alleen bij een formaat met één vakje per poging; dan ligt de
-  // QR-code vast, want de scanner leest het startnummer daaruit.
+  // Scanbaar kan alleen bij een formaat met één vakje per poging.
   const scan = scanOn(set), scanFmt = !!fmtDef(set.format).scan;
   $('f-scan').disabled = !scanFmt;
   $('scan-hint').hidden = !scanFmt;
   $('scan-unsupported').hidden = scanFmt;
-  if (scan) $('o-qr').checked = true;
-  $('o-qr').disabled = scan;
-  $('qr-forced').hidden = !scan;
   // Het formaat bepaalt hoeveel boulders er op een kaart passen, dus de controle
   // moet het kennen (timed-spec §5).
   const opts = Object.assign(options(), { format: set.format, bouldersPerCat: set.bouldersPerCat, scan });
   const cats = orderedCategories();
-  // Een tijdslotformaat kent geen vast aantal pogingen; het veld hoort dan uit.
-  $('f-att').disabled = !fmtDef(set.format).usesAttempts;
+  // Een tijdslotformaat kent geen vast aantal pogingen; het veld verdwijnt dan.
+  $('att-field').hidden = !fmtDef(set.format).usesAttempts;
   const v = (S.participants.length && cats.length)
     ? validate(S.participants, S.mapping, cats, Object.assign({}, opts,
         { competitionId: effectiveId(), maxAttempts: set.maxAttempts }))
@@ -4834,19 +5062,28 @@ function refresh(){
 
   const blocked = !!v.errors.length || !S.participants.length || !cats.length ||
                   (v.warnings.length > 0 && !S.ack);
-  $('btn-print').disabled = blocked;
   // De blanco kaart heeft geen deelnemers of indeling nodig, alleen het aantal
   // boulders per categorie: dat bepaalt hoeveel rijen de tabel krijgt. Boven
   // het maximum voor dit formaat weigert attemptsToTable() hard, dus hier al
   // blokkeren in plaats van die crash laten gebeuren.
-  $('btn-print-blank').disabled = $('btn-pdf-blank').disabled =
-    !set.bouldersPerCat || set.bouldersPerCat > maxRowsFor(set.format);
+  const blankOk = !!set.bouldersPerCat && set.bouldersPerCat <= maxRowsFor(set.format);
+  renderFlow({ set, blocked, blankOk });
 
-  $('btn-scanprofile').disabled = blocked || !scan;
+  $('btn-print').disabled = $('btn-pdf').disabled = blocked;
+  $('btn-pdf-blank').disabled = !blankOk;
+  $('blank-hint').hidden = blankOk;
+  $('btn-scanprofile').hidden = !scan || S.mode === 'blank';
+  $('btn-scanprofile').disabled = blocked;
 
   const out = $('print');
   S.profile = null;
-  if (blocked){ out.innerHTML = ''; $('print-stat').textContent = ''; return; }
+  $('print-stat').textContent = '';
+  if (S.mode === 'blank'){
+    out.innerHTML = blankOk ? blankSheetHTML(Object.assign({}, set, opts, { cardLang: cardLang() })) : '';
+    if (blankOk) $('print-stat').textContent = tn('ui.print.blankSub', set.bouldersPerCat);
+    return;
+  }
+  if (blocked){ out.innerHTML = ''; return; }
 
   const t0 = performance.now();
   const ctx = Object.assign(set, opts, { mapping: S.mapping, catOrder: cats, cardLang: cardLang() });
@@ -4861,26 +5098,135 @@ function refresh(){
     ms: nf(Math.round(performance.now() - t0)) });
 }
 
+/* ==========================================================================
+   Stappenflow — één scherm tegelijk, het scherm staat in de URL-hash. Home kiest
+   tussen een nieuwe wedstrijd, alleen een blanco kaart of een bewaarde wedstrijd.
+   ========================================================================== */
+const STEPS = { full: ['comp', 'participants', 'boulders', 'check', 'print'], blank: ['comp', 'print'] };
+const STEP_LABEL = { comp: 'ui.step.comp', participants: 'ui.participants.heading', boulders: 'ui.step.boulders',
+                     check: 'ui.validation.heading', print: 'ui.print.heading' };
+const SCREENS = ['home'].concat(STEPS.full);
+
+const go = screen => { if (location.hash === '#' + screen) showScreen(); else location.hash = screen; };
+
+function showScreen(){
+  const h = location.hash.slice(1);
+  S.screen = SCREENS.includes(h) && STEPS[S.mode].concat('home').includes(h) ? h : 'home';
+  if (h !== S.screen) history.replaceState(null, '', '#' + S.screen);
+  document.body.dataset.screen = S.screen;
+  window.scrollTo(0, 0);
+  refresh();
+}
+
+/* Een lege wedstrijd: velden terug naar hun standaard. sessionKey los, anders
+   verhuist de opslag van de vorige wedstrijd mee met het nieuwe ID. */
+function newComp(mode){
+  flushSave();
+  $('f-title').value = ''; $('f-sub').value = ''; $('f-bpc').value = '';
+  $('f-att').value = 5; $('f-format').value = DEFAULT_FORMAT; $('f-scan').checked = true;
+  $('f-gridmax').value = S.gridMax = 30;
+  Object.assign(S, { participants: [], loadError: null, mapping: {}, catOrder: null, ack: false,
+                     pasteMsg: null, jsonKeys: null, scanStamp: null, mode, openedId: null, openedName: '' });
+  $('f-csv').value = ''; $('f-table').value = '';
+  sessionKey = null;
+}
+
+function openSaved(x){
+  newComp('full');
+  if (!loadSaved(x.id)) return;
+  S.openedId = x.id; S.openedName = savedName(x);
+  // Deelnemers worden nooit bewaard: na het openen is de deelnemerslijst de
+  // eerste stap die nog openstaat.
+  go('participants');
+}
+
+function deleteSaved(x){
+  if (!confirm(t('ui.home.confirmDelete', { name: x.bad ? STORE + x.id : savedName(x) }))) return;
+  flushSave();
+  try { localStorage.removeItem(STORE + x.id); } catch (e){ /* geblokkeerde opslag: niets te verwijderen */ }
+  // Anders bewaart refresh() de geladen wedstrijd meteen opnieuw.
+  if (x.id === effectiveId()) newComp('full');
+  refresh();
+}
+
+function stepState(step, f){
+  const anyBoulders = Object.values(S.mapping).some(a => a.length);
+  if (step === 'comp') return !!effectiveId() && (S.mode === 'full' || f.blankOk);
+  if (step === 'participants') return S.participants.length > 0;
+  if (step === 'boulders') return anyBoulders;
+  if (step === 'check') return !f.blocked;
+  return false;
+}
+const stepLocked = (step, f) => step === 'print' && (S.mode === 'blank' ? !f.blankOk : f.blocked);
+
+function renderFlow(f){
+  const steps = STEPS[S.mode], i = steps.indexOf(S.screen);
+  // Afdrukken is pas bereikbaar als de controle in orde is; een link of een
+  // hash die er toch naartoe wijst, belandt op de controle.
+  if (S.screen === 'print' && stepLocked('print', f)) return location.replace('#' + (S.mode === 'blank' ? 'comp' : 'check'));
+
+  $('steps').innerHTML = steps.map((st, n) => {
+    const label = '<span class="sl">' + et(st === 'print' && S.mode === 'blank' ? 'ui.step.blank' : STEP_LABEL[st]) + '</span>';
+    const done = stepState(st, f), cls = 's' + (st === S.screen ? ' on' : done ? ' done' : '');
+    const dot = '<span class="d">' + (done && st !== S.screen ? '&#10003;' : n + 1) + '</span>';
+    return stepLocked(st, f) ? '<span class="s off">' + dot + label + '</span>'
+                             : '<a class="' + cls + '" href="#' + st + '">' + dot + label + '</a>';
+  }).join('');
+
+  const name = [$('f-title').value.trim(), f.set.subtitle].filter(Boolean).join(' – ');
+  document.querySelectorAll('.comp-name').forEach(el => el.textContent = name);
+  $('print-heading').textContent = t(S.mode === 'blank' ? 'ui.step.blank' : 'ui.print.heading');
+  $('btn-print').hidden = $('btn-pdf').hidden = $('print-hint').hidden = S.mode === 'blank';
+  $('renamed').innerHTML = S.openedId && effectiveId() && effectiveId() !== S.openedId
+    ? '<div class="msg warn">' + et('ui.settings.renamed', { name: S.openedName }) + '</div>' : '';
+
+  if (i < 0) return;
+  const last = i === steps.length - 1;
+  const skip = S.screen === 'boulders' && f.set.bouldersPerCat > 0 && !stepState('boulders', f);
+  $('btn-back').hidden = skip;
+  $('btn-skip').hidden = !skip;
+  $('btn-next').textContent = t(last ? 'ui.nav.done' : 'ui.nav.next');
+  $('btn-next').className = last ? 'sec' : '';
+  $('btn-next').disabled = !last && (S.screen === 'check' ? f.blocked
+    : ['comp', 'participants'].includes(S.screen) && !stepState(S.screen, f));
+}
+
+function stepBy(delta){
+  const steps = STEPS[S.mode], i = steps.indexOf(S.screen) + delta;
+  go(i < 0 || i >= steps.length ? 'home' : steps[i]);
+}
+
 /* --- gebeurtenissen --- */
 function wire(){
-  // taalknoppen; de kaarttaal krijgt dezelfde codes plus "zelfde als interface"
-  $('f-cardlang').insertAdjacentHTML('beforeend',
-    LANGS.map(l => '<option value="' + l + '">' + esc(l.toUpperCase()) + '</option>').join(''));
   $('langsel').addEventListener('click', e => {
     const b = e.target.closest('button[data-lang]');
     if (b) setUiLang(b.dataset.lang);
   });
-  $('f-cardlang').addEventListener('change', e => {
-    cardLangSetting = LANGS.includes(e.target.value) ? e.target.value : '';
-    refresh();
-  });
+
+  // stappenflow
+  window.addEventListener('hashchange', showScreen);
+  $('btn-new').addEventListener('click', () => { newComp('full'); go('comp'); });
+  $('btn-blank').addEventListener('click', () => { newComp('blank'); go('comp'); });
+  $('btn-back').addEventListener('click', () => stepBy(-1));
+  $('btn-next').addEventListener('click', () => stepBy(1));
+  $('btn-skip').addEventListener('click', () => go('check'));
 
   ['f-title','f-sub','f-att','f-bpc'].forEach(id => $(id).addEventListener('input', refresh));
   $('f-format').addEventListener('change', refresh);
-  ['o-ctl','o-colour','o-qr','o-paper','o-sort','f-scan'].forEach(id => $(id).addEventListener('change', refresh));
+  $('f-scan').addEventListener('change', refresh);
+  document.querySelectorAll('input[name=paper]').forEach(r => r.addEventListener('change', refresh));
 
   $('f-csv').addEventListener('change', e => {
     const f = e.target.files[0];
+    if (f) f.text().then(loadCSVText);
+  });
+  const drop = $('drop');
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    drop.classList.remove('over');
+    const f = e.dataTransfer.files[0];
     if (f) f.text().then(loadCSVText);
   });
 
@@ -4888,27 +5234,9 @@ function wire(){
     b.addEventListener('click', () => { S.tab = b.dataset.tab; S.pasteMsg = null; refresh(); }));
   $('btn-table').addEventListener('click', () => applyPaste(() =>
     parseBoulderTable($('f-table').value, categories())));
-  $('btn-json').addEventListener('click', () => applyPaste(() =>
-    parseBoulderJSON($('f-json').value, categories())));
 
-  $('btn-export').addEventListener('click', exportMapping);
   $('btn-scanprofile').addEventListener('click', () => {
     if (S.profile) downloadJSON('scanprofile-' + S.profile.competitionId + '.json', S.profile);
-  });
-  $('f-import').addEventListener('change', e => {
-    const f = e.target.files[0];
-    if (!f) return;
-    f.text().then(txt => {
-      try {
-        importMapping(txt);
-        S.pasteMsg = { type: 'ok', parts: [{ key: 'ui.import.ok', params: { file: f.name } }] };
-      } catch (err){
-        S.pasteMsg = { type: 'err', parts: [{ key: 'ui.import.fail',
-          params: { file: f.name, message: emsg(err) } }] };
-      }
-      refresh();
-    });
-    e.target.value = '';
   });
   $('f-gridmax').addEventListener('input', e => {
     S.gridMax = Math.max(1, Math.min(200, Number(e.target.value) || 30));
@@ -4953,14 +5281,12 @@ function wire(){
 
   $('btn-print').addEventListener('click', () => window.print());
 
-  // Blanco kaart: vervangt tijdelijk de voorbeeldpagina, drukt af en herstelt
-  // daarna het gewone voorbeeld. window.print() blokkeert tot het printvenster
-  // sluit, dus refresh() erna komt pas na het afdrukken.
-  $('btn-print-blank').addEventListener('click', () => {
-    const ctx = Object.assign(settings(), options(), { cardLang: cardLang() });
-    $('print').innerHTML = blankSheetHTML(ctx);
-    window.print();
-    refresh();
+  // Dezelfde bladen als het voorbeeld, als PDF: op een telefoon is dat vaak de
+  // enige manier om aan een bestand te komen.
+  $('btn-pdf').addEventListener('click', () => {
+    if (!$('print').querySelector('.sheet')) return;
+    download(t('ui.print.pdfFile', { id: effectiveId() }) + '.pdf',
+             new Blob([sheetsPdf($('print').innerHTML)], { type: 'application/pdf' }));
   });
   $('btn-pdf-blank').addEventListener('click', () => {
     const ctx = Object.assign(settings(), options(), { cardLang: cardLang() });
@@ -5520,6 +5846,15 @@ function selfTest(){
   const card0 = dsc.querySelector('.card');
   eq('Scan: 4 markers met id 0-3', [...card0.querySelectorAll('.aruco')].map(m => m.dataset.id), ['0','1','2','3']);
   ok('Scan: QR blijft op de kaart', card0.querySelector('.qr svg'));
+  // Kaart-PDF: QR-modules en markers worden zwarte vierkantjes, de verticale
+  // koppen van het controleblad gedraaide tekst, ● een ZapfDingbats-teken.
+  const cpdf = String.fromCharCode(...sheetsPdf(buildSheets(base, sctx)));
+  const fillsOf = pdf => (pdf.match(/ re f/g) || []).length;
+  const plain = String.fromCharCode(...sheetsPdf(buildSheets(base, Object.assign({}, sctx, { scan:false, showQr:false }))));
+  // elke kaart: een QR van minstens 21×21 modules (~200 zwarte) plus 4 markers
+  ok('Kaart-PDF: QR en markers als vlakjes', fillsOf(cpdf) - fillsOf(plain) > 150 * base.length);
+  ok('Kaart-PDF: verticale koppen gedraaid, ● als ZapfDingbats',
+     cpdf.includes(' 0 1 -1 0 ') && /\/F3 [\d.]+ Tf [^\n]*\(l\) Tj/.test(cpdf));
   ok('Scan: tijdstempel van het profiel op het controleblad',
      dsc.querySelector('.ctl .meta').textContent.includes('2026-10-03T17:30:00+02:00'));
   ok('Scan: markers in NL, FR en EN', LANGS.every(l => {
@@ -5615,9 +5950,13 @@ else {
   applyStatic();
   wire();
   renderLangSel();
-  const last = listSaved()[0];        // na een herlaad of crash verdergaan (§4.4)
-  if (last) loadSaved(last.id);
-  refresh();
+  // Altijd op Home beginnen: deelnemers overleven een herlaad niet, en de
+  // bewaarde wedstrijden staan daar klaar om verder te gaan (§4.4).
+  // Leeg beginnen: browsers zetten ingevulde velden terug na een herlaad, en
+  // die zouden anders zonder indeling over de bewaarde wedstrijd heen bewaard worden.
+  newComp('full');
+  history.replaceState(null, '', '#home');
+  showScreen();
 }
 </script>
 </body>
