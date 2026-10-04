@@ -163,6 +163,8 @@
     "ui.print.scanProfile": "Export scanprofiel",
     "ui.print.button": "Afdrukken (Ctrl+P → Opslaan als PDF)",
     "ui.print.blankButton": "Blanco kaart afdrukken",
+    "ui.print.blankPdfButton": "Blanco kaart als PDF",
+    "ui.print.blankPdfFile": "blanco-{id}",
     "ui.print.blankHint": "Vul “Boulders per categorie” in om een blanco kaart af te drukken: titel en ondertitel staan erop, naam, startnummer, categorie en boulders vult de deelnemer zelf in.",
     "ui.print.hint": "Druk af op 100% zonder schaling. Kies in het printvenster hetzelfde papierformaat. Het voorbeeld hieronder is exact wat er uit de printer komt. Let op: in het verkleinde voorbeeld van het printvenster kunnen dunne tabellijnen wegvallen — de afdruk en de PDF zijn wel correct.",
     "ui.print.stat.one": "{cards} kaart op {sheets} bladen {paper}, {ms} ms.",
@@ -333,6 +335,8 @@
     "ui.print.scanProfile": "Exporter le profil de scan",
     "ui.print.button": "Imprimer (Ctrl+P → Enregistrer en PDF)",
     "ui.print.blankButton": "Imprimer une carte vierge",
+    "ui.print.blankPdfButton": "Carte vierge en PDF",
+    "ui.print.blankPdfFile": "carte-vierge-{id}",
     "ui.print.blankHint": "Renseignez « Blocs par catégorie » pour imprimer une carte vierge : titre et sous-titre y figurent, le participant remplit lui-même son nom, dossard, catégorie et blocs.",
     "ui.print.hint": "Imprimez à 100 % sans mise à l’échelle. Choisissez le même format de papier dans la boîte d’impression. L’aperçu ci-dessous correspond exactement à la sortie. Attention : dans l’aperçu réduit de la boîte d’impression, des lignes fines du tableau peuvent disparaître — l’impression et le PDF restent corrects.",
     "ui.print.stat.one": "{cards} feuille sur {sheets} pages {paper}, {ms} ms.",
@@ -503,6 +507,8 @@
     "ui.print.scanProfile": "Export scan profile",
     "ui.print.button": "Print (Ctrl+P → Save as PDF)",
     "ui.print.blankButton": "Print blank card",
+    "ui.print.blankPdfButton": "Blank card as PDF",
+    "ui.print.blankPdfFile": "blank-{id}",
     "ui.print.blankHint": "Fill in “Boulders per category” to print a blank card: title and subtitle are printed, the participant fills in their own name, start number, category and boulders.",
     "ui.print.hint": "Print at 100% with no scaling. Choose the same paper size in the print dialog. The preview below is exactly what comes out of the printer. Note: the scaled-down preview in the print dialog may drop thin table lines — the print and the PDF are correct.",
     "ui.print.stat.one": "{cards} card on {sheets} {paper} sheets, {ms} ms.",
@@ -920,6 +926,7 @@ table.score.timed td.cell-mark{
       <label style="margin:0"><input type="checkbox" id="o-colour" checked> <span data-i18n="ui.print.colour"></span></label>
       <button id="btn-print" type="button" disabled data-i18n="ui.print.button"></button>
       <button id="btn-print-blank" type="button" disabled data-i18n="ui.print.blankButton"></button>
+      <button class="sec" id="btn-pdf-blank" type="button" disabled data-i18n="ui.print.blankPdfButton"></button>
       <button class="sec" id="btn-scanprofile" type="button" disabled data-i18n="ui.print.scanProfile"></button>
       <span class="hint" id="print-stat"></span>
     </div>
@@ -4164,6 +4171,130 @@ function blankSheetHTML(ctx){
   return '<div class="sheet cards' + (paper.cut ? '' : ' a5') + '">' + cards + '</div>';
 }
 
+/* ==========================================================================
+   Blanco kaart als PDF, zonder printer en zonder bibliotheek (C1).
+   Het blad wordt buiten beeld op ware grootte gerenderd; vlakken, randen en
+   tekst worden uit de gemeten DOM overgenomen. Arial en Helvetica hebben
+   dezelfde letterbreedtes, dus de ingebouwde PDF-letters passen op de gemeten
+   posities. Alleen wat een blanco kaart gebruikt: effen vlakken, doorgetrokken
+   randen, tekst — geen SVG (QR, ArUco), dus niet bruikbaar voor gewone kaarten.
+   ========================================================================== */
+const PT = 72 / 96;                       // CSS-px -> PDF-punt
+const pn = v => +v.toFixed(2);
+const pdfRgb = s => {
+  const m = (s || '').match(/[\d.]+/g);
+  return !m || m[3] === '0' ? null : m.slice(0, 3).map(v => pn(v / 255)).join(' ');
+};
+// WinAnsi: Latin-1 plus de 0x80-0x9F-reeks; de rest wordt '?'
+const CP1252 = '€\0‚ƒ„…†‡ˆ‰Š‹Œ\0Ž\0\0‘’“”•–—˜™š›œ\0žŸ';
+const winAnsi = s => [...s].map(ch => {
+  const c = ch.charCodeAt(0), i = CP1252.indexOf(ch);
+  const b = (c < 0x80 || (c >= 0xA0 && c < 0x100)) ? c : i > 0 || ch === '€' ? 0x80 + i : 63;
+  return (b === 40 || b === 41 || b === 92 ? '\\' : '') + String.fromCharCode(b);
+}).join('');
+// ponytail: de twee achtergrondverlopen van het tijdslotformaat, als vaste
+// strepen [periode, start, breedte (mm), kleur]. Moet gelijk blijven met de CSS.
+const PDF_STRIPES = { 'cell-tally': [9.8, 9.7, 0.1, '0.733 0.733 0.733'],
+                      'cell-mark':  [1e9, 9.85, 0.3, '0 0 0'] };
+
+function pdfPage(sheet){
+  const o = sheet.getBoundingClientRect(), H = o.height * PT;
+  const fills = [], lines = [], text = [];
+  const rect = (out, x, y, w, h, rgb) => out.push(rgb + ' rg ' + pn((x - o.left) * PT) + ' ' +
+    pn(H - (y - o.top + h) * PT) + ' ' + pn(w * PT) + ' ' + pn(h * PT) + ' re f');
+  for (const el of sheet.querySelectorAll('*')){
+    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+    if (!r.width || cs.visibility === 'hidden') continue;
+    const bg = pdfRgb(cs.backgroundColor);
+    if (bg && bg !== '1 1 1') rect(fills, r.left, r.top, r.width, r.height, bg);
+    const st = PDF_STRIPES[el.classList[0]], mm = 96 / 25.4;   // px per mm
+    if (st) for (let x = st[1]; x * mm < r.width; x += st[0])
+      rect(fills, r.left + x * mm, r.top, st[2] * mm, r.height, st[3]);
+    pdfBorders(lines, rect, el, cs, r);
+  }
+  pdfText(text, sheet, o, H);
+  // snijlijn tussen de twee A4-kaarten (.sheet.cards::after)
+  if (sheet.matches('.cards:not(.a5)'))
+    lines.push('[2.5] 0 d 0.85 w 0 0 0 RG 0 ' + pn(H / 2) + ' m ' + pn(o.width * PT) + ' ' + pn(H / 2) + ' l S [] 0 d');
+  return { w: pn(o.width * PT), h: pn(H), ops: [...fills, ...lines, ...text].join('\n') };
+}
+
+/* Randen als gevulde balkjes. In een tabel met border-collapse ligt de rand van
+   een cel gecentreerd op de rand van haar box (die loopt tot het midden van de
+   gedeelde lijn); elders ligt de rand binnen de box. */
+function pdfBorders(out, rect, el, cs, r){
+  const centred = cs.display === 'table-cell' && getComputedStyle(el.closest('table')).borderCollapse === 'collapse';
+  for (const side of ['Top', 'Right', 'Bottom', 'Left']){
+    const w = parseFloat(cs['border' + side + 'Width']), rgb = pdfRgb(cs['border' + side + 'Color']);
+    if (!w || !rgb || /none|hidden/.test(cs['border' + side + 'Style'])) continue;
+    const d = centred ? w / 2 : 0;
+    if (side === 'Top')    rect(out, r.left - d, r.top - d, r.width + 2 * d, w, rgb);
+    if (side === 'Bottom') rect(out, r.left - d, r.bottom - w + d, r.width + 2 * d, w, rgb);
+    if (side === 'Left')   rect(out, r.left - d, r.top - d, w, r.height + 2 * d, rgb);
+    if (side === 'Right')  rect(out, r.right - w + d, r.top - d, w, r.height + 2 * d, rgb);
+  }
+}
+
+/* Tekst per woord op de gemeten plek, zodat een andere letter dan Arial op het
+   scherm hooguit binnen een woord verschuift. */
+function pdfText(out, sheet, o, H){
+  const walk = document.createTreeWalker(sheet, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  for (let node; (node = walk.nextNode());){
+    const cs = getComputedStyle(node.parentElement);
+    if (cs.visibility === 'hidden') continue;
+    const fs = parseFloat(cs.fontSize) * PT, rgb = pdfRgb(cs.color) || '0 0 0';
+    const font = parseInt(cs.fontWeight, 10) >= 600 ? '/F2' : '/F1';
+    const tc = pn((parseFloat(cs.letterSpacing) || 0) * PT);
+    const s = node.textContent;
+    for (const m of s.matchAll(/\S+/g)){
+      range.setStart(node, m.index); range.setEnd(node, m.index + m[0].length);
+      const b = range.getClientRects()[0];
+      if (!b || !b.width) continue;
+      // basislijn: Arial heeft 0.905 em boven en 0.212 em onder de lijn
+      const y = H - (b.bottom - b.height * 0.212 / 1.117 - o.top) * PT;
+      // ✓ bestaat niet in WinAnsi; in ZapfDingbats is het teken '3'
+      const [f, str] = m[0] === '✓' ? ['/F3', '3'] : [font, winAnsi(m[0])];
+      out.push('BT ' + f + ' ' + pn(fs) + ' Tf ' + tc + ' Tc ' + rgb + ' rg ' +
+        pn((b.left - o.left) * PT) + ' ' + pn(y) + ' Td (' + str + ') Tj ET');
+    }
+  }
+}
+
+/* Minimale PDF 1.4: catalogus, paginaboom, drie standaardletters, per pagina
+   één ongecomprimeerde inhoudsstroom. Alle tekens zijn < 256, dus de
+   stringlengte is de bytelengte. */
+function pdfBytes(pages){
+  const objs = ['<< /Type /Catalog /Pages 2 0 R >>', '',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /ZapfDingbats >>'];
+  const kids = pages.map(p => {
+    objs.push('<< /Length ' + p.ops.length + ' >>\nstream\n' + p.ops + '\nendstream');
+    objs.push('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + p.w + ' ' + p.h + '] /Resources ' +
+      '<< /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents ' + (objs.length) + ' 0 R >>');
+    return objs.length + ' 0 R';
+  });
+  objs[1] = '<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + kids.length + ' >>';
+  let pdf = '%PDF-1.4\n';
+  const offs = objs.map((body, i) => { const at = pdf.length; pdf += (i + 1) + ' 0 obj\n' + body + '\nendobj\n'; return at; });
+  const xref = pdf.length;
+  pdf += 'xref\n0 ' + (objs.length + 1) + '\n0000000000 65535 f \n' +
+    offs.map(n => String(n).padStart(10, '0') + ' 00000 n \n').join('') +
+    'trailer\n<< /Size ' + (objs.length + 1) + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF\n';
+  return Uint8Array.from(pdf, c => c.charCodeAt(0));
+}
+
+/* Bladen renderen buiten beeld (zonder de 50%-zoom van het voorbeeld), meten, opruimen. */
+function sheetsPdf(html){
+  const host = document.createElement('div');
+  host.style.cssText = 'position:absolute;left:-10000px;top:0';
+  host.innerHTML = html;
+  document.body.appendChild(host);
+  try { return pdfBytes([...host.querySelectorAll('.sheet')].map(pdfPage)); }
+  finally { host.remove(); }
+}
+
 /* Matrix in één richting opbouwen; A4 en A5 verschillen alleen in wie de rijen
    levert en wie de kolommen (§6.6). */
 function matrixHTML(rowKeys, colKeys, vertHeads, hit){
@@ -4385,7 +4516,9 @@ function loadSaved(id){
 }
 
 function downloadJSON(name, data){
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  download(name, new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+}
+function download(name, blob){
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = name;
@@ -4706,7 +4839,8 @@ function refresh(){
   // boulders per categorie: dat bepaalt hoeveel rijen de tabel krijgt. Boven
   // het maximum voor dit formaat weigert attemptsToTable() hard, dus hier al
   // blokkeren in plaats van die crash laten gebeuren.
-  $('btn-print-blank').disabled = !set.bouldersPerCat || set.bouldersPerCat > maxRowsFor(set.format);
+  $('btn-print-blank').disabled = $('btn-pdf-blank').disabled =
+    !set.bouldersPerCat || set.bouldersPerCat > maxRowsFor(set.format);
 
   $('btn-scanprofile').disabled = blocked || !scan;
 
@@ -4827,6 +4961,11 @@ function wire(){
     $('print').innerHTML = blankSheetHTML(ctx);
     window.print();
     refresh();
+  });
+  $('btn-pdf-blank').addEventListener('click', () => {
+    const ctx = Object.assign(settings(), options(), { cardLang: cardLang() });
+    download(t('ui.print.blankPdfFile', { id: effectiveId() }) + '.pdf',
+             new Blob([sheetsPdf(blankSheetHTML(ctx))], { type: 'application/pdf' }));
   });
 }
 
@@ -4979,6 +5118,15 @@ function selfTest(){
   db5.innerHTML = blankSheetHTML(Object.assign({}, blankCtx, { paper: 'A5' }));
   eq('Blanco: A5 krijgt 1 kaart (het blad is de kaart)',
      db5.querySelectorAll('.sheet').length + '/' + db5.querySelectorAll('.card').length, '1/1');
+  // Een PDF-lezer springt via de xref-tabel naar elk object: één verschoven
+  // byte en het bestand is "beschadigd".
+  const pdf = String.fromCharCode(...sheetsPdf(blankSheetHTML(Object.assign({}, blankCtx, { title: 'Één (x)' }))));
+  const xref = pdf.slice(Number(pdf.match(/startxref\n(\d+)/)[1]));
+  const offs = [...xref.matchAll(/^(\d{10}) 00000 n $/gm)].map(m => Number(m[1]));
+  ok('Blanco PDF: elke xref-verwijzing wijst naar haar object',
+     offs.length > 4 && offs.every((at, i) => pdf.startsWith((i + 1) + ' 0 obj', at)));
+  ok('Blanco PDF: titel staat er als WinAnsi-tekst in, haakjes geëscapet',
+     pdf.includes('(\xC9\xE9n)') && pdf.includes('(\\(x\\))'));
 
   // --- scoretabel: de enige plek die kolommen kent (§12.2) ---
   const throws = (name, fn, re) => {
